@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="320" height="72">
+  <defs>
+    <linearGradient id="warmSky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8A87C"/>
+      <stop offset="100%" stop-color="#C38D9E"/>
+    </linearGradient>
+  </defs>
+  <!-- Mark (scaled 64x64 to fit 72px height) -->
+  <g transform="translate(4, 4) scale(1)">
+    <path d="M4 44 Q4 40 8 40 L28 42 Q32 42 32 46 L32 56 Q32 58 28 58 L8 56 Q4 56 4 52 Z" fill="#F4E4C1" stroke="#5D4037" stroke-width="1.5"/>
+    <path d="M60 44 Q60 40 56 40 L36 42 Q32 42 32 46 L32 56 Q32 58 36 58 L56 56 Q60 56 60 52 Z" fill="#F4E4C1" stroke="#5D4037" stroke-width="1.5"/>
+    <line x1="32" y1="42" x2="32" y2="58" stroke="#5D4037" stroke-width="1.5"/>
+    <circle cx="32" cy="26" r="9" fill="url(#warmSky2)"/>
+    <line x1="8" y1="36" x2="56" y2="36" stroke="#5D4037" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="10" y1="48" x2="26" y2="49" stroke="#A1887F" stroke-width="0.8" stroke-linecap="round"/>
+    <line x1="10" y1="52" x2="24" y2="53" stroke="#A1887F" stroke-width="0.8" stroke-linecap="round"/>
+    <line x1="38" y1="49" x2="54" y2="48" stroke="#A1887F" stroke-width="0.8" stroke-linecap="round"/>
+    <line x1="40" y1="53" x2="54" y2="52" stroke="#A1887F" stroke-width="0.8" stroke-linecap="round"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="84" y="34" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700" fill="#3E2723" letter-spacing="0.5">Travel Memory Book</text>
+  <text x="84" y="54" font-family="Georgia, serif" font-size="11" font-style="italic" fill="#8D6E63" letter-spacing="1.5">YOUR JOURNEYS, PRESERVED</text>
+</svg>

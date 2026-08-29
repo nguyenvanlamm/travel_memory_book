@@ -1,0 +1,50 @@
+name: travel_memory_book
+description: Travel Memory Book — A personal travel journal that turns trips into digital photo books.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+
+  # Navigation
+  go_router: ^15.1.2
+
+  # Local database
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.1.2
+
+  # Image handling
+  image_picker: ^1.1.2
+  image: ^4.3.0
+  exif: ^3.3.0
+
+  # Utils
+  intl: ^0.20.2
+  google_fonts: ^6.2.1
+  uuid: ^4.4.0
+  permission_handler: ^12.0.3
+
+  # UI
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.9
+  isar_generator: ^3.1.0+1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+

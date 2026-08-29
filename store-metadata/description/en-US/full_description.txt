@@ -1,0 +1,30 @@
+Travel Memory Book — Your personal travel journal that turns every trip into a beautiful digital photo book.
+
+Unlike social media apps that pressure you to share and perform, Travel Memory Book is designed for one person: you. No likes, no comments, no followers, no feed. Just your memories, preserved exactly as you want to remember them.
+
+KEY FEATURES:
+📖 Create Travel Books — Each trip becomes its own digital photo book with cover, pages, and memories
+📸 Smart Photo Import — Add dozens of photos at once, automatic EXIF reading (date, GPS, camera)
+🗓️ Automatic Timeline — Photos auto-sorted by date, grouped by day
+📍 Location Awareness — GPS from photos auto-mapped to place names
+✍️ Personal Journal — Write memories for whole trips, specific days, or individual photos
+📖 Book Viewer — Flip through your trip like a real photo book with smooth page animations
+🌙 Dark/Light Mode — Beautiful themes optimized for photo viewing day or night
+🔒 100% Private — No cloud, no tracking, no ads. Your data stays on your device
+📊 Personal Statistics — Track your travels: countries, cities, photos, trips
+
+PERFECT FOR:
+• Travelers who want to remember every detail of their adventures
+• Families documenting vacations and milestones
+• Anyone who wants a private, beautiful way to revisit memories
+• People tired of social media's pressure to share and perform
+
+YOUR MEMORIES, YOUR WAY:
+• Works completely offline — perfect for travel
+• No accounts, no login, no cloud required
+• Export to PDF (coming soon)
+• Print your travel books as real photo albums (coming soon)
+
+Travel Memory Book — because some memories are too precious for a feed.
+
+"Many years from now, you can open this app, pick an old trip, and feel like you're reading back a part of your life."

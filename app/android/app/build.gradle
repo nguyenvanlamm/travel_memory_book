@@ -1,3 +1,4 @@
+apply from: "../isar_init.gradle"
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -39,7 +40,7 @@ android {
 
     defaultConfig {
         applicationId "com.lam.travel_memory_book"
-        minSdk 23
+        minSdk 31
         targetSdk 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -63,15 +64,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0"
-}
-
-// Fix for isar_flutter_libs namespace issue
-subprojects {
-    afterEvaluate { project ->
-        if (project.name == 'isar_flutter_libs') {
-            project.android {
-                namespace 'com.isar.flutter.libs'
-            }
-        }
-    }
 }

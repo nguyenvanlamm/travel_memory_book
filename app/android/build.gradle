@@ -17,14 +17,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-// Fix for isar_flutter_libs namespace issue
-subprojects {
-    afterEvaluate { project ->
-        if (project.name == 'isar_flutter_libs') {
-            project.android {
-                namespace 'com.isar.flutter.libs'
-            }
-        }
-    }
-}

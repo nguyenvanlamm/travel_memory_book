@@ -1,0 +1,91 @@
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    setup_circle_ci if ENV['CI']
+  end
+
+  desc "Sync certificates and provisioning profiles"
+  lane :certificates do
+    match(
+      type: "appstore",
+      readonly: is_ci,
+      git_url: "https://github.com/your-org/certificates.git",
+      storage_mode: "git"
+    )
+  end
+
+  desc "Build iOS app for App Store"
+  lane :build do
+    certificates
+    
+    increment_build_number(
+      build_number: ENV['BUILD_NUMBER'] || number_of_commits,
+      xcodeproj: "Runner.xcodeproj"
+    )
+    
+    increment_version_number(
+      version_number: ENV['VERSION_NUMBER'] || "1.0.0",
+      xcodeproj: "Runner.xcodeproj"
+    )
+    
+    gym(
+      scheme: "Runner",
+      workspace: "Runner.xcworkspace",
+      configuration: "Release",
+      export_options: {
+        method: "app-store",
+        team_id: ENV['TEAM_ID'],
+        upload_symbols: true,
+        compile_bitcode: false
+      },
+      output_directory: "build/ios",
+      output_name: "TravelMemoryBook.ipa",
+      clean: true,
+      silent: true
+    )
+  end
+
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    build
+    
+    pilot(
+      api_key_path: ENV['APP_STORE_CONNECT_API_KEY_PATH'],
+      skip_waiting_for_build_processing: true,
+      distribute_external: false,
+      notify_external_testers: false,
+      changelog: ENV['CHANGELOG'] || "New build from CI"
+    )
+  end
+
+  desc "Build and submit to App Store"
+  lane :release do
+    build
+    
+    deliver(
+      api_key_path: ENV['APP_STORE_CONNECT_API_KEY_PATH'],
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+      skip_metadata: false,
+      skip_screenshots: false,
+      skip_binary_upload: false,
+      precheck_include_in_app_purchases: false
+    )
+  end
+
+  desc "Run tests"
+  lane :test do
+    run_tests(
+      scheme: "Runner",
+      workspace: "Runner.xcworkspace",
+      devices: ["iPhone 15"],
+      clean: true
+    )
+  end
+
+  error do |lane, exception|
+    UI.error("Lane #{lane} failed with: #{exception.message}")
+  end
+end

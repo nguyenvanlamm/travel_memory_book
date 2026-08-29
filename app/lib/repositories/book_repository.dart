@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/travel_book.dart';
 import '../../models/photo.dart';
 import 'photo_repository.dart';
@@ -110,6 +111,39 @@ class BookRepository {
     final isar = await _isar;
     await isar.writeTxn(() => isar.travelBooks.filter().tripIdEqualTo(tripId).deleteAll());
     return assemble(tripId);
+  }
+
+  /// Check if user can create a new travel book (first one free, then requires purchase)
+  Future<bool> canCreateNewBook() async {
+    final prefs = await SharedPreferences.getInstance();
+    final count = prefs.getInt('travel_books_created_count') ?? 0;
+    final unlocked = prefs.getBool('travel_books_unlocked') ?? false;
+    return count == 0 || unlocked;
+  }
+
+  /// Increment the travel book creation count
+  Future<void> incrementBookCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final count = (prefs.getInt('travel_books_created_count') ?? 0) + 1;
+    await prefs.setInt('travel_books_created_count', count);
+  }
+
+  /// Get current travel book count
+  Future<int> getTravelBookCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('travel_books_created_count') ?? 0;
+  }
+
+  /// Reset book count (for testing)
+  Future<void> resetBookCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('travel_books_created_count', 0);
+  }
+
+  /// Check if user has unlocked unlimited books
+  Future<bool> isUnlocked() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('travel_books_unlocked') ?? false;
   }
 
   bool _isSameDay(DateTime a, DateTime b) =>

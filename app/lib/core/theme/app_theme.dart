@@ -39,7 +39,7 @@ class AppTheme {
           ),
       iconTheme: IconThemeData(color: deepBrown),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -120,7 +120,7 @@ class AppTheme {
           ),
       iconTheme: IconThemeData(color: parchment),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: const Color(0xFF1A1A1A),
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -240,7 +240,7 @@ class AppTheme {
         fontSize: 12,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.4,
-        color: baseColor.withOpacity(0.7),
+        color: baseColor.withValues(alpha: 0.7),
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 14,

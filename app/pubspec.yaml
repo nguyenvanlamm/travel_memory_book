@@ -33,6 +33,9 @@ dependencies:
   uuid: ^4.4.0
   permission_handler: ^12.0.3
 
+  # In-App Purchase
+  in_app_purchase: ^3.1.13
+
   # UI
   cupertino_icons: ^1.0.8
 
@@ -43,9 +46,29 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   build_runner: ^2.4.9
   isar_generator: ^3.1.0+1
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "../store-metadata/icon/icon-512.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "../store-metadata/icon/icon-512.png"
+    background_color: "#ffffff"
+    theme_color: "#3B82F6"
+  windows:
+    generate: true
+    image_path: "../store-metadata/icon/icon-512.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "../store-metadata/icon/icon-512.png"
 

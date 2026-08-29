@@ -1,0 +1,43 @@
+{
+  "overall": "FAIL",
+  "generated_at": "2026-08-29T13:50:00Z",
+  "counts": {
+    "pass": 0,
+    "warn": 0,
+    "fail": 4
+  },
+  "checks": [
+    {
+      "id": "store_listing.screenshots_placeholder",
+      "group": "store_listing",
+      "verdict": "FAIL",
+      "summary": "Screenshot 'store-metadata/screenshots/phone/01-home.png' is a placeholder",
+      "evidence": "",
+      "fix": ""
+    },
+    {
+      "id": "store_listing.screenshots_placeholder",
+      "group": "store_listing",
+      "verdict": "FAIL",
+      "summary": "Screenshot 'store-metadata/screenshots/phone/02-trip-detail.png' is a placeholder",
+      "evidence": "",
+      "fix": ""
+    },
+    {
+      "id": "store_listing.screenshots_placeholder",
+      "group": "store_listing",
+      "verdict": "FAIL",
+      "summary": "Screenshot 'store-metadata/screenshots/phone/03-book-viewer.png' is a placeholder",
+      "evidence": "",
+      "fix": ""
+    },
+    {
+      "id": "store_listing.screenshots_placeholder",
+      "group": "store_listing",
+      "verdict": "FAIL",
+      "summary": "Screenshot 'store-metadata/screenshots/phone/04-memory-editor.png' is a placeholder",
+      "evidence": "",
+      "fix": ""
+    }
+  ]
+}

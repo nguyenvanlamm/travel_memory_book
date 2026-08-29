@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Workaround for isar_flutter_libs lStar attribute issue - define with android namespace -->
+    <declare-styleable name="AndroidCompat">
+        <attr name="lStar" format="float" />
+    </declare-styleable>
+</resources>

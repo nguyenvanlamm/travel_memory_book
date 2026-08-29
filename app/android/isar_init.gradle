@@ -1,0 +1,14 @@
+gradle.projectsEvaluated {
+    subprojects { project ->
+        if (project.name == 'isar_flutter_libs') {
+            project.afterEvaluate {
+                project.android {
+                    defaultConfig {
+                        minSdk 31
+                    }
+                    namespace 'dev.isar.flutter.libs'
+                }
+            }
+        }
+    }
+}

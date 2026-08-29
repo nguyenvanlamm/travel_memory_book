@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.3'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ./app
+
+      - name: Generate Isar code
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+        working-directory: ./app
+
+      - name: Analyze
+        run: flutter analyze
+        working-directory: ./app
+
+      - name: Run tests
+        run: flutter test --coverage
+        working-directory: ./app
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+        working-directory: ./app
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/app/outputs/flutter-apk/app-debug.apk
+
+  # Release build (manual trigger)
+  release:
+    name: Build Release AAB
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.3'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ./app
+
+      - name: Generate Isar code
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+        working-directory: ./app
+
+      - name: Build release AAB
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/release/debug-info
+        working-directory: ./app
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: app/build/app/outputs/bundle/release/app-release.aab

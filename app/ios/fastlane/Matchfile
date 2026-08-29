@@ -1,0 +1,9 @@
+git_url "https://github.com/your-org/certificates.git"
+storage_mode "git"
+type "appstore"
+app_identifier ["com.lam.travelmemorybook"]
+username "your-apple-id@example.com"
+team_id "$(TEAM_ID)"
+shallow_clone true
+clone_branch "main"
+keychain_name "fastlane_tmp_keychain"

@@ -1,0 +1,55 @@
+{
+  "app_name": "Travel Memory Book",
+  "package": "com.lam.travelmemorybook",
+  "category": "PRODUCTIVITY",
+  "default_locale": "en-US",
+  "locales": ["en-US"],
+  "contact_email": "support@travelmemorybook.app",
+  "privacy_policy_url": "https://travelmemorybook.app/privacy",
+  "derived": {
+    "has_ads": false,
+    "has_iap": false,
+    "has_login": false,
+    "collects_data": false,
+    "sensitive_permissions": ["CAMERA", "READ_MEDIA_IMAGES"],
+    "evidence": {
+      "has_iap": "pubspec.yaml: no in_app_purchase dependency",
+      "has_login": "pubspec.yaml: no firebase_auth dependency",
+      "collects_data": "pubspec.yaml: no firebase_analytics dependency",
+      "sensitive_permissions": "AndroidManifest.xml: CAMERA, READ_MEDIA_IMAGES"
+    }
+  },
+  "assets": {
+    "icon": "store-metadata/icon/icon-512.png",
+    "feature_graphic": "store-metadata/icon/feature-graphic.png",
+    "screenshots": {
+      "phone": [
+        {
+          "path": "store-metadata/screenshots/phone/01-home.png",
+          "source": "placeholder",
+          "placeholder": true
+        },
+        {
+          "path": "store-metadata/screenshots/phone/02-trip-detail.png",
+          "source": "placeholder",
+          "placeholder": true
+        },
+        {
+          "path": "store-metadata/screenshots/phone/03-book-viewer.png",
+          "source": "placeholder",
+          "placeholder": true
+        },
+        {
+          "path": "store-metadata/screenshots/phone/04-memory-editor.png",
+          "source": "placeholder",
+          "placeholder": true
+        }
+      ]
+    }
+  },
+  "unresolved": [
+    "All screenshots are placeholders - need to capture from running app",
+    "Privacy policy needs hosting at a public HTTPS URL",
+    "Contact email needs to be verified"
+  ]
+}

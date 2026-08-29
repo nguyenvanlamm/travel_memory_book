@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Travel Memory Book</title>
+    <style>
+        body { font-family: Georgia, serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #3E2723; background: #FAF7F2; }
+        h1 { color: #3E2723; border-bottom: 2px solid #E8A87C; padding-bottom: 10px; }
+        h2 { color: #5D4037; margin-top: 30px; }
+        h3 { color: #6D4C41; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #D7CCC8; }
+        th { background: #F4E4C1; color: #3E2723; }
+        code { background: #F4E4C1; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .meta { color: #8D6E63; font-style: italic; margin-bottom: 30px; }
+        a { color: #C38D9E; }
+    </style>
+</head>
+<body>
+    <h1>Privacy Policy for Travel Memory Book</h1>
+    <p class="meta"><strong>Effective Date:</strong> August 29, 2026<br>
+    <strong>App Version:</strong> 1.0.0<br>
+    <strong>Developer:</strong> Lam (personal project)</p>
+
+    <h2>1. Overview</h2>
+    <p>Travel Memory Book ("the App") is a personal travel journal designed to help you preserve your travel memories as digital photo books. This privacy policy explains what information the App handles and how it is protected.</    <p><strong>Key Principle:</strong> Your data belongs to you. The App does not collect, transmit, or share any personal data with the developer or any third parties.</p>
+
+    <h2>2. Information We Do Not Collect</h2>
+    <p>The App does <strong>not</strong> collect, store, or transmit any of the following:</p>
+    <ul>
+        <li>Personal identification information (name, email, phone number)</li>
+        <li>Location data beyond what you explicitly add to your trips</li>
+        <li>Usage analytics or tracking data</li>
+        <li>Device identifiers or advertising IDs</li>
+        <li>Crash reports or error logs (no crash reporting SDKs are included)</li>
+        <li>Any data for advertising or marketing purposes</li>
+    </ul>
+
+    <h2>3. Data Stored on Your Device</h2>
+    <p>All data created in the App is stored <strong>locally on your device only</strong>:</p>
+    <ul>
+        <li><strong>Trip data:</strong> Titles, descriptions, dates, countries, cities</li>
+        <li><strong>Photos:</strong> Original images and generated thumbnails (stored in app-private storage)</li>
+        <li><strong>Memories:</strong> Written notes for trips, days, or individual photos</li>
+        <li><strong>EXIF metadata:</strong> Date taken, GPS coordinates, camera info (read from your photos)</li>
+        <li><strong>App preferences:</strong> Theme choice (light/dark/system)</li>
+    </ul>
+    <p>This data is stored using:</p>
+    <ul>
+        <li><strong>Isar database</strong> (local NoSQL database)</li>
+        <li><strong>App-private file storage</strong> (photos and thumbnails)</li>
+        <li><strong>SharedPreferences</strong> (theme preference only)</li>
+    </ul>
+
+    <h2>4. Permissions Used</h2>
+    <p>The App requests only the permissions necessary for its core functionality:</p>
+    <table>
+        <thead>
+            <tr><th>Permission</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>CAMERA</td><td>Take photos directly within the App</td></tr>
+            <tr><td>READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE</td><td>Select photos from your gallery</td></tr>
+            <tr><td>WRITE_EXTERNAL_STORAGE (legacy)</td><td>Save photos on older Android versions</td></tr>
+        </tbody>
+    </table>
+    <p><strong>No network permissions</strong> are requested (<code>INTERNET</code> permission is not declared).</p>
+
+    <h2>5. Data Sharing</h2>
+    <p>The App does <strong>not</strong> share any data with:</p>
+    <ul>
+        <li>The developer</li>
+        <li>Third-party services</li>
+        <li>Advertising networks</li>
+        <li>Analytics providers</li>
+        <li>Cloud backup services (not implemented in current version)</li>
+    </ul>
+    <p>If you choose to export data (e.g., PDF export in future versions), you control where that file goes.</p>
+
+    <h2>6. Data Retention and Deletion</h2>
+    <ul>
+        <li>All data remains on your device until you delete it</li>
+        <li>Uninstalling the App deletes all associated data</li>
+        <li>You can delete individual trips, photos, or memories at any time</li>
+        <li>No data persists after uninstallation</li>
+    </ul>
+
+    <h2>7. Children's Privacy</h2>
+    <p>The App is not directed at children under 13. It does not knowingly collect personal information from children.</p>
+
+    <h2>8. Security</h2>
+    <ul>
+        <li>All data is stored in the App's private sandbox (Android app sandbox)</li>
+        <li>No data is transmitted over the network</li>
+        <li>No encryption keys are stored (data is not encrypted beyond OS-level protection)</li>
+        <li>Photos are stored as-is without re-compression</li>
+    </ul>
+
+    <h2>9. Changes to This Policy</h2>
+    <p>If the App's data practices change in future versions, this policy will be updated and the effective date will be changed. Continued use of the App after changes constitutes acceptance of the updated policy.</p>
+
+    <h2>10. Contact</h2>
+    <p>For questions about this privacy policy or the App's data practices:</p>
+    <p><strong>Developer:</strong> Lam<br>
+    <strong>Contact:</strong> [Add your contact email here]<br>
+    <strong>App:</strong> Travel Memory Book</p>
+
+    <hr>
+    <p><em>This privacy policy is generated from the App's actual data practices as implemented in version 1.0.0. It reflects the actual behavior of the code — no claims are made about practices that are not implemented in the App.</em></p>
+</body>
+</html>

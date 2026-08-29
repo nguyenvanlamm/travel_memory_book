@@ -1,0 +1,61 @@
+# Pre-commit hooks for Travel Memory Book (Flutter/Dart)
+# Install: pip install pre-commit && pre-commit install
+# Run: pre-commit run --all-files
+
+repos:
+  # Dart/Flutter formatting
+  - repo: https://github.com/fluttercommunity/pre-commit-dart
+    rev: v1.2.1
+    hooks:
+      - id: dart-format
+        stages: [commit]
+
+  # Dart analysis
+  - repo: local
+    hooks:
+      - id: flutter-analyze
+        name: flutter analyze
+        entry: flutter analyze
+        language: system
+        stages: [commit]
+        pass_filenames: false
+
+      - id: flutter-test
+        name: flutter test (unit)
+        entry: flutter test --no-coverage
+        language: system
+        stages: [commit]
+        pass_filenames: false
+
+  # Security - detect secrets
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        stages: [commit]
+        args: ['--baseline', '.secrets.baseline']
+
+  # Git hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        stages: [commit]
+      - id: end-of-file-fixer
+        stages: [commit]
+      - id: check-yaml
+        stages: [commit]
+      - id: check-json
+        stages: [commit]
+      - id: check-merge-conflict
+        stages: [commit]
+
+# Push stage hooks (run on git push)
+ci:
+  stages: [push]
+  hooks:
+    - id: flutter-test-full
+      name: flutter test (full with coverage)
+      entry: flutter test --coverage
+      language: system
+      pass_filenames: false

@@ -1,0 +1,8 @@
+app_identifier "com.lam.travelmemorybook"
+apple_id "your-apple-id@example.com"
+team_id "$(TEAM_ID)"
+
+# For fastlane match
+git_url "https://github.com/your-org/certificates.git"
+storage_mode "git"
+type "appstore"

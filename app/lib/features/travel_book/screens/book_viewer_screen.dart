@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/iap/iap_providers.dart';
 import '../../../models/travel_book.dart';
 import '../../../models/photo.dart';
@@ -8,8 +7,7 @@ import '../../../models/trip.dart';
 import '../../../repositories/book_repository.dart';
 import '../../../repositories/photo_repository.dart';
 import '../../../repositories/trip_repository.dart';
-import '../widgets/book_cover.dart';
-import '../widgets/book_page.dart';
+import '../widgets/realistic_book_viewer.dart';
 
 class BookViewerScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -25,13 +23,12 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
   List<Photo> _photos = [];
   bool _isLoading = true;
   bool _bookExists = false;
-  int _currentPage = 0;
-  final PageController _pageController = PageController();
 
   @override
-  void initState() { super.initState(); _loadBook(); }
-  @override
-  void dispose() { _pageController.dispose(); super.dispose(); }
+  void initState() {
+    super.initState();
+    _loadBook();
+  }
 
   Future<void> _loadBook() async {
     setState(() => _isLoading = true);
@@ -40,12 +37,10 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
       final tripRepo = ref.read(tripRepositoryProvider);
       final photoRepo = ref.read(photoRepositoryProvider);
 
-      // Check if book already exists
       _book = await bookRepo.getByTrip(widget.tripId);
       _bookExists = _book != null;
 
       if (!_bookExists) {
-        // Check if user can create a new book
         final canCreate = await bookRepo.canCreateNewBook();
         if (!canCreate) {
           if (mounted) {
@@ -54,7 +49,6 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
           }
           return;
         }
-        // Create the book
         _book = await bookRepo.assemble(widget.tripId);
         await bookRepo.incrementBookCount();
       }
@@ -65,7 +59,9 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
       }
     }
   }
@@ -77,22 +73,13 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
       builder: (context) => const _UnlockTravelBooksDialog(),
     ).then((_) {
       if (mounted) {
-        _loadBook(); // Reload after dialog closes
+        _loadBook();
       }
     });
   }
 
-  Photo? _getPhoto(int photoId) {
-    try {
-      return _photos.firstWhere((p) => p.id == photoId);
-    } catch (_) {
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(title: const Text('Loading Book...')),
@@ -105,37 +92,12 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
         body: const Center(child: Text('Failed to load book')),
       );
     }
-    final pages = _book!.pages;
+
     return Scaffold(
-      appBar: AppBar(
-        title: _currentPage == 0
-            ? Text(_trip!.title, style: const TextStyle(fontWeight: FontWeight.w700))
-            : pages[_currentPage].title != null
-                ? Text(pages[_currentPage].title!, style: const TextStyle(fontWeight: FontWeight.w700))
-                : Text('Page ${_currentPage + 1}'),
-        leading: IconButton(icon: const Icon(Icons.close), onPressed: () => context.pop()),
-      ),
-      body: PageView.builder(
-        controller: _pageController,
-        onPageChanged: (index) => setState(() => _currentPage = index),
-        itemCount: pages.length,
-        itemBuilder: (context, index) {
-          final page = pages[index];
-          switch (page.type) {
-            case 'cover':
-              return BookCover(trip: _trip!, book: _book!);
-            case 'day':
-              return BookDayPage(trip: _trip!, dayNumber: page.dayNumber!, dateStr: page.subtitle ?? '');
-            case 'photo':
-              final photo = page.photoId != null ? _getPhoto(page.photoId!) : null;
-              return BookPhotoPage(photo: photo, caption: page.body);
-            case 'memory':
-            case 'trip_memory':
-              return BookMemoryPage(title: page.title, content: page.body ?? '');
-            default:
-              return const SizedBox.shrink();
-          }
-        },
+      body: RealisticBookViewer(
+        book: _book!,
+        trip: _trip!,
+        photos: _photos,
       ),
     );
   }
@@ -217,7 +179,8 @@ class _UnlockTravelBooksDialog extends ConsumerWidget {
             const SizedBox(height: 16),
             const Text('Create unlimited travel books for \$0.99'),
             const SizedBox(height: 16),
-            Text('Error loading product: $error', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            Text('Error loading product: $error',
+                style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ],
         ),
         actions: [

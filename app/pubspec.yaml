@@ -36,6 +36,10 @@ dependencies:
   # In-App Purchase
   in_app_purchase: ^3.1.13
 
+  # Page flip + Audio
+  book_page_flip: ^0.1.0
+  audioplayers: ^6.1.0
+
   # UI
   cupertino_icons: ^1.0.8
 
@@ -52,6 +56,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/book/
+    - assets/audio/
 
 flutter_launcher_icons:
   android: "launcher_icon"

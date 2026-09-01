@@ -118,11 +118,18 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
       );
     }
 
-    return Scaffold(
-      body: RealisticBookViewer(
-        book: _book!,
-        trip: _trip!,
-        photos: _photos,
+    // WillPopScope để nút back trở về trip detail thay vì thoát app
+    return WillPopScope(
+      onWillPop: () async {
+        // Quay về trip detail screen qua Navigator
+        return Navigator.of(context).maybePop();
+      },
+      child: Scaffold(
+        body: RealisticBookViewer(
+          book: _book!,
+          trip: _trip!,
+          photos: _photos,
+        ),
       ),
     );
   }

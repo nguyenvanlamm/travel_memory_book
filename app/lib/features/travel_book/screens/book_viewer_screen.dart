@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/iap/iap_providers.dart';
 import '../../../models/travel_book.dart';
@@ -27,7 +28,31 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
   @override
   void initState() {
     super.initState();
+    // Ép xoay ngang khi đọc sách
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    // Ẩn status bar & navigation bar để có trải nghiệm fullscreen
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.immersiveSticky,
+    );
     _loadBook();
+  }
+
+  @override
+  void dispose() {
+    // Khôi phục orientation & system UI khi thoát
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+    );
+    super.dispose();
   }
 
   Future<void> _loadBook() async {

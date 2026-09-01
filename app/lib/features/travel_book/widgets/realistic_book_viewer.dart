@@ -108,18 +108,20 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
   }
 
   Size _calculatePageSize(Size screenSize) {
-    final isLandscape = screenSize.width > screenSize.height;
-    final maxWidth = screenSize.width * (isLandscape ? 0.95 : 0.92);
-    final maxHeight = screenSize.height * (isLandscape ? 0.88 : 0.85);
+    // Book viewer luôn landscape - dùng gần như toàn bộ màn hình
+    // Subtract một chút padding cho top bar + bottom bar (~80px + 50px = 130px)
+    final usableHeight = screenSize.height - 140;
+    final usableWidth = screenSize.width - 32;
 
-    // Page aspect ratio: 2:3 (portrait) hoặc 3:4 khi landscape
-    final aspectRatio = isLandscape ? 0.75 : 0.66;
+    // Page aspect ratio: 3:4 (giống sách bìa cứng) - width/height
+    const aspectRatio = 0.75;
 
-    double pageWidth = maxWidth / 2;
+    // Spread width = 2 * page width, nên page width = usableWidth / 2
+    double pageWidth = usableWidth / 2;
     double pageHeight = pageWidth / aspectRatio;
 
-    if (pageHeight > maxHeight) {
-      pageHeight = maxHeight;
+    if (pageHeight > usableHeight) {
+      pageHeight = usableHeight;
       pageWidth = pageHeight * aspectRatio;
     }
 

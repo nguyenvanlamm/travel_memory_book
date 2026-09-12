@@ -1,8 +1,15 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../../../core/widgets/loading_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:book_page_flip/book_page_flip.dart';
+import 'package:image/image.dart' as img;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/services/memory_file_store.dart';
 import '../../../models/photo.dart';
@@ -14,7 +21,7 @@ import 'book_pages/book_day_page.dart';
 import 'book_pages/book_memory_page.dart';
 import 'book_pages/book_photo_page.dart';
 import 'book_pages/book_stats_back_cover.dart';
-import 'book_pages/paper_background.dart';
+import 'book_pages/leather_cover.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class RealisticBookViewer extends ConsumerStatefulWidget {
@@ -41,6 +48,9 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
   int _captureEpoch = 0;
   int _currentSpread = 0;
   int _lastTotalSpreads = 0;
+  bool _exporting = false;
+  int _exportDone = 0;
+  List<GlobalKey> _exportKeys = const [];
   bool _audioInitialized = false;
   bool _imagesReady = false;
   bool _showCornerHint = true;
@@ -70,6 +80,89 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
       if (!mounted) return;
     }
     if (mounted) setState(() => _imagesReady = true);
+  }
+
+  // Kích thước logic của 1 trang khi xuất PDF (aspect 0.75 như trên màn hình).
+  static const _exportSize = Size(750, 1000);
+
+  Future<void> _exportPdf() async {
+    if (_exporting) return;
+    setState(() {
+      _exporting = true;
+      _exportDone = 0;
+      _exportKeys = List.generate(
+          _pageWidgets.length, (_) => GlobalKey());
+    });
+    try {
+      // Đợi các trang ẩn paint xong (post-frame, retry nhẹ nếu chưa layout).
+      List<Uint8List>? jpgs;
+      for (var attempt = 0; attempt < 8 && jpgs == null; attempt++) {
+        await WidgetsBinding.instance.endOfFrame;
+        final boundaries = <RenderRepaintBoundary>[];
+        var ready = true;
+        for (final key in _exportKeys) {
+          final obj = key.currentContext?.findRenderObject();
+          if (obj is! RenderRepaintBoundary) {
+            ready = false;
+            break;
+          }
+          boundaries.add(obj);
+        }
+        if (!ready || !mounted) continue;
+        jpgs = [];
+        for (var i = 0; i < boundaries.length; i++) {
+          final page = await boundaries[i].toImage(pixelRatio: 2.0);
+          final data =
+              await page.toByteData(format: ui.ImageByteFormat.png);
+          page.dispose();
+          if (data == null) throw StateError('capture failed');
+          // JPEG nhẹ hơn PNG nhiều với ảnh chụp — đủ nét để in ở q88.
+          final decoded = img.decodePng(data.buffer.asUint8List());
+          if (decoded == null) throw StateError('decode failed');
+          jpgs.add(img.encodeJpg(decoded, quality: 88));
+          // Nhường 1 frame giữa các trang để UI không bị đơ.
+          if (mounted) {
+            setState(() => _exportDone = i + 1);
+            await WidgetsBinding.instance.endOfFrame;
+          }
+        }
+      }
+      if (jpgs == null || jpgs.isEmpty) {
+        throw StateError('Could not capture pages');
+      }
+
+      final doc = pw.Document();
+      for (final jpg in jpgs) {
+        doc.addPage(pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (_) => pw.Center(
+            child: pw.Image(pw.MemoryImage(jpg), fit: pw.BoxFit.contain),
+          ),
+        ));
+        // doc.addPage chạy đồng bộ — nhường event loop để UI mượt.
+        await Future.delayed(Duration.zero);
+      }
+      final safeTitle = widget.trip.title
+          .replaceAll(RegExp(r'[^\w\- ]'), '')
+          .trim()
+          .replaceAll(RegExp(r'\s+'), '_');
+      await Printing.sharePdf(
+          bytes: await doc.save(),
+          filename: '${safeTitle.isEmpty ? 'travel_book' : safeTitle}.pdf');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Export failed: $e')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _exporting = false;
+          _exportDone = 0;
+          _exportKeys = const [];
+        });
+      }
+    }
   }
 
   @override
@@ -170,9 +263,10 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
       widgets.add(const SizedBox.shrink());
     }
     // totalSpreads = pageCount ~/ 2 → số trang lẻ sẽ cắt mất trang cuối.
-    // Pad thêm trang giấy trống (endpaper) để bìa sau luôn hiển thị.
+    // Pad bằng mặt ngoài bìa sau (da trơn) thay vì trang giấy trắng —
+    // trông như cuốn sách khép lại.
     if (widgets.length.isOdd) {
-      widgets.add(const PaperBackground());
+      widgets.add(const LeatherCover(child: SizedBox.expand()));
     }
 
     return widgets;
@@ -305,6 +399,8 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
                     totalSpreads: _lastTotalSpreads,
                     onBack: () =>
                         context.go('/trips/${widget.trip.id}'),
+                    onExport: _exportPdf,
+                    exporting: _exporting,
                   ),
                   Expanded(
                     child: Center(
@@ -356,6 +452,37 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
                   ),
                 ],
                   ),
+                  // Các trang render ẩn dưới cover mờ để rasterise ra PNG
+                  // khi export PDF — occlusion không ngăn paint nên capture
+                  // vẫn hoạt động (cùng kỹ thuật book_page_flip dùng).
+                  if (_exporting)
+                    Positioned.fill(
+                      child: Stack(
+                        children: [
+                          for (var i = 0; i < _pageWidgets.length; i++)
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              width: _exportSize.width,
+                              height: _exportSize.height,
+                              child: RepaintBoundary(
+                                key: _exportKeys[i],
+                                child: _pageWidgets[i],
+                              ),
+                            ),
+                          Positioned.fill(
+                            child: ColoredBox(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surface,
+                              child: LoadingView(
+                                  message:
+                                      'Exporting PDF… $_exportDone/${_pageWidgets.length}'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             );
@@ -371,12 +498,16 @@ class _TopBar extends StatelessWidget {
   final int currentSpread;
   final int totalSpreads;
   final VoidCallback? onBack;
+  final VoidCallback? onExport;
+  final bool exporting;
 
   const _TopBar({
     required this.title,
     required this.currentSpread,
     required this.totalSpreads,
     this.onBack,
+    this.onExport,
+    this.exporting = false,
   });
 
   @override
@@ -412,8 +543,13 @@ class _TopBar extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          IconButton(
+            onPressed: exporting ? null : onExport,
+            icon: const Icon(LucideIcons.download, size: 20),
+            tooltip: 'Download PDF',
+          ),
           SizedBox(
-            width: 80,
+            width: 60,
             child: totalSpreads > 0
                 ? Text(
                     '${currentSpread + 1}/$totalSpreads',

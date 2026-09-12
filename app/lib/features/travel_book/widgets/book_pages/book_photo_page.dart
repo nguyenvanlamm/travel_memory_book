@@ -1,94 +1,120 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/utils/image_helper.dart';
 import '../../../../models/photo.dart';
 import 'paper_background.dart';
 
 class BookPhotoPage extends StatelessWidget {
   final Photo? photo;
   final String? caption;
-  const BookPhotoPage({super.key, this.photo, this.caption});
+  final int? pageNumber;
+  final bool isLeft;
+
+  const BookPhotoPage({
+    super.key,
+    this.photo,
+    this.caption,
+    this.pageNumber,
+    this.isLeft = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final hasCaption = caption != null && caption!.isNotEmpty;
     return PaperBackground(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
-        child: Column(
-          children: [
-            Expanded(
-              flex: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: photo != null &&
-                        photo!.filePath.isNotEmpty &&
-                        File(photo!.filePath).existsSync()
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          File(photo!.filePath),
-                          fit: BoxFit.contain,
-                          width: double.infinity,
-                          errorBuilder: (_, __, ___) =>
-                              _buildPlaceholder(theme),
-                        ),
-                      )
-                    : _buildPlaceholder(theme),
-              ),
-            ),
-            if (caption != null && caption!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(
-                  caption!,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            if (photo != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 8),
-                child: Column(
-                  children: [
-                    if (photo!.latitude != null && photo!.longitude != null)
-                      Text(
-                        '📍 ${photo!.locationName ?? 'GPS location'}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 32, 28, 32),
+            child: Column(
+              children: [
+                // Ảnh trong khung mat trắng kiểu polaroid
+                Expanded(
+                  child: Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.18),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    const SizedBox(height: 2),
-                    Text(
-                      DateFormat('d MMM yyyy · HH:mm').format(photo!.takenAt),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
+                      child: photo != null && appFileExists(photo!.filePath)
+                          ? appImage(
+                              photo!.filePath,
+                              fit: BoxFit.contain,
+                              fallback: _buildPlaceholder(),
+                            )
+                          : _buildPlaceholder(),
                     ),
-                  ],
                 ),
-              ),
-          ],
-        ),
+                const SizedBox(height: 18),
+                // Caption serif italic
+                if (hasCaption)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(
+                      caption!,
+                      style: GoogleFonts.merriweather(
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic,
+                        color: BookInk.ink,
+                        height: 1.4,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                // Dòng meta nhỏ
+                if (photo != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (photo!.latitude != null &&
+                          photo!.longitude != null) ...[
+                        const Icon(Icons.place_outlined,
+                            size: 12, color: BookInk.inkFaint),
+                        const SizedBox(width: 3),
+                        Text(
+                          photo!.locationName ?? 'GPS location',
+                          style: GoogleFonts.inter(
+                              fontSize: 11, color: BookInk.inkFaint),
+                        ),
+                        Text('   ·   ',
+                            style: GoogleFonts.inter(
+                                fontSize: 11, color: BookInk.inkFaint)),
+                      ],
+                      Text(
+                        DateFormat('d MMM yyyy · HH:mm')
+                            .format(photo!.takenAt),
+                        style: GoogleFonts.inter(
+                            fontSize: 11, color: BookInk.inkFaint),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          if (pageNumber != null)
+            BookPageNumber(page: pageNumber!, isLeft: isLeft),
+        ],
       ),
     );
   }
 
-  Widget _buildPlaceholder(ThemeData theme) => Container(
+  Widget _buildPlaceholder() => Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Icon(
-            Icons.image_outlined,
-            size: 64,
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
+        height: double.infinity,
+        color: BookInk.paper,
+        child: const Center(
+          child: Icon(Icons.image_outlined,
+              size: 48, color: BookInk.inkFaint),
         ),
       );
 }

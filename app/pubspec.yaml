@@ -16,11 +16,6 @@ dependencies:
   # Navigation
   go_router: ^15.1.2
 
-  # Local database
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
-  path_provider: ^2.1.2
-
   # Image handling
   image_picker: ^1.1.2
   image: ^4.3.0
@@ -31,10 +26,6 @@ dependencies:
   shared_preferences: ^2.2.3
   google_fonts: ^6.2.1
   uuid: ^4.4.0
-  permission_handler: ^12.0.3
-
-  # In-App Purchase
-  in_app_purchase: ^3.1.13
 
   # Page flip + Audio
   book_page_flip: ^0.1.0
@@ -48,8 +39,6 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
-  build_runner: ^2.4.9
-  isar_generator: ^3.1.0+1
   flutter_launcher_icons: ^0.13.1
 
 flutter:

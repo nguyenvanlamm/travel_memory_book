@@ -26,7 +26,9 @@ class AppTheme {
       onSurface: deepBrown,
       onSurfaceVariant: earth,
     ),
-    scaffoldBackgroundColor: warmWhite,
+    // Transparent so the site's WebBackdrop (gradient + grain + glows)
+    // painted in the router shell shows through every nested Scaffold.
+    scaffoldBackgroundColor: Colors.transparent,
     textTheme: _textTheme(Colors.black87),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
@@ -39,7 +41,7 @@ class AppTheme {
           ),
       iconTheme: IconThemeData(color: deepBrown),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -90,6 +92,16 @@ class AppTheme {
       iconColor: earth,
       textColor: deepBrown,
     ),
+    scrollbarTheme: ScrollbarThemeData(
+      thumbVisibility: WidgetStateProperty.all(true),
+      thickness: WidgetStateProperty.all(8),
+      radius: const Radius.circular(8),
+      thumbColor: WidgetStateProperty.all(earth.withOpacity(0.35)),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
   );
 
   // Dark theme
@@ -107,7 +119,7 @@ class AppTheme {
       onSurface: parchment,
       onSurfaceVariant: sunrise,
     ),
-    scaffoldBackgroundColor: trueBlack,
+    scaffoldBackgroundColor: Colors.transparent,
     textTheme: _textTheme(Colors.white),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
@@ -120,7 +132,7 @@ class AppTheme {
           ),
       iconTheme: IconThemeData(color: parchment),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       color: const Color(0xFF1A1A1A),
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -170,6 +182,16 @@ class AppTheme {
     listTileTheme: const ListTileThemeData(
       iconColor: sunrise,
       textColor: parchment,
+    ),
+    scrollbarTheme: ScrollbarThemeData(
+      thumbVisibility: WidgetStateProperty.all(true),
+      thickness: WidgetStateProperty.all(8),
+      radius: const Radius.circular(8),
+      thumbColor: WidgetStateProperty.all(sunrise.withOpacity(0.35)),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   );
 
@@ -240,7 +262,7 @@ class AppTheme {
         fontSize: 12,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.4,
-        color: baseColor.withValues(alpha: 0.7),
+        color: baseColor.withOpacity(0.7),
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 14,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:io';
+import '../../../core/utils/image_helper.dart';
+import '../../../core/widgets/web_layout.dart';
 import '../../../models/photo.dart';
 import '../../../repositories/photo_repository.dart';
 
@@ -96,115 +97,185 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (_isLoading)
+    if (_isLoading) {
+      return const Scaffold(
+          body: Center(child: CircularProgressIndicator()));
+    }
+    if (_photo == null) {
       return Scaffold(
-          appBar: AppBar(title: const Text('Loading...')),
-          body: const Center(child: CircularProgressIndicator()));
-    if (_photo == null)
-      return Scaffold(
-          appBar: AppBar(title: const Text('Photo Not Found')),
-          body: const Center(child: Text('Photo not found')));
+        body: PageBody(
+          maxWidth: 640,
+          child: Column(children: [
+            PageHeader(
+                title: 'Photo Not Found',
+                onBack: () => context.go('/trips/${widget.tripId}')),
+            const Text('This photo does not exist.'),
+          ]),
+        ),
+      );
+    }
     final photo = _photo!;
-    final hasLocation = photo.latitude != null && photo.longitude != null;
+
     return Scaffold(
-        appBar: AppBar(title: const Text('Photo Details'), actions: [
-          IconButton(
-              icon: const Icon(Icons.edit_outlined),
-              onPressed: () => setState(() => _isEditingCaption = true)),
-          IconButton(
-              icon: const Icon(Icons.delete_outlined, color: Colors.red),
-              onPressed: _deletePhoto)
-        ]),
-        body: _isEditingCaption
-            ? _buildEditView(theme)
-            : _buildView(theme, hasLocation, photo));
-  }
-
-  Widget _buildView(ThemeData theme, bool hasLocation, Photo photo) {
-    return Column(children: [
-      Expanded(
-          child: InteractiveViewer(
-              minScale: 0.5,
-              maxScale: 4,
-              child: photo.filePath.isNotEmpty
-                  ? Image.file(File(photo.filePath),
-                      fit: BoxFit.contain,
-                      width: double.infinity,
-                      errorBuilder: (_, __, ___) => const Center(
-                          child: Icon(Icons.broken_image, size: 64)))
-                  : const Center(child: Icon(Icons.broken_image, size: 64)))),
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            border: Border(
-                top: BorderSide(color: theme.colorScheme.outlineVariant))),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (photo.caption != null && photo.caption!.isNotEmpty) ...[
-                Text('Caption',
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-                const SizedBox(height: 4),
-                Text(photo.caption!, style: theme.textTheme.bodyMedium),
-                const SizedBox(height: 12),
-              ],
-              Row(children: [
-                Icon(Icons.calendar_today_outlined,
-                    size: 16, color: theme.colorScheme.onSurfaceVariant),
-                const SizedBox(width: 8),
-                Text(
-                    '${photo.takenAt.day}/${photo.takenAt.month}/${photo.takenAt.year} ${photo.takenAt.hour.toString().padLeft(2, '0')}:${photo.takenAt.minute.toString().padLeft(2, '0')}',
-                    style: theme.textTheme.bodyMedium),
-              ]),
-              if (hasLocation) ...[
-                const SizedBox(height: 8),
-                Row(children: [
-                  Icon(Icons.location_on_outlined,
-                      size: 16, color: theme.colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: Text(
-                          photo.locationName ??
-                              'GPS: ${photo.latitude!.toStringAsFixed(4)}, ${photo.longitude!.toStringAsFixed(4)}',
-                          style: theme.textTheme.bodyMedium)),
-                ]),
-              ],
-              const SizedBox(height: 16),
-              Divider(),
-              const SizedBox(height: 8),
-              Text('Day ${photo.day} • Sort: ${photo.sortOrder}',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
-            ]),
-      )
-    ]);
-  }
-
-  Widget _buildEditView(ThemeData theme) {
-    return Padding(
-        padding: const EdgeInsets.all(16),
+      body: PageBody(
         child: Column(children: [
-          const Text('Edit Caption',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-          TextField(
-              controller: _captionController,
-              maxLines: 4,
-              decoration: const InputDecoration(hintText: 'Add a caption...'),
-              autofocus: true),
-          const SizedBox(height: 16),
-          Row(children: [
-            Expanded(
-                child: OutlinedButton(
-                    onPressed: () => setState(() => _isEditingCaption = false),
-                    child: const Text('Cancel'))),
-            const SizedBox(width: 12),
-            Expanded(
-                child: FilledButton(
-                    onPressed: _saveCaption, child: const Text('Save')))
-          ])
-        ]));
+          PageHeader(
+            title: 'Photo Details',
+            subtitle: 'Day ${photo.day}',
+            onBack: () => context.go('/trips/${widget.tripId}'),
+            actions: [
+              IconButton(
+                  icon: const Icon(Icons.edit_outlined),
+                  tooltip: 'Edit caption',
+                  onPressed: () =>
+                      setState(() => _isEditingCaption = true)),
+              IconButton(
+                  icon:
+                      const Icon(Icons.delete_outlined, color: Colors.red),
+                  tooltip: 'Delete photo',
+                  onPressed: _deletePhoto),
+            ],
+          ),
+          Expanded(
+            child: LayoutBuilder(builder: (context, constraints) {
+              final wide = constraints.maxWidth >= 860;
+              final imagePane = _buildImagePane(theme, photo);
+              final infoPane = _isEditingCaption
+                  ? _buildEditCard(theme)
+                  : _buildInfoCard(theme, photo);
+              if (wide) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: imagePane),
+                    const SizedBox(width: 24),
+                    SizedBox(width: 320, child: infoPane),
+                  ],
+                );
+              }
+              return Column(children: [
+                Expanded(child: imagePane),
+                const SizedBox(height: 16),
+                infoPane,
+              ]);
+            }),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildImagePane(ThemeData theme, Photo photo) {
+    return Container(
+      height: double.infinity,
+      constraints: const BoxConstraints(minHeight: 320),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InteractiveViewer(
+        minScale: 0.5,
+        maxScale: 4,
+        child: photo.filePath.isNotEmpty
+            ? Center(
+                child: appImage(photo.filePath,
+                    fit: BoxFit.contain,
+                    fallback: const Center(
+                        child: Icon(Icons.broken_image, size: 64))))
+            : const Center(child: Icon(Icons.broken_image, size: 64)),
+      ),
+    );
+  }
+
+  Widget _infoRow(ThemeData theme, IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(children: [
+        Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: 10),
+        Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
+      ]),
+    );
+  }
+
+  Widget _buildInfoCard(ThemeData theme, Photo photo) {
+    final hasLocation = photo.latitude != null && photo.longitude != null;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Details',
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 12),
+            if (photo.caption != null && photo.caption!.isNotEmpty)
+              _infoRow(theme, Icons.notes_outlined, photo.caption!),
+            _infoRow(
+                theme,
+                Icons.calendar_today_outlined,
+                '${photo.takenAt.day}/${photo.takenAt.month}/${photo.takenAt.year} ${photo.takenAt.hour.toString().padLeft(2, '0')}:${photo.takenAt.minute.toString().padLeft(2, '0')}'),
+            if (hasLocation)
+              _infoRow(
+                  theme,
+                  Icons.location_on_outlined,
+                  photo.locationName ??
+                      'GPS: ${photo.latitude!.toStringAsFixed(4)}, ${photo.longitude!.toStringAsFixed(4)}'),
+            _infoRow(theme, Icons.menu_book_outlined,
+                'Day ${photo.day} of the trip'),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                  onPressed: () =>
+                      setState(() => _isEditingCaption = true),
+                  icon: const Icon(Icons.edit_outlined, size: 18),
+                  label: const Text('Edit Caption')),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEditCard(ThemeData theme) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Edit Caption',
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 12),
+            TextField(
+                controller: _captionController,
+                maxLines: 4,
+                decoration:
+                    const InputDecoration(hintText: 'Add a caption...'),
+                autofocus: true),
+            const SizedBox(height: 16),
+            Row(children: [
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () =>
+                          setState(() => _isEditingCaption = false),
+                      child: const Text('Cancel'))),
+              const SizedBox(width: 12),
+              Expanded(
+                  child: FilledButton(
+                      onPressed: _saveCaption,
+                      child: const Text('Save')))
+            ]),
+          ],
+        ),
+      ),
+    );
   }
 }

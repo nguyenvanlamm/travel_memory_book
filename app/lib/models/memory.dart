@@ -1,12 +1,8 @@
-import 'package:isar/isar.dart';
 
-part 'memory.g.dart';
 
-@collection
 class Memory {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index()
   late int tripId;
 
   DateTime? date;
@@ -50,6 +46,6 @@ class Memory {
       locationId: locationId ?? this.locationId,
       createdAt: createdAt,
       updatedAt: DateTime.now(),
-    );
+    )..id = id;
   }
 }

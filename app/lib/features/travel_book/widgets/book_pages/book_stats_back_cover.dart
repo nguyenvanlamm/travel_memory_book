@@ -1,129 +1,153 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../models/photo.dart';
 import '../../../../models/trip.dart';
 import '../../../../models/travel_book.dart';
-import 'paper_background.dart';
+import 'leather_cover.dart';
 
+/// Back cover — same leather + gold material as the front cover.
 class BookStatsBackCover extends StatelessWidget {
   final Trip trip;
   final TravelBook book;
   final List<Photo> photos;
+  final int? pageNumber;
+  final bool isLeft;
 
   const BookStatsBackCover({
     super.key,
     required this.trip,
     required this.book,
     required this.photos,
+    this.pageNumber,
+    this.isLeft = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final photoCount = photos.length;
-    final countries = <String>{trip.country}.where((c) => c.isNotEmpty).length;
     final cities = trip.cities.length;
     final days = trip.durationInDays;
     final withLocation = photos.where((p) => p.hasLocation).length;
+    const gold = LeatherCover.gold;
+    const ivory = LeatherCover.ivory;
 
-    return PaperBackground(
+    return LeatherCover(
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: const EdgeInsets.fromLTRB(34, 40, 34, 38),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
             Text(
-              'End of Journey',
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w300,
-                letterSpacing: 2,
-                color: theme.colorScheme.onSurface,
+              'T H E   E N D',
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                letterSpacing: 4,
+                fontWeight: FontWeight.w500,
+                color: gold.withOpacity(0.85),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 14),
+            const CoverOrnament(),
+            const Spacer(),
+            // Emblem
+            Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: gold.withOpacity(0.7), width: 1.2),
+              ),
+              child: Icon(Icons.auto_stories,
+                  size: 28, color: gold.withOpacity(0.9)),
+            ),
+            const SizedBox(height: 18),
             Text(
               trip.title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: theme.colorScheme.primary,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: ivory,
+                shadows: const [
+                  Shadow(
+                    color: Colors.black54,
+                    blurRadius: 8,
+                    offset: Offset(0, 1),
+                  ),
+                ],
               ),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _StatRow(icon: Icons.calendar_today, label: 'Days', value: days.toString()),
-                    const SizedBox(height: 18),
-                    _StatRow(icon: Icons.photo_library, label: 'Photos', value: photoCount.toString()),
-                    const SizedBox(height: 18),
-                    _StatRow(icon: Icons.location_city, label: 'Cities', value: cities.toString()),
-                    const SizedBox(height: 18),
-                    _StatRow(icon: Icons.public, label: 'Countries', value: countries.toString()),
-                    if (withLocation > 0) ...[
-                      const SizedBox(height: 18),
-                      _StatRow(icon: Icons.place, label: 'Geo-tagged', value: withLocation.toString()),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 6),
             Text(
-              DateFormat('d MMMM yyyy').format(trip.endDate),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              '${trip.formattedDates} · ${trip.country}',
+              style: GoogleFonts.inter(
+                fontSize: 11.5,
+                color: ivory.withOpacity(0.7),
+                letterSpacing: 0.4,
               ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
+            const Spacer(),
+            // Stats table
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _Stat(value: '$days', label: 'days'),
+                _divider(),
+                _Stat(value: '$photoCount', label: 'photos'),
+                _divider(),
+                _Stat(value: '$cities', label: 'places'),
+                if (withLocation > 0) ...[
+                  _divider(),
+                  _Stat(value: '$withLocation', label: 'geo-tagged'),
+                ],
+              ],
+            ),
+            const Spacer(),
             Text(
-              'Made with ❤️ using Travel Memory Book',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                fontStyle: FontStyle.italic,
+              'M A D E   W I T H   L O V E   ·   T R A V E L   M E M O R Y   B O O K',
+              style: GoogleFonts.inter(
+                fontSize: 8,
+                letterSpacing: 2,
+                color: gold.withOpacity(0.55),
               ),
             ),
-            const SizedBox(height: 8),
           ],
         ),
       ),
     );
   }
+
+  static Widget _divider() =>
+      Container(width: 0.8, height: 34, color: LeatherCover.gold.withOpacity(0.35));
 }
 
-class _StatRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
+class _Stat extends StatelessWidget {
   final String value;
-
-  const _StatRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
+  final String label;
+  const _Stat({required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 20, color: theme.colorScheme.primary),
-        const SizedBox(width: 12),
-        Text(
-          label,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-          ),
-        ),
-        const SizedBox(width: 12),
         Text(
           value,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colorScheme.onSurface,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
+            color: LeatherCover.ivory,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label.toUpperCase(),
+          style: GoogleFonts.inter(
+            fontSize: 9,
+            letterSpacing: 1.5,
+            color: LeatherCover.gold.withOpacity(0.8),
           ),
         ),
       ],

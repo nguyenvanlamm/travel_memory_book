@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:exif/exif.dart';
 
 class ExifData {
@@ -15,9 +14,8 @@ class ExifData {
 }
 
 class ExifService {
-  Future<ExifData?> readExif(String filePath) async {
+  Future<ExifData?> readExif(List<int> bytes) async {
     try {
-      final bytes = File(filePath).readAsBytesSync();
       final tags = await readExifFromBytes(bytes);
       if (tags.isEmpty) return null;
 

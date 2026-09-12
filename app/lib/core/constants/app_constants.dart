@@ -2,15 +2,6 @@ class AppConstants {
   static const String appName = 'Travel Memory Book';
   static const String appTagline = 'Your journeys, preserved.';
 
-  // Database
-  static const String dbName = 'travel_memory_book.isar';
-
-  // Storage paths
-  static const String tripsDir = 'trips';
-  static const String photosDir = 'photos';
-  static const String thumbnailsDir = 'thumbnails';
-  static const String coversDir = 'cover';
-
   // Thumbnail
   static const int thumbnailSize = 512;
   static const int thumbnailQuality = 85;

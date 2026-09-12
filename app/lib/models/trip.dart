@@ -1,19 +1,14 @@
-import 'package:isar/isar.dart';
 
-part 'trip.g.dart';
 
-@collection
 class Trip {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index()
   late String title;
 
   late String description;
 
   String? coverPhotoPath;
 
-  @Index()
   late DateTime startDate;
 
   late DateTime endDate;
@@ -22,7 +17,6 @@ class Trip {
 
   late List<String> cities;
 
-  @Index()
   DateTime? createdAt;
 
   DateTime? updatedAt;
@@ -60,7 +54,7 @@ class Trip {
       cities: cities ?? this.cities,
       createdAt: createdAt,
       updatedAt: DateTime.now(),
-    );
+    )..id = id;
   }
 
   int get durationInDays => endDate.difference(startDate).inDays + 1;

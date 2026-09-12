@@ -1,16 +1,14 @@
-import 'package:isar/isar.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/travel_book.dart';
 import '../../models/photo.dart';
 import 'photo_repository.dart';
 import 'memory_repository.dart';
 import 'trip_repository.dart';
-import '../../core/database/isar_provider.dart';
+import '../../core/database/memory_store.dart';
 
 final bookRepositoryProvider = Provider<BookRepository>((ref) {
   return BookRepository(
-    ref.read(isarProvider),
+    MemoryStore.instance,
     ref.read(photoRepositoryProvider),
     ref.read(memoryRepositoryProvider),
     ref.read(tripRepositoryProvider),
@@ -18,18 +16,18 @@ final bookRepositoryProvider = Provider<BookRepository>((ref) {
 });
 
 class BookRepository {
-  final Future<Isar> _isarFuture;
+  final MemoryStore _store;
   final PhotoRepository _photoRepo;
   final MemoryRepository _memoryRepo;
   final TripRepository _tripRepo;
 
-  BookRepository(this._isarFuture, this._photoRepo, this._memoryRepo, this._tripRepo);
-
-  Future<Isar> get _isar => _isarFuture;
+  BookRepository(this._store, this._photoRepo, this._memoryRepo, this._tripRepo);
 
   Future<TravelBook?> getByTrip(int tripId) async {
-    final isar = await _isar;
-    return isar.travelBooks.filter().tripIdEqualTo(tripId).findFirst();
+    for (final b in _store.travelBooks) {
+      if (b.tripId == tripId) return b;
+    }
+    return null;
   }
 
   Future<TravelBook> assemble(int tripId) async {
@@ -102,48 +100,15 @@ class BookRepository {
       pages: pages,
     );
 
-    final isar = await _isar;
-    await isar.writeTxn(() => isar.travelBooks.put(book));
+    book.id = _store.nextId();
+    _store.travelBooks.removeWhere((b) => b.tripId == tripId);
+    _store.travelBooks.add(book);
     return book;
   }
 
   Future<TravelBook> regenerate(int tripId) async {
-    final isar = await _isar;
-    await isar.writeTxn(() => isar.travelBooks.filter().tripIdEqualTo(tripId).deleteAll());
+    _store.travelBooks.removeWhere((b) => b.tripId == tripId);
     return assemble(tripId);
-  }
-
-  /// Check if user can create a new travel book (first one free, then requires purchase)
-  Future<bool> canCreateNewBook() async {
-    final prefs = await SharedPreferences.getInstance();
-    final count = prefs.getInt('travel_books_created_count') ?? 0;
-    final unlocked = prefs.getBool('travel_books_unlocked') ?? false;
-    return count == 0 || unlocked;
-  }
-
-  /// Increment the travel book creation count
-  Future<void> incrementBookCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    final count = (prefs.getInt('travel_books_created_count') ?? 0) + 1;
-    await prefs.setInt('travel_books_created_count', count);
-  }
-
-  /// Get current travel book count
-  Future<int> getTravelBookCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('travel_books_created_count') ?? 0;
-  }
-
-  /// Reset book count (for testing)
-  Future<void> resetBookCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('travel_books_created_count', 0);
-  }
-
-  /// Check if user has unlocked unlimited books
-  Future<bool> isUnlocked() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('travel_books_unlocked') ?? false;
   }
 
   bool _isSameDay(DateTime a, DateTime b) =>

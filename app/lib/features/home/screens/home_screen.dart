@@ -2,29 +2,170 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/widgets/web_layout.dart';
 import '../widgets/trip_card.dart';
 import '../providers/home_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final tripsAsync = ref.watch(homeProvider);
     final notifier = ref.read(homeProvider.notifier);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Travel Memory Book'),
-        actions: [PopupMenuButton<String>(initialValue: notifier.sortBy, onSelected: notifier.setSortBy, itemBuilder: (context) => const [PopupMenuItem(value: 'newest', child: Text('Newest first')), PopupMenuItem(value: 'oldest', child: Text('Oldest first')), PopupMenuItem(value: 'year', child: Text('By year')), PopupMenuItem(value: 'country', child: Text('By country'))], icon: const Icon(Icons.sort), tooltip: 'Sort trips')],
-      ),
       body: tripsAsync.when(
         data: (trips) {
-          if (trips.isEmpty) return EmptyState(icon: Icons.library_books_outlined, title: 'No trips yet', message: 'Start preserving your travel memories by creating your first trip.', actionLabel: 'Create your first trip', onAction: () => context.go('/trips/new'));
-          return RefreshIndicator(onRefresh: notifier.loadTrips, child: GridView.builder(padding: const EdgeInsets.all(16), gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.75, crossAxisSpacing: 16, mainAxisSpacing: 16), itemCount: trips.length, itemBuilder: (context, index) => TripCard(trip: trips[index], onTap: () => context.go('/trips/${trips[index].id}'))));
+          if (trips.isEmpty) {
+            return Center(
+              child: SingleChildScrollView(
+                child: PageBody(
+                  maxWidth: 720,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 48),
+                  child: _HeroEmpty(theme: theme),
+                ),
+              ),
+            );
+          }
+          return PageBody(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(child: _buildHero(theme, trips.length)),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Your Library',
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        PopupMenuButton<String>(
+                          initialValue: notifier.sortBy,
+                          onSelected: notifier.setSortBy,
+                          itemBuilder: (context) => const [
+                            PopupMenuItem(
+                                value: 'newest',
+                                child: Text('Newest first')),
+                            PopupMenuItem(
+                                value: 'oldest',
+                                child: Text('Oldest first')),
+                            PopupMenuItem(
+                                value: 'year', child: Text('By year')),
+                            PopupMenuItem(
+                                value: 'country',
+                                child: Text('By country')),
+                          ],
+                          icon: const Icon(Icons.sort),
+                          tooltip: 'Sort trips',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => TripCard(
+                      trip: trips[index],
+                      onTap: () =>
+                          context.go('/trips/${trips[index].id}'),
+                    ),
+                    childCount: trips.length,
+                  ),
+                  gridDelegate:
+                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 240,
+                    childAspectRatio: 0.72,
+                    crossAxisSpacing: 24,
+                    mainAxisSpacing: 24,
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 48)),
+              ],
+            ),
+          );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => EmptyState(icon: Icons.error_outlined, title: 'Error loading trips', message: error.toString(), actionLabel: 'Retry', onAction: notifier.loadTrips),
+        error: (error, stack) => EmptyState(
+          icon: Icons.error_outlined,
+          title: 'Error loading trips',
+          message: error.toString(),
+          actionLabel: 'Retry',
+          onAction: notifier.loadTrips,
+        ),
       ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: () => context.go('/trips/new'), icon: const Icon(Icons.add), label: const Text('New Trip')),
+    );
+  }
+
+  Widget _buildHero(ThemeData theme, int count) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Turn your trips into books',
+            style: theme.textTheme.displaySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Select your travel photos and flip through them like a real photo book.',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroEmpty extends StatelessWidget {
+  final ThemeData theme;
+  const _HeroEmpty({required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 32),
+        Icon(Icons.auto_stories,
+            size: 80, color: theme.colorScheme.primary.withOpacity(0.6)),
+        const SizedBox(height: 24),
+        Text(
+          'Turn your trips into books',
+          style: theme.textTheme.displaySmall
+              ?.copyWith(fontWeight: FontWeight.w700),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Select your travel photos and flip through them\nlike a real photo book.',
+          style: theme.textTheme.bodyLarge
+              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 40),
+        FilledButton.icon(
+          onPressed: () => context.go('/trips/new'),
+          icon: const Icon(Icons.add),
+          label: const Text('Create your first book'),
+          style: FilledButton.styleFrom(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+            textStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
     );
   }
 }

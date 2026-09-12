@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import '../../../core/utils/image_helper.dart';
 import '../../../models/trip.dart';
 
 class BookThumbnail extends StatefulWidget {
@@ -62,7 +62,7 @@ class _BookThumbnailState extends State<BookThumbnail>
             scale: scale,
             child: Material(
               elevation: _isHovered ? 12 : 6,
-              shadowColor: Colors.black.withValues(alpha: 0.5),
+              shadowColor: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.circular(4),
               child: InkWell(
                 onTap: _onTap,
@@ -176,7 +176,7 @@ class _BookThumbnailState extends State<BookThumbnail>
         ),
         border: Border(
           right: BorderSide(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: Colors.black.withOpacity(0.4),
             width: 1,
           ),
         ),
@@ -195,7 +195,7 @@ class _BookThumbnailState extends State<BookThumbnail>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.white.withValues(alpha: 0.15),
+                    Colors.white.withOpacity(0.15),
                     Colors.transparent,
                   ],
                 ),
@@ -215,12 +215,11 @@ class _BookThumbnailState extends State<BookThumbnail>
       fit: StackFit.expand,
       children: [
         // Ảnh cover hoặc placeholder
-        if (trip.coverPhotoPath != null &&
-            File(trip.coverPhotoPath!).existsSync())
-          Image.file(
-            File(trip.coverPhotoPath!),
+        if (appFileExists(trip.coverPhotoPath))
+          appImage(
+            trip.coverPhotoPath,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => _buildEmptyCover(theme),
+            fallback: _buildEmptyCover(theme),
           )
         else
           _buildEmptyCover(theme),
@@ -233,7 +232,7 @@ class _BookThumbnailState extends State<BookThumbnail>
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withValues(alpha: 0.7),
+                Colors.black.withOpacity(0.7),
               ],
               stops: const [0.5, 1.0],
             ),
@@ -296,7 +295,7 @@ class _BookThumbnailState extends State<BookThumbnail>
                 ]
               : [
                   theme.colorScheme.primaryContainer,
-                  theme.colorScheme.primary.withValues(alpha: 0.3),
+                  theme.colorScheme.primary.withOpacity(0.3),
                 ],
         ),
       ),
@@ -305,7 +304,7 @@ class _BookThumbnailState extends State<BookThumbnail>
           Icons.menu_book,
           size: 48,
           color: (isDark ? Colors.white : theme.colorScheme.primary)
-              .withValues(alpha: 0.5),
+              .withOpacity(0.5),
         ),
       ),
     );
@@ -345,8 +344,8 @@ class _PageEdgesPainter extends CustomPainter {
 
     // 3 đường ngang mờ mô phỏng các lớp giấy
     final lineColor = isDark
-        ? Colors.white.withValues(alpha: 0.15)
-        : Colors.black.withValues(alpha: 0.15);
+        ? Colors.white.withOpacity(0.15)
+        : Colors.black.withOpacity(0.15);
 
     for (int i = 1; i <= 3; i++) {
       final y = size.height * (i / 4);
@@ -366,7 +365,7 @@ class _PageEdgesPainter extends CustomPainter {
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
         colors: [
-          Colors.black.withValues(alpha: isDark ? 0.4 : 0.3),
+          Colors.black.withOpacity(isDark ? 0.4 : 0.3),
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));

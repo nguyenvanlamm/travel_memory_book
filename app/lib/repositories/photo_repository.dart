@@ -1,61 +1,57 @@
-import 'package:isar/isar.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/photo.dart';
-import '../../core/database/isar_provider.dart';
+import '../../core/database/memory_store.dart';
 
 final photoRepositoryProvider = Provider<PhotoRepository>((ref) {
-  return PhotoRepository(ref.read(isarProvider));
+  return PhotoRepository(MemoryStore.instance);
 });
 
 class PhotoRepository {
-  final Future<Isar> _isarFuture;
+  final MemoryStore _store;
 
-  PhotoRepository(this._isarFuture);
-
-  Future<Isar> get _isar => _isarFuture;
+  PhotoRepository(this._store);
 
   Future<Photo> create(Photo photo) async {
-    final isar = await _isar;
-    await isar.writeTxn(() => isar.photos.put(photo));
+    photo.id = _store.nextId();
+    _store.photos.add(photo);
     return photo;
   }
 
   Future<Photo?> getById(int id) async {
-    final isar = await _isar;
-    return isar.photos.get(id);
+    for (final p in _store.photos) {
+      if (p.id == id) return p;
+    }
+    return null;
   }
 
   Future<List<Photo>> getByTrip(int tripId, {bool descending = false}) async {
-    final isar = await _isar;
-    if (descending) {
-      return isar.photos.filter().tripIdEqualTo(tripId).sortByTakenAtDesc().findAll();
-    }
-    return isar.photos.filter().tripIdEqualTo(tripId).sortByTakenAt().findAll();
+    final photos = _store.photos.where((p) => p.tripId == tripId).toList()
+      ..sort((a, b) => descending
+          ? b.takenAt.compareTo(a.takenAt)
+          : a.takenAt.compareTo(b.takenAt));
+    return photos;
   }
 
   Future<List<Photo>> getByDay(int tripId, int day) async {
-    final isar = await _isar;
-    return isar.photos
-        .filter()
-        .tripIdEqualTo(tripId)
-        .dayEqualTo(day)
-        .sortBySortOrder()
-        .findAll();
+    final photos = _store.photos
+        .where((p) => p.tripId == tripId && p.day == day)
+        .toList()
+      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    return photos;
   }
 
   Future<Photo> update(Photo photo) async {
-    final isar = await _isar;
-    await isar.writeTxn(() => isar.photos.put(photo.copyWith()));
-    return photo.copyWith();
+    final updated = photo.copyWith();
+    final i = _store.photos.indexWhere((p) => p.id == updated.id);
+    if (i >= 0) _store.photos[i] = updated;
+    return updated;
   }
 
   Future<void> delete(int id) async {
-    final isar = await _isar;
-    await isar.writeTxn(() => isar.photos.delete(id));
+    _store.photos.removeWhere((p) => p.id == id);
   }
 
   Future<int> countByTrip(int tripId) async {
-    final isar = await _isar;
-    return isar.photos.filter().tripIdEqualTo(tripId).count();
+    return _store.photos.where((p) => p.tripId == tripId).length;
   }
 }

@@ -1,20 +1,14 @@
-import 'package:isar/isar.dart';
 
-part 'photo.g.dart';
 
-@collection
 class Photo {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index()
   late int tripId;
 
-  @Index()
   late String filePath;
 
   late String thumbnailPath;
 
-  @Index()
   late DateTime takenAt;
 
   double? latitude;
@@ -25,7 +19,6 @@ class Photo {
 
   String? caption;
 
-  @Index()
   late int day;
 
   late int sortOrder;
@@ -68,7 +61,7 @@ class Photo {
       caption: caption ?? this.caption,
       day: day ?? this.day,
       sortOrder: sortOrder ?? this.sortOrder,
-    );
+    )..id = id;
   }
 
   bool get hasLocation => latitude != null && longitude != null;

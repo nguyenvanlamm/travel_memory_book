@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/iap/iap_providers.dart';
 import '../../../models/travel_book.dart';
 import '../../../models/photo.dart';
 import '../../../models/trip.dart';
@@ -28,30 +28,34 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
   @override
   void initState() {
     super.initState();
-    // Ép xoay ngang khi đọc sách
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    // Ẩn status bar & navigation bar để có trải nghiệm fullscreen
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.immersiveSticky,
-    );
+    if (!kIsWeb) {
+      // Ép xoay ngang khi đọc sách
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      // Ẩn status bar & navigation bar để có trải nghiệm fullscreen
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.immersiveSticky,
+      );
+    }
     _loadBook();
   }
 
   @override
   void dispose() {
-    // Khôi phục orientation & system UI khi thoát
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-    );
+    if (!kIsWeb) {
+      // Khôi phục orientation & system UI khi thoát
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge,
+      );
+    }
     super.dispose();
   }
 
@@ -66,16 +70,7 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
       _bookExists = _book != null;
 
       if (!_bookExists) {
-        final canCreate = await bookRepo.canCreateNewBook();
-        if (!canCreate) {
-          if (mounted) {
-            setState(() => _isLoading = false);
-            _showPurchaseDialog();
-          }
-          return;
-        }
         _book = await bookRepo.assemble(widget.tripId);
-        await bookRepo.incrementBookCount();
       }
 
       _trip = await tripRepo.getById(widget.tripId);
@@ -89,18 +84,6 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
         );
       }
     }
-  }
-
-  void _showPurchaseDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const _UnlockTravelBooksDialog(),
-    ).then((_) {
-      if (mounted) {
-        _loadBook();
-      }
-    });
   }
 
   @override
@@ -118,106 +101,11 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
       );
     }
 
-    // WillPopScope để nút back trở về trip detail thay vì thoát app
-    return WillPopScope(
-      onWillPop: () async {
-        // Quay về trip detail screen qua Navigator
-        return Navigator.of(context).maybePop();
-      },
-      child: Scaffold(
-        body: RealisticBookViewer(
-          book: _book!,
-          trip: _trip!,
-          photos: _photos,
-        ),
-      ),
-    );
-  }
-}
-
-class _UnlockTravelBooksDialog extends ConsumerWidget {
-  const _UnlockTravelBooksDialog();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final purchaseState = ref.watch(purchaseNotifierProvider);
-    final productAsync = ref.watch(unlockProductProvider);
-
-    return productAsync.when(
-      data: (product) => AlertDialog(
-        title: const Text('Unlock Travel Books'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('You\'ve created your first travel book for free!'),
-            const SizedBox(height: 16),
-            const Text('Create unlimited travel books for a one-time purchase of'),
-            const SizedBox(height: 8),
-            Text(
-              product?.price ?? '\$0.99',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            if (purchaseState.error != null)
-              Text(
-                purchaseState.error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: purchaseState.isLoading ? null : () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: purchaseState.isLoading
-                ? null
-                : () async {
-                    final success = await ref.read(purchaseNotifierProvider.notifier).purchaseUnlockTravelBooks();
-                    if (success && context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  },
-            child: purchaseState.isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Unlock Now'),
-          ),
-        ],
-      ),
-      loading: () => AlertDialog(
-        title: const Text('Unlock Travel Books'),
-        content: const Center(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ),
-      error: (error, stack) => AlertDialog(
-        title: const Text('Unlock Travel Books'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('You\'ve created your first travel book for free!'),
-            const SizedBox(height: 16),
-            const Text('Create unlimited travel books for \$0.99'),
-            const SizedBox(height: 16),
-            Text('Error loading product: $error',
-                style: TextStyle(color: Theme.of(context).colorScheme.error)),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-        ],
+    return Scaffold(
+      body: RealisticBookViewer(
+        book: _book!,
+        trip: _trip!,
+        photos: _photos,
       ),
     );
   }

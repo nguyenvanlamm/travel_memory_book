@@ -1,12 +1,8 @@
-import 'package:isar/isar.dart';
 
-part 'travel_book.g.dart';
 
-@collection
 class TravelBook {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index(unique: true)
   late int tripId;
 
   String? coverPhoto;
@@ -38,11 +34,10 @@ class TravelBook {
       pages: pages ?? this.pages,
       createdAt: createdAt,
       updatedAt: DateTime.now(),
-    );
+    )..id = id;
   }
 }
 
-@embedded
 class BookPage {
   String? type;
   int? dayNumber;

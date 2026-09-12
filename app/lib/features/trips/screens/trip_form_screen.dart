@@ -8,6 +8,7 @@ import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../../../models/trip.dart';
 import '../../../repositories/trip_repository.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class TripFormScreen extends ConsumerStatefulWidget {
   final Trip? trip;
@@ -313,7 +314,7 @@ class _TripFormScreenState extends ConsumerState<TripFormScreen> {
                             onPressed: _isLoading ? null : _submit,
                             isLoading: _isLoading,
                             icon:
-                                isEditing ? Icons.save : Icons.auto_stories),
+                                isEditing ? LucideIcons.save : LucideIcons.bookOpen),
                       ],
                     ),
                   ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class EmptyState extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? illustration;
   final String title;
   final String message;
   final String? actionLabel;
@@ -9,7 +12,8 @@ class EmptyState extends StatelessWidget {
 
   const EmptyState({
     super.key,
-    required this.icon,
+    this.icon,
+    this.illustration,
     required this.title,
     required this.message,
     this.actionLabel,
@@ -25,8 +29,20 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 64, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-            const SizedBox(height: 16),
+            if (illustration != null)
+              SizedBox(
+                height: 200,
+                child: SvgPicture.asset(
+                  illustration!,
+                  fit: BoxFit.contain,
+                  semanticsLabel: title,
+                ),
+              )
+            else
+              Icon(icon ?? LucideIcons.inbox,
+                  size: 64,
+                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
+            const SizedBox(height: 20),
             Text(
               title,
               style: theme.textTheme.headlineSmall?.copyWith(
@@ -46,7 +62,7 @@ class EmptyState extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton.icon(
                 onPressed: onAction,
-                icon: const Icon(Icons.add),
+                icon: const Icon(LucideIcons.plus),
                 label: Text(actionLabel!),
               ),
             ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../models/trip.dart';
 import 'paper_background.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class BookDayPage extends StatelessWidget {
   final Trip trip;
@@ -33,7 +33,7 @@ class BookDayPage extends StatelessWidget {
                   // Label nhỏ letter-spaced
                   Text(
                     'D A Y',
-                    style: GoogleFonts.inter(
+                    style: TextStyle(fontFamily: 'Inter', 
                       fontSize: 13,
                       letterSpacing: 6,
                       fontWeight: FontWeight.w600,
@@ -44,7 +44,7 @@ class BookDayPage extends StatelessWidget {
                   // Số ngày lớn kiểu chapter opener
                   Text(
                     '$dayNumber',
-                    style: GoogleFonts.merriweather(
+                    style: TextStyle(fontFamily: 'Merriweather', 
                       fontSize: 96,
                       fontWeight: FontWeight.w300,
                       color: BookInk.ink,
@@ -56,7 +56,7 @@ class BookDayPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     dateStr,
-                    style: GoogleFonts.merriweather(
+                    style: TextStyle(fontFamily: 'Merriweather', 
                       fontSize: 20,
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.italic,
@@ -70,13 +70,13 @@ class BookDayPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.place_outlined,
+                        const Icon(LucideIcons.mapPin,
                             size: 14, color: BookInk.inkFaint),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(
                             trip.cities.join('  →  '),
-                            style: GoogleFonts.inter(
+                            style: TextStyle(fontFamily: 'Inter', 
                               fontSize: 13,
                               letterSpacing: 0.5,
                               color: BookInk.inkSoft,

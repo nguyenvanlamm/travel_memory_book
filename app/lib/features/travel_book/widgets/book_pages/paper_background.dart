@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Shared ink colors for book pages — fixed parchment palette, independent of
 /// the app light/dark theme (a printed page looks the same either way).
@@ -117,7 +116,7 @@ class BookPageNumber extends StatelessWidget {
       right: isLeft ? null : 18,
       child: Text(
         '$page',
-        style: GoogleFonts.inter(
+        style: TextStyle(fontFamily: 'Inter', 
           fontSize: 11,
           letterSpacing: 0.5,
           color: BookInk.inkFaint,

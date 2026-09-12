@@ -12,6 +12,7 @@ import '../../../core/utils/image_utils.dart';
 import '../../../models/photo.dart';
 import '../../../repositories/photo_repository.dart';
 import '../../../repositories/trip_repository.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class AddPhotosScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -24,6 +25,7 @@ class _AddPhotosScreenState extends ConsumerState<AddPhotosScreen> {
   final ImagePicker _picker = ImagePicker();
   final List<XFile> _selectedImages = [];
   bool _isImporting = false;
+  bool _dropHovered = false;
   double _importProgress = 0;
   int _importedCount = 0;
   String _statusMessage = 'Select photos to import';
@@ -41,24 +43,36 @@ class _AddPhotosScreenState extends ConsumerState<AddPhotosScreen> {
                   subtitle: 'Select photos from your computer to add to this book.',
                   onBack: () => context.go('/trips/${widget.tripId}'),
                 ),
-                InkWell(
-                  onTap: _pickFromGallery,
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    height: 220,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.35),
-                      border: Border.all(color: theme.colorScheme.outlineVariant, width: 1.5),
-                    ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) => setState(() => _dropHovered = true),
+                  onExit: (_) => setState(() => _dropHovered = false),
+                  child: GestureDetector(
+                    onTap: _pickFromGallery,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      height: 220,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: _dropHovered
+                            ? theme.colorScheme.primary.withOpacity(0.06)
+                            : theme.colorScheme.surfaceContainerHighest.withOpacity(0.35),
+                        border: Border.all(
+                          color: _dropHovered
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.outlineVariant,
+                          width: _dropHovered ? 2 : 1.5,
+                        ),
+                      ),
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Icon(Icons.cloud_upload_outlined, size: 48, color: theme.colorScheme.primary),
+                      Icon(LucideIcons.uploadCloud, size: 48, color: theme.colorScheme.primary),
                       const SizedBox(height: 12),
                       Text('Click to select photos', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                       const SizedBox(height: 4),
                       Text('You can select multiple photos at once', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                     ]),
+                    ),
                   ),
                 ),
                 if (_selectedImages.isNotEmpty) ...[
@@ -72,13 +86,13 @@ class _AddPhotosScreenState extends ConsumerState<AddPhotosScreen> {
                     final image = _selectedImages[index];
                     return Container(width: 100, margin: const EdgeInsets.only(right: 8), child: ClipRRect(borderRadius: BorderRadius.circular(10), child: Stack(fit: StackFit.expand, children: [
                       xfileImage(image, fit: BoxFit.cover),
-                      Positioned(top: 4, right: 4, child: InkWell(onTap: () => setState(() => _selectedImages.removeAt(index)), child: Container(padding: const EdgeInsets.all(4), decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle), child: const Icon(Icons.close, size: 14, color: Colors.white)))),
+                      Positioned(top: 4, right: 4, child: InkWell(onTap: () => setState(() => _selectedImages.removeAt(index)), child: Container(padding: const EdgeInsets.all(4), decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle), child: const Icon(LucideIcons.x, size: 14, color: Colors.white)))),
                     ])));
                   })),
                   const SizedBox(height: 24),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: SizedBox(width: 220, child: PrimaryButton(label: 'Continue (${_selectedImages.length})', onPressed: _startImport, icon: Icons.arrow_forward)),
+                    child: SizedBox(width: 220, child: PrimaryButton(label: 'Continue (${_selectedImages.length})', onPressed: _startImport, icon: LucideIcons.arrowRight)),
                   ),
                 ],
               ]),

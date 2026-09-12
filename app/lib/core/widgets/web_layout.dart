@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 /// Top navigation bar shown on every page (except the fullscreen book reader).
 class SiteHeader extends StatelessWidget {
@@ -37,7 +38,7 @@ class SiteHeader extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.auto_stories,
+                        Icon(LucideIcons.bookOpen,
                             color: theme.colorScheme.primary, size: 26),
                         if (!compact) ...[
                           const SizedBox(width: 10),
@@ -56,8 +57,8 @@ class SiteHeader extends StatelessWidget {
                 const Spacer(),
                 _NavItem(
                   label: 'Library',
-                  icon: Icons.library_books_outlined,
-                  activeIcon: Icons.library_books,
+                  icon: LucideIcons.library,
+                  activeIcon: LucideIcons.library,
                   active: location == '/' ||
                       location.startsWith('/trips'),
                   compact: compact,
@@ -65,16 +66,16 @@ class SiteHeader extends StatelessWidget {
                 ),
                 _NavItem(
                   label: 'Profile',
-                  icon: Icons.person_outline,
-                  activeIcon: Icons.person,
+                  icon: LucideIcons.user,
+                  activeIcon: LucideIcons.user,
                   active: location.startsWith('/profile'),
                   compact: compact,
                   onTap: () => context.go('/profile'),
                 ),
                 _NavItem(
                   label: 'Settings',
-                  icon: Icons.settings_outlined,
-                  activeIcon: Icons.settings,
+                  icon: LucideIcons.settings,
+                  activeIcon: LucideIcons.settings,
                   active: location.startsWith('/settings'),
                   compact: compact,
                   onTap: () => context.go('/settings'),
@@ -82,7 +83,7 @@ class SiteHeader extends StatelessWidget {
                 const SizedBox(width: 8),
                 FilledButton.icon(
                   onPressed: () => context.go('/trips/new'),
-                  icon: const Icon(Icons.add, size: 18),
+                  icon: const Icon(LucideIcons.plus, size: 18),
                   label: Text(compact ? 'New' : 'New Book'),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -169,7 +170,7 @@ class WebBackdrop extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: dark
-                    ? const [Color(0xFF181209), Color(0xFF0C0A08)]
+                    ? const [Color(0xFF101A2E), Color(0xFF0B1220)]
                     : const [Color(0xFFFCF8F0), Color(0xFFF1E6CF)],
               ),
             ),
@@ -188,7 +189,7 @@ class WebBackdrop extends StatelessWidget {
             right: -160,
             child: _Glow(
               color: dark
-                  ? const Color(0xFFE8A87C).withOpacity(0.10)
+                  ? const Color(0xFFD4AF37).withOpacity(0.12)
                   : const Color(0xFFE8A87C).withOpacity(0.30),
               size: 620,
             ),
@@ -198,7 +199,7 @@ class WebBackdrop extends StatelessWidget {
             left: -200,
             child: _Glow(
               color: dark
-                  ? const Color(0xFFC38D9E).withOpacity(0.08)
+                  ? const Color(0xFF38BDF8).withOpacity(0.08)
                   : const Color(0xFFC38D9E).withOpacity(0.22),
               size: 640,
             ),
@@ -283,7 +284,7 @@ class PageHeader extends StatelessWidget {
               padding: const EdgeInsets.only(right: 12),
               child: IconButton.filledTonal(
                 onPressed: onBack,
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(LucideIcons.arrowLeft),
                 tooltip: 'Back',
               ),
             ),

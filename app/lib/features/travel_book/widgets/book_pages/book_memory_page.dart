@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'paper_background.dart';
 
 class BookMemoryPage extends StatelessWidget {
@@ -30,7 +29,7 @@ class BookMemoryPage extends StatelessWidget {
                 if (title != null) ...[
                   Text(
                     title!,
-                    style: GoogleFonts.merriweather(
+                    style: TextStyle(fontFamily: 'Merriweather', 
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: BookInk.ink,
@@ -44,7 +43,7 @@ class BookMemoryPage extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Text(
                       content,
-                      style: GoogleFonts.merriweather(
+                      style: TextStyle(fontFamily: 'Merriweather', 
                         fontSize: 14,
                         height: 1.8,
                         color: BookInk.ink,

@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../repositories/trip_repository.dart';
 import '../../../models/trip.dart';
 
-final homeProvider = StateNotifierProvider<HomeNotifier, AsyncValue<List<Trip>>>((ref) {
+final homeProvider =
+    StateNotifierProvider.autoDispose<HomeNotifier, AsyncValue<List<Trip>>>(
+        (ref) {
   return HomeNotifier(ref.read(tripRepositoryProvider));
 });
 

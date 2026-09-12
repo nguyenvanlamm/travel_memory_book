@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/loading_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:book_page_flip/book_page_flip.dart';
@@ -14,6 +15,7 @@ import 'book_pages/book_memory_page.dart';
 import 'book_pages/book_photo_page.dart';
 import 'book_pages/book_stats_back_cover.dart';
 import 'book_pages/paper_background.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class RealisticBookViewer extends ConsumerStatefulWidget {
   final TravelBook book;
@@ -223,7 +225,7 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
       return const Center(child: Text('Book has no pages'));
     }
     if (!_imagesReady) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: LoadingView());
     }
 
     return CallbackShortcuts(
@@ -391,7 +393,7 @@ class _TopBar extends StatelessWidget {
                     context.pop();
                   }
                 },
-            icon: const Icon(Icons.arrow_back, size: 18),
+            icon: const Icon(LucideIcons.arrowLeft, size: 18),
             label: const Text('Back'),
             style: TextButton.styleFrom(
               padding:
@@ -466,7 +468,7 @@ class _BottomBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_left),
+                icon: const Icon(LucideIcons.chevronLeft),
                 onPressed: onPrev,
                 tooltip: 'Previous (←)',
               ),
@@ -479,7 +481,7 @@ class _BottomBar extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.chevron_right),
+                icon: const Icon(LucideIcons.chevronRight),
                 onPressed: onNext,
                 tooltip: 'Next (→)',
               ),
@@ -539,7 +541,7 @@ class _CornerHintState extends State<_CornerHint>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.touch_app, color: Colors.white, size: 16),
+                    Icon(LucideIcons.mousePointerClick, color: Colors.white, size: 16),
                     SizedBox(width: 6),
                     Text(
                       'Drag page corner to flip',

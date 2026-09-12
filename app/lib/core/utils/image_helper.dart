@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/memory_file_store.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 bool _isUrl(String path) =>
     path.startsWith('blob:') ||
@@ -25,7 +26,7 @@ Widget appImage(
   BlendMode? colorBlendMode,
   Widget? fallback,
 }) {
-  Widget fb() => fallback ?? const Icon(Icons.broken_image, size: 64);
+  Widget fb() => fallback ?? const Icon(LucideIcons.imageOff, size: 64);
   if (path == null || path.isEmpty) return fb();
 
   final bytes = MemoryFileStore.read(path);
@@ -73,7 +74,7 @@ Widget xfileImage(
         fit: fit,
         width: width,
         height: height,
-        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 64),
+        errorBuilder: (_, __, ___) => const Icon(LucideIcons.imageOff, size: 64),
       );
     },
   );

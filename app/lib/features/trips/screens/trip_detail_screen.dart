@@ -1,13 +1,16 @@
 import '../../../models/trip.dart';
+import '../../../core/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/utils/image_helper.dart';
+import '../../../core/widgets/hover_scale.dart';
 import '../../../core/widgets/web_layout.dart';
 
 import '../../../models/photo.dart';
 import '../../../repositories/trip_repository.dart';
 import '../../../repositories/photo_repository.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class _StatCard extends StatelessWidget {
   final IconData icon;
@@ -45,9 +48,9 @@ class _PhotoThumbnail extends StatelessWidget {
   const _PhotoThumbnail({required this.photo, required this.onTap});
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return HoverScale(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: 12,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Stack(
@@ -149,7 +152,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
     final theme = Theme.of(context);
     if (_isLoading) {
       return const Scaffold(
-          body: Center(child: CircularProgressIndicator()));
+          body: Center(child: LoadingView()));
     }
     if (_trip == null) {
       return Scaffold(
@@ -181,12 +184,12 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
                 onBack: () => context.go('/'),
                 actions: [
                   IconButton(
-                      icon: const Icon(Icons.edit_outlined),
+                      icon: const Icon(LucideIcons.pencil),
                       tooltip: 'Edit trip',
                       onPressed: () =>
                           context.go('/trips/${trip.id}/edit')),
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
+                    icon: const Icon(LucideIcons.moreVertical),
                     onSelected: (value) {
                       if (value == 'delete') _deleteTrip();
                     },
@@ -195,7 +198,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
                           value: 'delete',
                           child: ListTile(
                               leading:
-                                  Icon(Icons.delete, color: Colors.red),
+                                  Icon(LucideIcons.trash2, color: Colors.red),
                               title: Text('Delete',
                                   style: TextStyle(color: Colors.red))))
                     ],
@@ -209,19 +212,19 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
               child: Row(children: [
                 Expanded(
                     child: _StatCard(
-                        icon: Icons.photo_library_outlined,
+                        icon: LucideIcons.image,
                         label: 'Photos',
                         value: '$photoCount')),
                 const SizedBox(width: 12),
                 Expanded(
                     child: _StatCard(
-                        icon: Icons.location_on_outlined,
+                        icon: LucideIcons.mapPin,
                         label: 'Places',
                         value: '${trip.cities.length}')),
                 const SizedBox(width: 12),
                 Expanded(
                     child: _StatCard(
-                        icon: Icons.calendar_today_outlined,
+                        icon: LucideIcons.calendar,
                         label: 'Days',
                         value: '${trip.durationInDays}')),
               ]),
@@ -232,7 +235,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
                 FilledButton.icon(
                     onPressed: () =>
                         context.go('/trips/${trip.id}/book'),
-                    icon: const Icon(Icons.menu_book_outlined),
+                    icon: const Icon(LucideIcons.bookOpen),
                     label: const Text('Read Book'),
                     style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -242,7 +245,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
                     onPressed: () =>
                         context.go('/trips/${trip.id}/add-photos'),
                     icon: const Icon(
-                        Icons.add_photo_alternate_outlined),
+                        LucideIcons.imagePlus),
                     label: const Text('Add Photos'),
                     style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -267,7 +270,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(children: [
-                          Icon(Icons.photo_library_outlined,
+                          Icon(LucideIcons.image,
                               size: 48,
                               color: theme
                                   .colorScheme.onSurfaceVariant
@@ -285,7 +288,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
                           FilledButton.icon(
                               onPressed: () => context.go(
                                   '/trips/${trip.id}/add-photos'),
-                              icon: const Icon(Icons.add),
+                              icon: const Icon(LucideIcons.plus),
                               label: const Text('Add Photos'))
                         ])))
                 : SliverGrid(
@@ -365,7 +368,7 @@ class _TripDetailScreenState extends ConsumerState<TripDetailScreen> {
   Widget _buildPlaceholder(ThemeData theme) => Container(
       color: theme.colorScheme.surfaceContainerHighest,
       child: Center(
-          child: Icon(Icons.image_outlined,
+          child: Icon(LucideIcons.image,
               size: 64,
               color:
                   theme.colorScheme.onSurfaceVariant.withOpacity(0.5))));

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../../core/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +92,7 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(title: const Text('Loading Book...')),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const Center(child: LoadingView()),
       );
     }
     if (_book == null || _trip == null) {

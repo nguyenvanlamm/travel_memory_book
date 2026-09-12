@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/loading_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../../../repositories/trip_repository.dart';
 import '../../../repositories/photo_repository.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class _StatCard extends StatelessWidget {
   final IconData icon;
@@ -82,7 +84,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: LoadingView())
           : PageBody(
               maxWidth: 760,
               child: ListView(children: [
@@ -96,7 +98,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               radius: 36,
                               backgroundColor:
                                   theme.colorScheme.primaryContainer,
-                              child: Icon(Icons.person,
+                              child: Icon(LucideIcons.user,
                                   size: 36,
                                   color: theme
                                       .colorScheme.onPrimaryContainer)),
@@ -127,25 +129,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Row(children: [
                   Expanded(
                       child: _StatCard(
-                          icon: Icons.library_books_outlined,
+                          icon: LucideIcons.library,
                           label: 'Trips',
                           value: '$_tripCount')),
                   const SizedBox(width: 12),
                   Expanded(
                       child: _StatCard(
-                          icon: Icons.public_outlined,
+                          icon: LucideIcons.globe2,
                           label: 'Countries',
                           value: '$_countryCount')),
                   const SizedBox(width: 12),
                   Expanded(
                       child: _StatCard(
-                          icon: Icons.location_city_outlined,
+                          icon: LucideIcons.building2,
                           label: 'Cities',
                           value: '$_cityCount')),
                   const SizedBox(width: 12),
                   Expanded(
                       child: _StatCard(
-                          icon: Icons.photo_library_outlined,
+                          icon: LucideIcons.image,
                           label: 'Photos',
                           value: '$_photoCount')),
                 ]),
@@ -155,7 +157,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Row(children: [
                   FilledButton.icon(
                       onPressed: () => context.go('/trips/new'),
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(LucideIcons.plus),
                       label: const Text('New Trip'),
                       style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -163,7 +165,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   const SizedBox(width: 12),
                   OutlinedButton.icon(
                       onPressed: () => context.go('/'),
-                      icon: const Icon(Icons.library_books_outlined),
+                      icon: const Icon(LucideIcons.library),
                       label: const Text('View Library'),
                       style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

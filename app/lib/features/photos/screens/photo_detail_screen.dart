@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/loading_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/utils/image_helper.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../../../models/photo.dart';
 import '../../../repositories/photo_repository.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class PhotoDetailScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -99,7 +101,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     final theme = Theme.of(context);
     if (_isLoading) {
       return const Scaffold(
-          body: Center(child: CircularProgressIndicator()));
+          body: Center(child: LoadingView()));
     }
     if (_photo == null) {
       return Scaffold(
@@ -125,13 +127,13 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
             onBack: () => context.go('/trips/${widget.tripId}'),
             actions: [
               IconButton(
-                  icon: const Icon(Icons.edit_outlined),
+                  icon: const Icon(LucideIcons.pencil),
                   tooltip: 'Edit caption',
                   onPressed: () =>
                       setState(() => _isEditingCaption = true)),
               IconButton(
                   icon:
-                      const Icon(Icons.delete_outlined, color: Colors.red),
+                      const Icon(LucideIcons.trash2, color: Colors.red),
                   tooltip: 'Delete photo',
                   onPressed: _deletePhoto),
             ],
@@ -183,8 +185,8 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                 child: appImage(photo.filePath,
                     fit: BoxFit.contain,
                     fallback: const Center(
-                        child: Icon(Icons.broken_image, size: 64))))
-            : const Center(child: Icon(Icons.broken_image, size: 64)),
+                        child: Icon(LucideIcons.imageOff, size: 64))))
+            : const Center(child: Icon(LucideIcons.imageOff, size: 64)),
       ),
     );
   }
@@ -214,18 +216,18 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                     ?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             if (photo.caption != null && photo.caption!.isNotEmpty)
-              _infoRow(theme, Icons.notes_outlined, photo.caption!),
+              _infoRow(theme, LucideIcons.stickyNote, photo.caption!),
             _infoRow(
                 theme,
-                Icons.calendar_today_outlined,
+                LucideIcons.calendar,
                 '${photo.takenAt.day}/${photo.takenAt.month}/${photo.takenAt.year} ${photo.takenAt.hour.toString().padLeft(2, '0')}:${photo.takenAt.minute.toString().padLeft(2, '0')}'),
             if (hasLocation)
               _infoRow(
                   theme,
-                  Icons.location_on_outlined,
+                  LucideIcons.mapPin,
                   photo.locationName ??
                       'GPS: ${photo.latitude!.toStringAsFixed(4)}, ${photo.longitude!.toStringAsFixed(4)}'),
-            _infoRow(theme, Icons.menu_book_outlined,
+            _infoRow(theme, LucideIcons.bookOpen,
                 'Day ${photo.day} of the trip'),
             const SizedBox(height: 12),
             SizedBox(
@@ -233,7 +235,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
               child: OutlinedButton.icon(
                   onPressed: () =>
                       setState(() => _isEditingCaption = true),
-                  icon: const Icon(Icons.edit_outlined, size: 18),
+                  icon: const Icon(LucideIcons.pencil, size: 18),
                   label: const Text('Edit Caption')),
             ),
           ],

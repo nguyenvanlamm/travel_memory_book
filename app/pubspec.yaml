@@ -24,7 +24,6 @@ dependencies:
   # Utils
   intl: ^0.20.2
   shared_preferences: ^2.2.3
-  google_fonts: ^6.2.1
   uuid: ^4.4.0
 
   # Page flip + Audio
@@ -33,6 +32,8 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.8
+  lucide_icons: ^0.257.0
+  flutter_svg: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -43,10 +44,50 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter-regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter-medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter-semibold.ttf
+          weight: 600
+        - asset: assets/fonts/inter-bold.ttf
+          weight: 700
+    - family: Syne
+      fonts:
+        - asset: assets/fonts/syne-semibold.ttf
+          weight: 600
+        - asset: assets/fonts/syne-bold.ttf
+          weight: 700
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/playfair-regular.ttf
+          weight: 400
+        - asset: assets/fonts/playfair-medium.ttf
+          weight: 500
+        - asset: assets/fonts/playfair-semibold.ttf
+          weight: 600
+        - asset: assets/fonts/playfair-bold.ttf
+          weight: 700
+        - asset: assets/fonts/playfair-italic.ttf
+          weight: 500
+          style: italic
+    - family: Merriweather
+      fonts:
+        - asset: assets/fonts/merriweather-regular.ttf
+          weight: 400
+        - asset: assets/fonts/merriweather-bold.ttf
+          weight: 700
+        - asset: assets/fonts/merriweather-italic.ttf
+          weight: 400
+          style: italic
   assets:
     - assets/images/
     - assets/images/book/
     - assets/audio/
+    - assets/illustrations/
 
 flutter_launcher_icons:
   android: "launcher_icon"

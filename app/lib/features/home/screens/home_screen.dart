@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../core/widgets/loading_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../widgets/trip_card.dart';
 import '../providers/home_provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -62,7 +65,7 @@ class HomeScreen extends ConsumerWidget {
                                 value: 'country',
                                 child: Text('By country')),
                           ],
-                          icon: const Icon(Icons.sort),
+                          icon: const Icon(LucideIcons.arrowUpDown),
                           tooltip: 'Sort trips',
                         ),
                       ],
@@ -91,9 +94,9 @@ class HomeScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: LoadingView()),
         error: (error, stack) => EmptyState(
-          icon: Icons.error_outlined,
+          icon: LucideIcons.alertTriangle,
           title: 'Error loading trips',
           message: error.toString(),
           actionLabel: 'Retry',
@@ -136,9 +139,14 @@ class _HeroEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 32),
-        Icon(Icons.auto_stories,
-            size: 80, color: theme.colorScheme.primary.withOpacity(0.6)),
+        SizedBox(
+          height: 260,
+          child: SvgPicture.asset(
+            'assets/illustrations/travelers.svg',
+            fit: BoxFit.contain,
+            semanticsLabel: 'Travel illustration',
+          ),
+        ),
         const SizedBox(height: 24),
         Text(
           'Turn your trips into books',
@@ -156,7 +164,7 @@ class _HeroEmpty extends StatelessWidget {
         const SizedBox(height: 40),
         FilledButton.icon(
           onPressed: () => context.go('/trips/new'),
-          icon: const Icon(Icons.add),
+          icon: const Icon(LucideIcons.plus),
           label: const Text('Create your first book'),
           style: FilledButton.styleFrom(
             padding:

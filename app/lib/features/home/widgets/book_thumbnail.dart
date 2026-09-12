@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/utils/image_helper.dart';
 import '../../../models/trip.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class BookThumbnail extends StatefulWidget {
   final Trip trip;
@@ -301,7 +302,7 @@ class _BookThumbnailState extends State<BookThumbnail>
       ),
       child: Center(
         child: Icon(
-          Icons.menu_book,
+          LucideIcons.bookOpen,
           size: 48,
           color: (isDark ? Colors.white : theme.colorScheme.primary)
               .withOpacity(0.5),

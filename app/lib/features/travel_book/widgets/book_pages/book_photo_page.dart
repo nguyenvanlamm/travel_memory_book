@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/image_helper.dart';
 import '../../../../models/photo.dart';
 import 'paper_background.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class BookPhotoPage extends StatelessWidget {
   final Photo? photo;
@@ -60,7 +60,7 @@ class BookPhotoPage extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Text(
                       caption!,
-                      style: GoogleFonts.merriweather(
+                      style: TextStyle(fontFamily: 'Merriweather', 
                         fontSize: 15,
                         fontStyle: FontStyle.italic,
                         color: BookInk.ink,
@@ -78,22 +78,22 @@ class BookPhotoPage extends StatelessWidget {
                     children: [
                       if (photo!.latitude != null &&
                           photo!.longitude != null) ...[
-                        const Icon(Icons.place_outlined,
+                        const Icon(LucideIcons.mapPin,
                             size: 12, color: BookInk.inkFaint),
                         const SizedBox(width: 3),
                         Text(
                           photo!.locationName ?? 'GPS location',
-                          style: GoogleFonts.inter(
+                          style: TextStyle(fontFamily: 'Inter', 
                               fontSize: 11, color: BookInk.inkFaint),
                         ),
                         Text('   ·   ',
-                            style: GoogleFonts.inter(
+                            style: TextStyle(fontFamily: 'Inter', 
                                 fontSize: 11, color: BookInk.inkFaint)),
                       ],
                       Text(
                         DateFormat('d MMM yyyy · HH:mm')
                             .format(photo!.takenAt),
-                        style: GoogleFonts.inter(
+                        style: TextStyle(fontFamily: 'Inter', 
                             fontSize: 11, color: BookInk.inkFaint),
                       ),
                     ],
@@ -113,7 +113,7 @@ class BookPhotoPage extends StatelessWidget {
         height: double.infinity,
         color: BookInk.paper,
         child: const Center(
-          child: Icon(Icons.image_outlined,
+          child: Icon(LucideIcons.image,
               size: 48, color: BookInk.inkFaint),
         ),
       );

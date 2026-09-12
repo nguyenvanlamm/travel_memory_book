@@ -1,0 +1,1581 @@
+{
+  "generated_at": "2026-09-12 14:12 UTC",
+  "project": "/home/lam/Documents/projects/2026_08_29_travel_memory_book/app",
+  "pubspec": {
+    "found": true,
+    "parser": "pyyaml",
+    "name": "travel_memory_book",
+    "dependencies": [
+      "audioplayers",
+      "book_page_flip",
+      "cupertino_icons",
+      "exif",
+      "flutter",
+      "flutter_riverpod",
+      "go_router",
+      "google_fonts",
+      "image",
+      "image_picker",
+      "intl",
+      "shared_preferences",
+      "uuid"
+    ],
+    "dev_dependencies": [
+      "flutter_launcher_icons",
+      "flutter_lints",
+      "flutter_test"
+    ],
+    "declared_assets": [
+      "assets/images/",
+      "assets/images/book/",
+      "assets/audio/"
+    ],
+    "font_families": [],
+    "font_assets": [],
+    "uses_material": true
+  },
+  "lib": {
+    "dart_files": 44,
+    "icons": [
+      {
+        "name": "Icons.add",
+        "count": 5,
+        "files": [
+          "lib/core/widgets/empty_state.dart",
+          "lib/core/widgets/web_layout.dart",
+          "lib/features/home/screens/home_screen.dart",
+          "lib/features/profile/screens/profile_screen.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.auto_stories",
+        "count": 5,
+        "files": [
+          "lib/core/widgets/web_layout.dart",
+          "lib/features/home/screens/home_screen.dart",
+          "lib/features/travel_book/widgets/book_pages/book_cover_page.dart",
+          "lib/features/travel_book/widgets/book_pages/book_stats_back_cover.dart",
+          "lib/features/trips/screens/trip_form_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.broken_image",
+        "count": 4,
+        "files": [
+          "lib/core/utils/image_helper.dart",
+          "lib/features/photos/screens/photo_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.library_books_outlined",
+        "count": 3,
+        "files": [
+          "lib/core/widgets/web_layout.dart",
+          "lib/features/profile/screens/profile_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.edit_outlined",
+        "count": 3,
+        "files": [
+          "lib/features/photos/screens/photo_detail_screen.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.photo_library_outlined",
+        "count": 3,
+        "files": [
+          "lib/features/profile/screens/profile_screen.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.person",
+        "count": 2,
+        "files": [
+          "lib/core/widgets/web_layout.dart",
+          "lib/features/profile/screens/profile_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.arrow_back",
+        "count": 2,
+        "files": [
+          "lib/core/widgets/web_layout.dart",
+          "lib/features/travel_book/widgets/realistic_book_viewer.dart"
+        ]
+      },
+      {
+        "name": "Icons.calendar_today_outlined",
+        "count": 2,
+        "files": [
+          "lib/features/photos/screens/photo_detail_screen.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.location_on_outlined",
+        "count": 2,
+        "files": [
+          "lib/features/photos/screens/photo_detail_screen.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.menu_book_outlined",
+        "count": 2,
+        "files": [
+          "lib/features/photos/screens/photo_detail_screen.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.place_outlined",
+        "count": 2,
+        "files": [
+          "lib/features/travel_book/widgets/book_pages/book_day_page.dart",
+          "lib/features/travel_book/widgets/book_pages/book_photo_page.dart"
+        ]
+      },
+      {
+        "name": "Icons.image_outlined",
+        "count": 2,
+        "files": [
+          "lib/features/travel_book/widgets/book_pages/book_photo_page.dart",
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.library_books",
+        "count": 1,
+        "files": [
+          "lib/core/widgets/web_layout.dart"
+        ]
+      },
+      {
+        "name": "Icons.person_outline",
+        "count": 1,
+        "files": [
+          "lib/core/widgets/web_layout.dart"
+        ]
+      },
+      {
+        "name": "Icons.settings_outlined",
+        "count": 1,
+        "files": [
+          "lib/core/widgets/web_layout.dart"
+        ]
+      },
+      {
+        "name": "Icons.settings",
+        "count": 1,
+        "files": [
+          "lib/core/widgets/web_layout.dart"
+        ]
+      },
+      {
+        "name": "Icons.sort",
+        "count": 1,
+        "files": [
+          "lib/features/home/screens/home_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.error_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/home/screens/home_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.menu_book",
+        "count": 1,
+        "files": [
+          "lib/features/home/widgets/book_thumbnail.dart"
+        ]
+      },
+      {
+        "name": "Icons.cloud_upload_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/photos/screens/add_photos_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.close",
+        "count": 1,
+        "files": [
+          "lib/features/photos/screens/add_photos_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.arrow_forward",
+        "count": 1,
+        "files": [
+          "lib/features/photos/screens/add_photos_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.delete_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/photos/screens/photo_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.notes_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/photos/screens/photo_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.public_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/profile/screens/profile_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.location_city_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/profile/screens/profile_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.chevron_left",
+        "count": 1,
+        "files": [
+          "lib/features/travel_book/widgets/realistic_book_viewer.dart"
+        ]
+      },
+      {
+        "name": "Icons.chevron_right",
+        "count": 1,
+        "files": [
+          "lib/features/travel_book/widgets/realistic_book_viewer.dart"
+        ]
+      },
+      {
+        "name": "Icons.touch_app",
+        "count": 1,
+        "files": [
+          "lib/features/travel_book/widgets/realistic_book_viewer.dart"
+        ]
+      },
+      {
+        "name": "Icons.more_vert",
+        "count": 1,
+        "files": [
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.delete",
+        "count": 1,
+        "files": [
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.add_photo_alternate_outlined",
+        "count": 1,
+        "files": [
+          "lib/features/trips/screens/trip_detail_screen.dart"
+        ]
+      },
+      {
+        "name": "Icons.save",
+        "count": 1,
+        "files": [
+          "lib/features/trips/screens/trip_form_screen.dart"
+        ]
+      }
+    ],
+    "icon_total": 58,
+    "icon_distinct": 34,
+    "colors": [
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 6,
+        "value": "0xFF3E2723",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 7,
+        "value": "0xFF5D4037",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 8,
+        "value": "0xFFE8A87C",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 9,
+        "value": "0xFFC38D9E",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 10,
+        "value": "0xFFF4E4C1",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 11,
+        "value": "0xFFFAF7F2",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 12,
+        "value": "0xFF0A0A0A",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 116,
+        "value": "0xFF1A1A1A",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 136,
+        "value": "0xFF1A1A1A",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 157,
+        "value": "0xFF1A1A1A",
+        "kind": "literal",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 24,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 25,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 31,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 32,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 34,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 38,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 45,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 53,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 55,
+        "value": "Colors.grey.shade500",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 61,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 84,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 122,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 123,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 125,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 129,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 140,
+        "value": "Colors.grey.shade800",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 146,
+        "value": "Colors.grey.shade500",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 164,
+        "value": "Colors.grey.shade800",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 181,
+        "value": "Colors.grey.shade800",
+        "kind": "named",
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/utils/image_helper.dart",
+        "line": 69,
+        "value": "0x11000000",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 172,
+        "value": "0xFF181209",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 172,
+        "value": "0xFF0C0A08",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 173,
+        "value": "0xFFFCF8F0",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 173,
+        "value": "0xFFF1E6CF",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 191,
+        "value": "0xFFE8A87C",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 192,
+        "value": "0xFFE8A87C",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 201,
+        "value": "0xFFC38D9E",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 202,
+        "value": "0xFFC38D9E",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 143,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 167,
+        "value": "0xFF0F0A06",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 167,
+        "value": "0xFF2A1F18",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 168,
+        "value": "0xFF1A1108",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 168,
+        "value": "0xFF3E2723",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 293,
+        "value": "0xFF2A2520",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 294,
+        "value": "0xFF1A1714",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 322,
+        "value": "0xFFF4E4C1",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 323,
+        "value": "0xFF3A3530",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 65,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 179,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 198,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 199,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 234,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 235,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 254,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 258,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 271,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 306,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 347,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 348,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 368,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/widgets/book_thumbnail.dart",
+        "line": 369,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/photos/screens/add_photos_screen.dart",
+        "line": 75,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/photos/screens/add_photos_screen.dart",
+        "line": 75,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/photos/screens/photo_detail_screen.dart",
+        "line": 86,
+        "value": "Colors.red",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/photos/screens/photo_detail_screen.dart",
+        "line": 134,
+        "value": "Colors.red",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/book_cover_page.dart",
+        "line": 48,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/book_cover_page.dart",
+        "line": 83,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/book_photo_page.dart",
+        "line": 37,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/book_photo_page.dart",
+        "line": 41,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/book_stats_back_cover.dart",
+        "line": 71,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 9,
+        "value": "0xFFD4B98C",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 10,
+        "value": "0xFFF5EBD7",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 23,
+        "value": "0xFF4E3A2B",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 24,
+        "value": "0xFF37271B",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 25,
+        "value": "0xFF241811",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 46,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 47,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 57,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "line": 58,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 7,
+        "value": "0xFF4A3428",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 8,
+        "value": "0xB34A3428",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 9,
+        "value": "0x804A3428",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 10,
+        "value": "0xFF8D6E63",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 11,
+        "value": "0xFFF8F0DC",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 71,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 72,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 87,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "line": 88,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 263,
+        "value": "0xFF16110D",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 263,
+        "value": "0xFF0A0A0A",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 264,
+        "value": "0xFFEFE7D8",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 264,
+        "value": "0xFFFAF7F2",
+        "kind": "literal",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 289,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 290,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 460,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 532,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 542,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 546,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 58,
+        "value": "Colors.grey.shade200",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 66,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 70,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 138,
+        "value": "Colors.red",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 198,
+        "value": "Colors.red",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 200,
+        "value": "Colors.red",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 333,
+        "value": "Colors.transparent",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 334,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 346,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 350,
+        "value": "Colors.black",
+        "kind": "named",
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 357,
+        "value": "Colors.white",
+        "kind": "named",
+        "in_theme": false
+      }
+    ],
+    "colors_outside_theme": 80,
+    "textstyles": [
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 87,
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/theme/app_theme.dart",
+        "line": 178,
+        "in_theme": true
+      },
+      {
+        "file": "lib/core/widgets/web_layout.dart",
+        "line": 135,
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/home/screens/home_screen.dart",
+        "line": 164,
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 546,
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 69,
+        "in_theme": false
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 200,
+        "in_theme": false
+      }
+    ],
+    "textstyles_outside_theme": 5,
+    "progress_indicators": [
+      {
+        "file": "lib/core/widgets/primary_button.dart",
+        "line": 36,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/core/widgets/progress_overlay.dart",
+        "line": 30,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/core/widgets/progress_overlay.dart",
+        "line": 51,
+        "widget": "LinearProgressIndicator"
+      },
+      {
+        "file": "lib/features/home/screens/home_screen.dart",
+        "line": 94,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/features/photos/screens/photo_detail_screen.dart",
+        "line": 102,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/features/profile/screens/profile_screen.dart",
+        "line": 85,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/features/travel_book/screens/book_viewer_screen.dart",
+        "line": 94,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/features/travel_book/widgets/realistic_book_viewer.dart",
+        "line": 226,
+        "widget": "CircularProgressIndicator"
+      },
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "line": 152,
+        "widget": "CircularProgressIndicator"
+      }
+    ],
+    "asset_refs": {
+      "assets/images/book/lined-paper.png": [
+        "lib/features/travel_book/widgets/book_pages/paper_background.dart"
+      ],
+      "assets/images/book/paper-texture.png": [
+        "lib/core/widgets/web_layout.dart",
+        "lib/features/travel_book/widgets/book_pages/leather_cover.dart",
+        "lib/features/travel_book/widgets/book_pages/paper_background.dart",
+        "lib/features/travel_book/widgets/realistic_book_viewer.dart"
+      ]
+    },
+    "signals": {
+      "material": 1,
+      "dark_theme": 1,
+      "theme_mode": 2,
+      "material3": 1,
+      "google_fonts": 7,
+      "tooltip": 5,
+      "hero": 1
+    },
+    "per_file": {
+      "lib/app.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/constants/app_constants.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/database/memory_store.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/providers/theme_mode_provider.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/router/app_router.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/services/exif_service.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/services/memory_file_store.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/theme/app_theme.dart": {
+        "colors": 29,
+        "textstyles": 2,
+        "padding_sites": 18
+      },
+      "lib/core/utils/image_helper.dart": {
+        "icons": 2,
+        "colors": 1,
+        "padding_sites": 0
+      },
+      "lib/core/utils/image_utils.dart": {
+        "padding_sites": 0
+      },
+      "lib/core/widgets/empty_state.dart": {
+        "icons": 1,
+        "padding_sites": 4
+      },
+      "lib/core/widgets/primary_button.dart": {
+        "padding_sites": 4
+      },
+      "lib/core/widgets/progress_overlay.dart": {
+        "padding_sites": 7
+      },
+      "lib/core/widgets/section_header.dart": {
+        "padding_sites": 3
+      },
+      "lib/core/widgets/web_layout.dart": {
+        "icons": 9,
+        "colors": 9,
+        "textstyles": 1,
+        "padding_sites": 16
+      },
+      "lib/features/home/providers/home_provider.dart": {
+        "padding_sites": 0
+      },
+      "lib/features/home/screens/home_screen.dart": {
+        "icons": 4,
+        "textstyles": 1,
+        "padding_sites": 10
+      },
+      "lib/features/home/widgets/book_thumbnail.dart": {
+        "icons": 1,
+        "colors": 22,
+        "padding_sites": 5
+      },
+      "lib/features/home/widgets/trip_card.dart": {
+        "padding_sites": 0
+      },
+      "lib/features/photos/screens/add_photos_screen.dart": {
+        "icons": 3,
+        "colors": 2,
+        "padding_sites": 12
+      },
+      "lib/features/photos/screens/photo_detail_screen.dart": {
+        "icons": 9,
+        "colors": 2,
+        "padding_sites": 14
+      },
+      "lib/features/profile/screens/profile_screen.dart": {
+        "icons": 7,
+        "padding_sites": 20
+      },
+      "lib/features/settings/screens/settings_screen.dart": {
+        "padding_sites": 7
+      },
+      "lib/features/travel_book/screens/book_viewer_screen.dart": {
+        "padding_sites": 0
+      },
+      "lib/features/travel_book/services/page_flip_audio_service.dart": {
+        "padding_sites": 0
+      },
+      "lib/features/travel_book/widgets/book_pages/book_cover_page.dart": {
+        "icons": 1,
+        "colors": 2,
+        "padding_sites": 7
+      },
+      "lib/features/travel_book/widgets/book_pages/book_day_page.dart": {
+        "icons": 1,
+        "padding_sites": 6
+      },
+      "lib/features/travel_book/widgets/book_pages/book_memory_page.dart": {
+        "padding_sites": 3
+      },
+      "lib/features/travel_book/widgets/book_pages/book_photo_page.dart": {
+        "icons": 2,
+        "colors": 2,
+        "padding_sites": 6
+      },
+      "lib/features/travel_book/widgets/book_pages/book_stats_back_cover.dart": {
+        "icons": 1,
+        "colors": 1,
+        "padding_sites": 5
+      },
+      "lib/features/travel_book/widgets/book_pages/leather_cover.dart": {
+        "colors": 9,
+        "padding_sites": 5
+      },
+      "lib/features/travel_book/widgets/book_pages/paper_background.dart": {
+        "colors": 9,
+        "padding_sites": 4
+      },
+      "lib/features/travel_book/widgets/realistic_book_viewer.dart": {
+        "icons": 4,
+        "colors": 10,
+        "textstyles": 1,
+        "padding_sites": 16
+      },
+      "lib/features/trips/screens/trip_detail_screen.dart": {
+        "icons": 11,
+        "colors": 11,
+        "textstyles": 2,
+        "padding_sites": 25
+      },
+      "lib/features/trips/screens/trip_form_screen.dart": {
+        "icons": 2,
+        "padding_sites": 16
+      },
+      "lib/main.dart": {
+        "padding_sites": 0
+      },
+      "lib/models/memory.dart": {
+        "padding_sites": 0
+      },
+      "lib/models/photo.dart": {
+        "padding_sites": 0
+      },
+      "lib/models/travel_book.dart": {
+        "padding_sites": 0
+      },
+      "lib/models/trip.dart": {
+        "padding_sites": 0
+      },
+      "lib/repositories/book_repository.dart": {
+        "padding_sites": 0
+      },
+      "lib/repositories/memory_repository.dart": {
+        "padding_sites": 0
+      },
+      "lib/repositories/photo_repository.dart": {
+        "padding_sites": 0
+      },
+      "lib/repositories/trip_repository.dart": {
+        "padding_sites": 0
+      }
+    },
+    "priority_screens": [
+      {
+        "file": "lib/features/trips/screens/trip_detail_screen.dart",
+        "score": 84,
+        "icons": 11,
+        "colors": 11,
+        "textstyles": 2,
+        "padding_sites": 25
+      },
+      {
+        "file": "lib/features/photos/screens/photo_detail_screen.dart",
+        "score": 38,
+        "icons": 9,
+        "colors": 2,
+        "padding_sites": 14
+      },
+      {
+        "file": "lib/features/profile/screens/profile_screen.dart",
+        "score": 34,
+        "icons": 7,
+        "padding_sites": 20
+      },
+      {
+        "file": "lib/features/photos/screens/add_photos_screen.dart",
+        "score": 24,
+        "icons": 3,
+        "colors": 2,
+        "padding_sites": 12
+      },
+      {
+        "file": "lib/features/home/screens/home_screen.dart",
+        "score": 20,
+        "icons": 4,
+        "textstyles": 1,
+        "padding_sites": 10
+      },
+      {
+        "file": "lib/features/trips/screens/trip_form_screen.dart",
+        "score": 20,
+        "icons": 2,
+        "padding_sites": 16
+      },
+      {
+        "file": "lib/core/utils/image_helper.dart",
+        "score": 7,
+        "icons": 2,
+        "colors": 1,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/features/settings/screens/settings_screen.dart",
+        "score": 7,
+        "padding_sites": 7
+      },
+      {
+        "file": "lib/app.dart",
+        "score": 0,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/core/constants/app_constants.dart",
+        "score": 0,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/core/database/memory_store.dart",
+        "score": 0,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/core/providers/theme_mode_provider.dart",
+        "score": 0,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/core/router/app_router.dart",
+        "score": 0,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/core/services/exif_service.dart",
+        "score": 0,
+        "padding_sites": 0
+      },
+      {
+        "file": "lib/core/services/memory_file_store.dart",
+        "score": 0,
+        "padding_sites": 0
+      }
+    ]
+  },
+  "assets": {
+    "root_exists": true,
+    "files": [
+      {
+        "path": "assets/audio/page-flip-soft.mp3",
+        "bytes": 3177,
+        "ext": ".mp3",
+        "kind": "audio",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/audio/page-flip-soft.wav",
+        "bytes": 13274,
+        "ext": ".wav",
+        "kind": "audio",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/images/book/edge-shadow-left.png",
+        "bytes": 695,
+        "ext": ".png",
+        "kind": "image",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/images/book/edge-shadow-right.png",
+        "bytes": 690,
+        "ext": ".png",
+        "kind": "image",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/images/book/lined-paper.png",
+        "bytes": 3297,
+        "ext": ".png",
+        "kind": "image",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/images/book/paper-texture.png",
+        "bytes": 180601,
+        "ext": ".png",
+        "kind": "image",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/images/logo-icon.svg",
+        "bytes": 1637,
+        "ext": ".svg",
+        "kind": "vector",
+        "declared": true,
+        "heavy": false
+      },
+      {
+        "path": "assets/images/logo-mark.svg",
+        "bytes": 1420,
+        "ext": ".svg",
+        "kind": "vector",
+        "declared": true,
+        "heavy": false
+      }
+    ],
+    "count": 8,
+    "total_bytes": 204791,
+    "by_kind": {
+      "audio": 2,
+      "image": 4,
+      "vector": 2
+    },
+    "bytes_by_kind": {
+      "audio": 16451,
+      "image": 185283,
+      "vector": 3057
+    },
+    "orphans": [],
+    "declared_missing": [],
+    "heavy": [],
+    "over_budget": false
+  },
+  "derived": {
+    "is_game": true,
+    "app_type": "flame_game",
+    "ui_framework": "material",
+    "state_management": [
+      "flutter_riverpod"
+    ],
+    "ui_asset_packages": [
+      "google_fonts"
+    ],
+    "game_packages": [
+      "audioplayers"
+    ],
+    "has_theme_dir": true,
+    "findings": [
+      {
+        "level": "high",
+        "code": "HARDCODED_COLORS",
+        "text": "80 hardcoded colors outside lib/theme/."
+      },
+      {
+        "level": "high",
+        "code": "INLINE_TEXTSTYLE",
+        "text": "5 inline TextStyle() outside lib/theme/."
+      },
+      {
+        "level": "med",
+        "code": "RUNTIME_FONT",
+        "text": "google_fonts is used without bundled font files \u2014 fonts download at runtime (FOUT + offline break)."
+      },
+      {
+        "level": "med",
+        "code": "DEFAULT_ICONS",
+        "text": "34 distinct default Material/Cupertino icons \u2014 no custom icon set."
+      },
+      {
+        "level": "low",
+        "code": "PLAIN_LOADER",
+        "text": "9 plain ProgressIndicator(s) \u2014 no branded loading state."
+      },
+      {
+        "level": "low",
+        "code": "NO_HAPTICS",
+        "text": "No HapticFeedback calls \u2014 buttons have no physical response."
+      },
+      {
+        "level": "low",
+        "code": "NO_ANIMATION",
+        "text": "No animation package (rive / lottie / flutter_animate)."
+      },
+      {
+        "level": "low",
+        "code": "NO_WEBP",
+        "text": "4 PNG(s) and no WebP \u2014 typically 25\u201335% of image bytes are wasted."
+      },
+      {
+        "level": "med",
+        "code": "NO_DENSITY_BUCKETS",
+        "text": "No 2.0x/3.0x density buckets \u2014 raster images will be resampled on most phones."
+      }
+    ]
+  },
+  "thresholds": {
+    "heavy_file_bytes": 512000,
+    "heavy_audio_bytes": 1048576,
+    "bundle_warn_bytes": 31457280
+  }
+}

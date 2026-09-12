@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/utils/image_helper.dart';
 import '../../../../models/trip.dart';
 import '../../../../models/travel_book.dart';
 import 'leather_cover.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 /// Premium hard-cover look: dark leather with grain + sheen, a gold
 /// double frame, an optional "photo plate" (like a print pasted onto
@@ -26,7 +26,7 @@ class BookCoverPage extends StatelessWidget {
           children: [
             Text(
               'A  T R A V E L  M E M O R Y',
-              style: GoogleFonts.inter(
+              style: TextStyle(fontFamily: 'Inter', 
                 fontSize: 10,
                 letterSpacing: 3,
                 color: gold.withOpacity(0.85),
@@ -65,14 +65,14 @@ class BookCoverPage extends StatelessWidget {
                   border:
                       Border.all(color: gold.withOpacity(0.7), width: 1.2),
                 ),
-                child: Icon(Icons.auto_stories,
+                child: Icon(LucideIcons.bookOpen,
                     size: 30, color: gold.withOpacity(0.9)),
               ),
             const SizedBox(height: 24),
             // Tựa sách
             Text(
               trip.title,
-              style: GoogleFonts.playfairDisplay(
+              style: TextStyle(fontFamily: 'Playfair Display', 
                 fontSize: 32,
                 color: ivory,
                 fontWeight: FontWeight.w600,
@@ -96,7 +96,7 @@ class BookCoverPage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   trip.cities.join('  ·  '),
-                  style: GoogleFonts.inter(
+                  style: TextStyle(fontFamily: 'Inter', 
                     fontSize: 13,
                     color: ivory.withOpacity(0.8),
                     letterSpacing: 0.5,
@@ -108,7 +108,7 @@ class BookCoverPage extends StatelessWidget {
               ),
             Text(
               trip.country,
-              style: GoogleFonts.playfairDisplay(
+              style: TextStyle(fontFamily: 'Playfair Display', 
                 fontSize: 17,
                 color: ivory,
                 fontWeight: FontWeight.w500,
@@ -122,7 +122,7 @@ class BookCoverPage extends StatelessWidget {
             // Năm + imprint
             Text(
               trip.startDate.year.toString(),
-              style: GoogleFonts.playfairDisplay(
+              style: TextStyle(fontFamily: 'Playfair Display', 
                 fontSize: 24,
                 color: gold,
                 fontWeight: FontWeight.w400,
@@ -132,7 +132,7 @@ class BookCoverPage extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               'T R A V E L   M E M O R Y   B O O K',
-              style: GoogleFonts.inter(
+              style: TextStyle(fontFamily: 'Inter', 
                 fontSize: 8.5,
                 letterSpacing: 2.5,
                 color: gold.withOpacity(0.55),

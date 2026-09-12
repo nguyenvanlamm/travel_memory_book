@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+/// Design tokens (spacing + radius) shared across the UI.
+class AppSpacing {
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 16;
+  static const double lg = 24;
+  static const double xl = 32;
+  static const double xxl = 48;
+}
+
+class AppRadius {
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 20;
+  static const double pill = 999;
+}
 
 class AppTheme {
-  // Color palette
+  // Warm palette (kept from the journal identity)
   static const Color deepBrown = Color(0xFF3E2723);
   static const Color earth = Color(0xFF5D4037);
   static const Color sunrise = Color(0xFFE8A87C);
@@ -11,10 +28,24 @@ class AppTheme {
   static const Color warmWhite = Color(0xFFFAF7F2);
   static const Color trueBlack = Color(0xFF0A0A0A);
 
-  // Light theme
+  // Dark-premium palette — slate surfaces + gold accent
+  static const Color gold = Color(0xFFD4AF37);
+  static const Color slate950 = Color(0xFF0B1220);
+  static const Color slate900 = Color(0xFF0F172A);
+  static const Color slate800 = Color(0xFF1E293B);
+  static const Color slate700 = Color(0xFF334155);
+  static const Color slate400 = Color(0xFF94A3B8);
+  static const Color slate200 = Color(0xFFE2E8F0);
+
+  // Bundled font families (assets/fonts)
+  static const String fontBody = 'Inter';
+  static const String fontDisplay = 'Syne';
+
+  // Light theme — keeps the warm parchment identity
   static final ThemeData light = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
+    fontFamily: fontBody,
     colorScheme: const ColorScheme.light(
       primary: deepBrown,
       secondary: earth,
@@ -25,28 +56,29 @@ class AppTheme {
       onSecondary: Colors.white,
       onSurface: deepBrown,
       onSurfaceVariant: earth,
+      outlineVariant: Color(0xFFE7DCC8),
     ),
     // Transparent so the site's WebBackdrop (gradient + grain + glows)
     // painted in the router shell shows through every nested Scaffold.
     scaffoldBackgroundColor: Colors.transparent,
-    textTheme: _textTheme(Colors.black87),
+    textTheme: _textTheme(const Color(0xFF2B211B)),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
-      titleTextStyle: _textTheme(Colors.black87).headlineSmall?.copyWith(
+      titleTextStyle: _textTheme(const Color(0xFF2B211B)).headlineSmall?.copyWith(
             fontWeight: FontWeight.w700,
             color: deepBrown,
           ),
-      iconTheme: IconThemeData(color: deepBrown),
+      iconTheme: const IconThemeData(color: deepBrown),
     ),
     cardTheme: CardTheme(
       color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: parchment),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        side: const BorderSide(color: Color(0xFFE7DCC8)),
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -56,25 +88,24 @@ class AppTheme {
       type: BottomNavigationBarType.fixed,
       elevation: 8,
     ),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: deepBrown,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: parchment,
+      fillColor: const Color(0xFFFBF6EA),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: Color(0xFFE7DCC8)),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: parchment),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: Color(0xFFE7DCC8)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: deepBrown, width: 2),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: deepBrown, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
@@ -83,11 +114,13 @@ class AppTheme {
         backgroundColor: deepBrown,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md)),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
-    dividerTheme: DividerThemeData(color: parchment, thickness: 1),
+    dividerTheme:
+        const DividerThemeData(color: Color(0xFFE7DCC8), thickness: 1),
     listTileTheme: const ListTileThemeData(
       iconColor: earth,
       textColor: deepBrown,
@@ -100,176 +133,134 @@ class AppTheme {
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md)),
     ),
   );
 
-  // Dark theme
+  // Dark theme — dark-premium: deep slate surfaces, gold accent
   static final ThemeData dark = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
+    fontFamily: fontBody,
     colorScheme: const ColorScheme.dark(
-      primary: parchment,
-      secondary: sunrise,
+      primary: gold,
+      secondary: slate400,
       tertiary: dusk,
-      surface: trueBlack,
-      surfaceContainerHighest: Color(0xFF1A1A1A),
-      onPrimary: trueBlack,
-      onSecondary: trueBlack,
-      onSurface: parchment,
-      onSurfaceVariant: sunrise,
+      surface: slate950,
+      surfaceContainerHighest: slate800,
+      onPrimary: Color(0xFF1A1405),
+      onSecondary: slate950,
+      onSurface: slate200,
+      onSurfaceVariant: slate400,
+      outlineVariant: slate700,
     ),
     scaffoldBackgroundColor: Colors.transparent,
-    textTheme: _textTheme(Colors.white),
+    textTheme: _textTheme(slate200),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
-      titleTextStyle: _textTheme(Colors.white).headlineSmall?.copyWith(
+      titleTextStyle: _textTheme(slate200).headlineSmall?.copyWith(
             fontWeight: FontWeight.w700,
-            color: parchment,
+            color: slate200,
           ),
-      iconTheme: IconThemeData(color: parchment),
+      iconTheme: const IconThemeData(color: slate200),
     ),
     cardTheme: CardTheme(
-      color: const Color(0xFF1A1A1A),
+      color: slate900,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade800),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        side: const BorderSide(color: slate700, width: 0.8),
       ),
     ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: trueBlack,
-      selectedItemColor: parchment,
-      unselectedItemColor: Colors.grey.shade500,
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: slate900,
+      selectedItemColor: gold,
+      unselectedItemColor: slate400,
       type: BottomNavigationBarType.fixed,
       elevation: 8,
     ),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: parchment,
-      foregroundColor: trueBlack,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: gold,
+      foregroundColor: Color(0xFF1A1405),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFF1A1A1A),
+      fillColor: slate900,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: slate700),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade800),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: slate700),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: parchment, width: 2),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: gold, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: parchment,
-        foregroundColor: trueBlack,
+        backgroundColor: gold,
+        foregroundColor: const Color(0xFF1A1405),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md)),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
-    dividerTheme: DividerThemeData(color: Colors.grey.shade800, thickness: 1),
+    dividerTheme: const DividerThemeData(color: slate700, thickness: 1),
     listTileTheme: const ListTileThemeData(
-      iconColor: sunrise,
-      textColor: parchment,
+      iconColor: slate400,
+      textColor: slate200,
     ),
     scrollbarTheme: ScrollbarThemeData(
       thumbVisibility: WidgetStateProperty.all(true),
       thickness: WidgetStateProperty.all(8),
       radius: const Radius.circular(8),
-      thumbColor: WidgetStateProperty.all(sunrise.withOpacity(0.35)),
+      thumbColor: WidgetStateProperty.all(slate400.withOpacity(0.35)),
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md)),
     ),
   );
 
   static TextTheme _textTheme(Color baseColor) {
-    return GoogleFonts.merriweatherTextTheme().copyWith(
-      displayLarge: GoogleFonts.merriweather(
-        fontSize: 57,
-        fontWeight: FontWeight.w400,
-        letterSpacing: -0.25,
-        color: baseColor,
-      ),
-      displayMedium: GoogleFonts.merriweather(
-        fontSize: 45,
-        fontWeight: FontWeight.w400,
-        color: baseColor,
-      ),
-      displaySmall: GoogleFonts.merriweather(
-        fontSize: 36,
-        fontWeight: FontWeight.w400,
-        color: baseColor,
-      ),
-      headlineLarge: GoogleFonts.merriweather(
-        fontSize: 32,
-        fontWeight: FontWeight.w700,
-        color: baseColor,
-      ),
-      headlineMedium: GoogleFonts.merriweather(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
-        color: baseColor,
-      ),
-      headlineSmall: GoogleFonts.merriweather(
-        fontSize: 24,
-        fontWeight: FontWeight.w700,
-        color: baseColor,
-      ),
-      titleLarge: GoogleFonts.inter(
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0,
-        color: baseColor,
-      ),
-      titleMedium: GoogleFonts.inter(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.15,
-        color: baseColor,
-      ),
-      titleSmall: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
-        color: baseColor,
-      ),
-      bodyLarge: GoogleFonts.inter(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.5,
-        color: baseColor,
-      ),
-      bodyMedium: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.25,
-        color: baseColor,
-      ),
-      bodySmall: GoogleFonts.inter(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.4,
-        color: baseColor.withOpacity(0.7),
-      ),
-      labelLarge: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
-        color: baseColor,
-      ),
+    TextStyle syne(double size, FontWeight w, {double? ls}) => TextStyle(
+          fontFamily: fontDisplay,
+          fontSize: size,
+          fontWeight: w,
+          letterSpacing: ls,
+          color: baseColor,
+        );
+    TextStyle inter(double size, FontWeight w, {double ls = 0}) => TextStyle(
+          fontFamily: fontBody,
+          fontSize: size,
+          fontWeight: w,
+          letterSpacing: ls,
+          color: baseColor,
+        );
+    return TextTheme(
+      displayLarge: syne(57, FontWeight.w700, ls: -0.5),
+      displayMedium: syne(45, FontWeight.w700),
+      displaySmall: syne(36, FontWeight.w600),
+      headlineLarge: syne(32, FontWeight.w700),
+      headlineMedium: syne(28, FontWeight.w700),
+      headlineSmall: syne(24, FontWeight.w700),
+      titleLarge: syne(22, FontWeight.w600),
+      titleMedium: inter(16, FontWeight.w500, ls: 0.15),
+      titleSmall: inter(14, FontWeight.w500, ls: 0.1),
+      bodyLarge: inter(16, FontWeight.w400, ls: 0.3),
+      bodyMedium: inter(14, FontWeight.w400, ls: 0.25),
+      bodySmall: inter(12, FontWeight.w400, ls: 0.3),
+      labelLarge: inter(14, FontWeight.w600, ls: 0.1),
     );
   }
 }

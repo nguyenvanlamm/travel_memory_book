@@ -1,0 +1,12 @@
+[build]
+  # Flutter web build output — deploy thư mục đã build sẵn qua CLI
+  # (Netlify không có sẵn Flutter SDK để build trên CI)
+  publish = "app/build/web"
+  command = ""
+
+# SPA fallback — Flutter dùng hash routing nên không bắt buộc,
+# nhưng giữ cho an toàn nếu sau này đổi sang path routing.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

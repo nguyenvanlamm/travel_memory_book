@@ -1,3 +1,8 @@
 build/
+# build/web của Flutter app được commit để Netlify deploy tĩnh —
+# phải un-ignore cả thư mục cha trước khi un-ignore con.
+!app/build/
+!app/build/web/
+!app/build/web/**
 .dart_tool/
 *.log

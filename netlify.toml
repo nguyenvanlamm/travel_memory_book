@@ -1,6 +1,6 @@
 [build]
-  # Flutter web build output — deploy thư mục đã build sẵn qua CLI
-  # (Netlify không có sẵn Flutter SDK để build trên CI)
+  # app/build/web đã được build local và commit vào repo —
+  # Netlify chỉ serve thư mục này, không cần build command.
   publish = "app/build/web"
   command = ""
 

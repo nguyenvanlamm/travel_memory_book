@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/book_widgets.dart';
 import '../../../core/widgets/loading_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,33 +8,7 @@ import '../../../core/widgets/section_header.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../../../repositories/trip_repository.dart';
 import '../../../repositories/photo_repository.dart';
-import 'package:lucide_icons/lucide_icons.dart';
-
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  const _StatCard(
-      {required this.icon, required this.label, required this.value});
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-        child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(children: [
-              Icon(icon, size: 32, color: theme.colorScheme.primary),
-              const SizedBox(height: 12),
-              Text(value,
-                  style: theme.textTheme.headlineMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(height: 4),
-              Text(label,
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
-            ])));
-  }
-}
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -89,68 +65,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               maxWidth: 760,
               child: ListView(children: [
                 const PageHeader(
-                    title: 'Profile', subtitle: 'Your journeys, preserved.'),
+                    title: 'Journey stats',
+                    subtitle: 'Everything you have kept, counted.'),
                 Card(
-                    child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Row(children: [
-                          CircleAvatar(
-                              radius: 36,
-                              backgroundColor:
-                                  theme.colorScheme.primaryContainer,
-                              child: Icon(LucideIcons.user,
-                                  size: 36,
-                                  color: theme
-                                      .colorScheme.onPrimaryContainer)),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: [
-                                  Text('Traveler',
-                                      style: theme
-                                          .textTheme.headlineSmall
-                                          ?.copyWith(
-                                              fontWeight:
-                                                  FontWeight.w700)),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                      'Turning travel photos into flip books.',
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                              color: theme.colorScheme
-                                                  .onSurfaceVariant)),
-                                ]),
-                          ),
-                        ]))),
-                const SizedBox(height: 24),
-                const SectionHeader(title: 'Your Journey'),
-                Row(children: [
-                  Expanded(
-                      child: _StatCard(
-                          icon: LucideIcons.library,
-                          label: 'Trips',
-                          value: '$_tripCount')),
-                  const SizedBox(width: 12),
-                  Expanded(
-                      child: _StatCard(
-                          icon: LucideIcons.globe2,
-                          label: 'Countries',
-                          value: '$_countryCount')),
-                  const SizedBox(width: 12),
-                  Expanded(
-                      child: _StatCard(
-                          icon: LucideIcons.building2,
-                          label: 'Cities',
-                          value: '$_cityCount')),
-                  const SizedBox(width: 12),
-                  Expanded(
-                      child: _StatCard(
-                          icon: LucideIcons.image,
-                          label: 'Photos',
-                          value: '$_photoCount')),
-                ]),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Wrap(
+                      spacing: 40,
+                      runSpacing: AppSpacing.md,
+                      children: [
+                        StatBlock(value: '$_tripCount', label: 'books'),
+                        StatBlock(value: '$_countryCount', label: 'countries'),
+                        StatBlock(value: '$_cityCount', label: 'places'),
+                        StatBlock(value: '$_photoCount', label: 'photos'),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
                 const SectionHeader(title: 'Quick Actions'),
                 const SizedBox(height: 12),
@@ -158,7 +89,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   FilledButton.icon(
                       onPressed: () => context.go('/trips/new'),
                       icon: const Icon(LucideIcons.plus),
-                      label: const Text('New Trip'),
+                      label: const Text('New Book'),
                       style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 16))),

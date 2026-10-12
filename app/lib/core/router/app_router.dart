@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
 
-import '../widgets/web_layout.dart';
+import '../widgets/app_shell.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/trips/screens/trip_form_screen.dart';
 import '../../features/trips/screens/trip_detail_screen.dart';
@@ -15,7 +14,8 @@ final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     ShellRoute(
-      builder: (context, state, child) => _SiteShell(child: child),
+      builder: (context, state, child) =>
+          AppShell(location: state.uri.path, child: child),
       routes: [
         GoRoute(
           path: '/',
@@ -35,9 +35,9 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/trips/:tripId/edit',
           name: 'trip_edit',
-          builder: (context, state) {
-            return TripFormScreen(trip: null);
-          },
+          builder: (context, state) => TripEditScreen(
+            tripId: int.parse(state.pathParameters['tripId']!),
+          ),
         ),
         GoRoute(
           path: '/trips/:tripId',
@@ -82,33 +82,11 @@ final GoRouter appRouter = GoRouter(
       name: 'book_viewer',
       builder: (context, state) {
         final tripId = int.parse(state.pathParameters['tripId']!);
-        return BookViewerScreen(tripId: tripId);
+        return BookViewerScreen(
+          tripId: tripId,
+          autoExport: state.uri.queryParameters['export'] == '1',
+        );
       },
     ),
   ],
 );
-
-class _SiteShell extends StatelessWidget {
-  final Widget child;
-  const _SiteShell({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          const SiteHeader(),
-          Expanded(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                const WebBackdrop(),
-                child,
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

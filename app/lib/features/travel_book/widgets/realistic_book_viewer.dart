@@ -22,18 +22,22 @@ import 'book_pages/book_memory_page.dart';
 import 'book_pages/book_photo_page.dart';
 import 'book_pages/book_stats_back_cover.dart';
 import 'book_pages/leather_cover.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class RealisticBookViewer extends ConsumerStatefulWidget {
   final TravelBook book;
   final Trip trip;
   final List<Photo> photos;
 
+  /// Start the PDF export as soon as the pages are ready.
+  final bool autoExport;
+
   const RealisticBookViewer({
     super.key,
     required this.book,
     required this.trip,
     required this.photos,
+    this.autoExport = false,
   });
 
   @override
@@ -80,6 +84,11 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
       if (!mounted) return;
     }
     if (mounted) setState(() => _imagesReady = true);
+    if (mounted && widget.autoExport) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _exportPdf();
+      });
+    }
   }
 
   // Kích thước logic của 1 trang khi xuất PDF (aspect 0.75 như trên màn hình).

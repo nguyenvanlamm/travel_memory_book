@@ -8,7 +8,26 @@ import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../../../models/trip.dart';
 import '../../../repositories/trip_repository.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+/// Edit route: loads the trip, then shows the form filled in.
+class TripEditScreen extends ConsumerWidget {
+  final int tripId;
+  const TripEditScreen({super.key, required this.tripId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder<Trip?>(
+      future: ref.read(tripRepositoryProvider).getById(tripId),
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return const SizedBox.shrink();
+        }
+        return TripFormScreen(trip: snap.data);
+      },
+    );
+  }
+}
 
 class TripFormScreen extends ConsumerStatefulWidget {
   final Trip? trip;

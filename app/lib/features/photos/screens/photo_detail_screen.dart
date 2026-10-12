@@ -6,7 +6,7 @@ import '../../../core/utils/image_helper.dart';
 import '../../../core/widgets/web_layout.dart';
 import '../../../models/photo.dart';
 import '../../../repositories/photo_repository.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class PhotoDetailScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -85,7 +85,9 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
               child: const Text('Cancel')),
           FilledButton(
               onPressed: () => Navigator.pop(ctx, true),
-              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(ctx).colorScheme.error,
+                  foregroundColor: Theme.of(ctx).colorScheme.onError),
               child: const Text('Delete'))
         ],
       ),
@@ -132,8 +134,8 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   onPressed: () =>
                       setState(() => _isEditingCaption = true)),
               IconButton(
-                  icon:
-                      const Icon(LucideIcons.trash2, color: Colors.red),
+                  icon: Icon(LucideIcons.trash2,
+                      color: Theme.of(context).colorScheme.error),
                   tooltip: 'Delete photo',
                   onPressed: _deletePhoto),
             ],

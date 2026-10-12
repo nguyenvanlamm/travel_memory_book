@@ -13,7 +13,9 @@ import '../widgets/realistic_book_viewer.dart';
 
 class BookViewerScreen extends ConsumerStatefulWidget {
   final int tripId;
-  const BookViewerScreen({super.key, required this.tripId});
+  final bool autoExport;
+  const BookViewerScreen(
+      {super.key, required this.tripId, this.autoExport = false});
 
   @override
   ConsumerState<BookViewerScreen> createState() => _BookViewerScreenState();
@@ -107,6 +109,7 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
         book: _book!,
         trip: _trip!,
         photos: _photos,
+        autoExport: widget.autoExport,
       ),
     );
   }

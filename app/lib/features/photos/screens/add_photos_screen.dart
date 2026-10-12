@@ -12,7 +12,7 @@ import '../../../core/utils/image_utils.dart';
 import '../../../models/photo.dart';
 import '../../../repositories/photo_repository.dart';
 import '../../../repositories/trip_repository.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AddPhotosScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -86,7 +86,7 @@ class _AddPhotosScreenState extends ConsumerState<AddPhotosScreen> {
                     final image = _selectedImages[index];
                     return Container(width: 100, margin: const EdgeInsets.only(right: 8), child: ClipRRect(borderRadius: BorderRadius.circular(10), child: Stack(fit: StackFit.expand, children: [
                       xfileImage(image, fit: BoxFit.cover),
-                      Positioned(top: 4, right: 4, child: InkWell(onTap: () => setState(() => _selectedImages.removeAt(index)), child: Container(padding: const EdgeInsets.all(4), decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle), child: const Icon(LucideIcons.x, size: 14, color: Colors.white)))),
+                      Positioned(top: 4, right: 4, child: InkWell(onTap: () => setState(() => _selectedImages.removeAt(index)), child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Theme.of(context).colorScheme.inverseSurface.withValues(alpha: 0.8), shape: BoxShape.circle), child: Icon(LucideIcons.x, size: 14, color: Theme.of(context).colorScheme.onInverseSurface)))),
                     ])));
                   })),
                   const SizedBox(height: 24),

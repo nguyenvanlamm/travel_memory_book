@@ -11,256 +11,471 @@ class AppSpacing {
 }
 
 class AppRadius {
-  static const double sm = 8;
-  static const double md = 12;
-  static const double lg = 16;
-  static const double xl = 20;
+  /// Spines and colour chips — books have nearly square corners.
+  static const double xs = 2;
+  static const double sm = 4;
+
+  /// Buttons, inputs, thumbnails.
+  static const double md = 6;
+
+  /// Panels, dialogs, cards.
+  static const double lg = 8;
   static const double pill = 999;
 }
 
-class AppTheme {
-  // Warm palette (kept from the journal identity)
-  static const Color deepBrown = Color(0xFF3E2723);
-  static const Color earth = Color(0xFF5D4037);
-  static const Color sunrise = Color(0xFFE8A87C);
-  static const Color dusk = Color(0xFFC38D9E);
-  static const Color parchment = Color(0xFFF4E4C1);
-  static const Color warmWhite = Color(0xFFFAF7F2);
-  static const Color trueBlack = Color(0xFF0A0A0A);
+/// Width thresholds for the Day One–style panes.
+class AppBreakpoints {
+  /// Below this: one pane + bottom tab bar.
+  static const double rail = 720;
 
-  // Dark-premium palette — slate surfaces + gold accent
-  static const Color gold = Color(0xFFD4AF37);
-  static const Color slate950 = Color(0xFF0B1220);
-  static const Color slate900 = Color(0xFF0F172A);
-  static const Color slate800 = Color(0xFF1E293B);
-  static const Color slate700 = Color(0xFF334155);
-  static const Color slate400 = Color(0xFF94A3B8);
-  static const Color slate200 = Color(0xFFE2E8F0);
+  /// From this up: drawer + list + detail.
+  static const double drawer = 1200;
+}
 
-  // Bundled font families (assets/fonts)
-  static const String fontBody = 'Inter';
-  static const String fontDisplay = 'Syne';
+/// Paper, ink and cloth colours that do not fit a [ColorScheme] slot.
+@immutable
+class AppPalette extends ThemeExtension<AppPalette> {
+  /// Entry / page surface.
+  final Color paper0;
 
-  // Light theme — keeps the warm parchment identity
-  static final ThemeData light = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    fontFamily: fontBody,
-    colorScheme: const ColorScheme.light(
-      primary: deepBrown,
-      secondary: earth,
-      tertiary: sunrise,
-      surface: warmWhite,
-      surfaceContainerHighest: parchment,
-      onPrimary: Colors.white,
-      onSecondary: Colors.white,
-      onSurface: deepBrown,
-      onSurfaceVariant: earth,
-      outlineVariant: Color(0xFFE7DCC8),
-    ),
-    // Transparent so the site's WebBackdrop (gradient + grain + glows)
-    // painted in the router shell shows through every nested Scaffold.
-    scaffoldBackgroundColor: Colors.transparent,
-    textTheme: _textTheme(const Color(0xFF2B211B)),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      centerTitle: true,
-      titleTextStyle: _textTheme(const Color(0xFF2B211B)).headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: deepBrown,
-          ),
-      iconTheme: const IconThemeData(color: deepBrown),
-    ),
-    cardTheme: CardTheme(
-      color: Colors.white,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        side: const BorderSide(color: Color(0xFFE7DCC8)),
-      ),
-    ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Colors.white,
-      selectedItemColor: deepBrown,
-      unselectedItemColor: Colors.grey.shade500,
-      type: BottomNavigationBarType.fixed,
-      elevation: 8,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: deepBrown,
-      foregroundColor: Colors.white,
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: const Color(0xFFFBF6EA),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: Color(0xFFE7DCC8)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: Color(0xFFE7DCC8)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: deepBrown, width: 2),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: deepBrown,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.md)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      ),
-    ),
-    dividerTheme:
-        const DividerThemeData(color: Color(0xFFE7DCC8), thickness: 1),
-    listTileTheme: const ListTileThemeData(
-      iconColor: earth,
-      textColor: deepBrown,
-    ),
-    scrollbarTheme: ScrollbarThemeData(
-      thumbVisibility: WidgetStateProperty.all(true),
-      thickness: WidgetStateProperty.all(8),
-      radius: const Radius.circular(8),
-      thumbColor: WidgetStateProperty.all(earth.withOpacity(0.35)),
-    ),
-    snackBarTheme: SnackBarThemeData(
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md)),
-    ),
+  /// Timeline column.
+  final Color paper1;
+
+  /// Drawer.
+  final Color paper2;
+  final Color line;
+  final Color ink1;
+  final Color ink2;
+  final Color ink3;
+
+  /// The one action colour (brand sunrise, darkened for contrast).
+  final Color sun;
+  final Color onSun;
+
+  /// [sun] used as text: kickers, links, "Write one".
+  final Color sunInk;
+
+  /// Rules, photo borders and caps on dark cloth.
+  final Color gold;
+
+  /// Lettering stamped on a cloth cover.
+  final Color foil;
+
+  /// Text on dark cloth.
+  final Color parch;
+  final Color parchMute;
+
+  const AppPalette({
+    required this.paper0,
+    required this.paper1,
+    required this.paper2,
+    required this.line,
+    required this.ink1,
+    required this.ink2,
+    required this.ink3,
+    required this.sun,
+    required this.onSun,
+    required this.sunInk,
+    required this.gold,
+    required this.foil,
+    required this.parch,
+    required this.parchMute,
+  });
+
+  static const light = AppPalette(
+    paper0: Color(0xFFFCFAF6),
+    paper1: Color(0xFFF8F3EC),
+    paper2: Color(0xFFEFE9DF),
+    line: Color(0xFFDED6CC),
+    ink1: Color(0xFF2C1E18),
+    ink2: Color(0xFF51453D),
+    ink3: Color(0xFF6C6158),
+    sun: Color(0xFFA64F2B),
+    onSun: Color(0xFFFFFFFF),
+    sunInk: Color(0xFF9A4825),
+    gold: Color(0xFFD1BB92),
+    foil: Color(0xFFDAC49D),
+    parch: Color(0xFFF3EAD9),
+    parchMute: Color(0xFFB6C2B3),
   );
 
-  // Dark theme — dark-premium: deep slate surfaces, gold accent
-  static final ThemeData dark = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    fontFamily: fontBody,
-    colorScheme: const ColorScheme.dark(
-      primary: gold,
-      secondary: slate400,
-      tertiary: dusk,
-      surface: slate950,
-      surfaceContainerHighest: slate800,
-      onPrimary: Color(0xFF1A1405),
-      onSecondary: slate950,
-      onSurface: slate200,
-      onSurfaceVariant: slate400,
-      outlineVariant: slate700,
-    ),
-    scaffoldBackgroundColor: Colors.transparent,
-    textTheme: _textTheme(slate200),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      centerTitle: true,
-      titleTextStyle: _textTheme(slate200).headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: slate200,
-          ),
-      iconTheme: const IconThemeData(color: slate200),
-    ),
-    cardTheme: CardTheme(
-      color: slate900,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        side: const BorderSide(color: slate700, width: 0.8),
-      ),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: slate900,
-      selectedItemColor: gold,
-      unselectedItemColor: slate400,
-      type: BottomNavigationBarType.fixed,
-      elevation: 8,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: gold,
-      foregroundColor: Color(0xFF1A1405),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: slate900,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: slate700),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: slate700),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: gold, width: 2),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: gold,
-        foregroundColor: const Color(0xFF1A1405),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.md)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      ),
-    ),
-    dividerTheme: const DividerThemeData(color: slate700, thickness: 1),
-    listTileTheme: const ListTileThemeData(
-      iconColor: slate400,
-      textColor: slate200,
-    ),
-    scrollbarTheme: ScrollbarThemeData(
-      thumbVisibility: WidgetStateProperty.all(true),
-      thickness: WidgetStateProperty.all(8),
-      radius: const Radius.circular(8),
-      thumbColor: WidgetStateProperty.all(slate400.withOpacity(0.35)),
-    ),
-    snackBarTheme: SnackBarThemeData(
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md)),
-    ),
+  /// Redrawn, not inverted: warm brown-black paper, sun lifted toward the
+  /// brand sunrise with dark lettering on it (design-demos/b-tokens.md).
+  static const dark = AppPalette(
+    paper0: Color(0xFF231E19),
+    paper1: Color(0xFF1B1713),
+    paper2: Color(0xFF15110D),
+    line: Color(0xFF3C352F),
+    ink1: Color(0xFFEDE5D8),
+    ink2: Color(0xFFCBC1B3),
+    ink3: Color(0xFFA99E91),
+    sun: Color(0xFFDF8D64),
+    onSun: Color(0xFF25150E),
+    sunInk: Color(0xFFE8A87C),
+    gold: Color(0xFFD1BB92),
+    foil: Color(0xFFDAC49D),
+    parch: Color(0xFFF3EAD9),
+    parchMute: Color(0xFFB6C2B3),
   );
 
-  static TextTheme _textTheme(Color baseColor) {
-    TextStyle syne(double size, FontWeight w, {double? ls}) => TextStyle(
-          fontFamily: fontDisplay,
+  /// Brand sunrise: open places and empty days on dark cloth (both themes).
+  static const dawn = Color(0xFFE8A87C);
+
+  static AppPalette of(BuildContext context) =>
+      Theme.of(context).extension<AppPalette>()!;
+
+  @override
+  AppPalette copyWith({
+    Color? paper0,
+    Color? paper1,
+    Color? paper2,
+    Color? line,
+    Color? ink1,
+    Color? ink2,
+    Color? ink3,
+    Color? sun,
+    Color? onSun,
+    Color? sunInk,
+    Color? gold,
+    Color? foil,
+    Color? parch,
+    Color? parchMute,
+  }) =>
+      AppPalette(
+        paper0: paper0 ?? this.paper0,
+        paper1: paper1 ?? this.paper1,
+        paper2: paper2 ?? this.paper2,
+        line: line ?? this.line,
+        ink1: ink1 ?? this.ink1,
+        ink2: ink2 ?? this.ink2,
+        ink3: ink3 ?? this.ink3,
+        sun: sun ?? this.sun,
+        onSun: onSun ?? this.onSun,
+        sunInk: sunInk ?? this.sunInk,
+        gold: gold ?? this.gold,
+        foil: foil ?? this.foil,
+        parch: parch ?? this.parch,
+        parchMute: parchMute ?? this.parchMute,
+      );
+
+  @override
+  AppPalette lerp(ThemeExtension<AppPalette>? other, double t) {
+    if (other is! AppPalette) return this;
+    Color l(Color a, Color b) => Color.lerp(a, b, t)!;
+    return AppPalette(
+      paper0: l(paper0, other.paper0),
+      paper1: l(paper1, other.paper1),
+      paper2: l(paper2, other.paper2),
+      line: l(line, other.line),
+      ink1: l(ink1, other.ink1),
+      ink2: l(ink2, other.ink2),
+      ink3: l(ink3, other.ink3),
+      sun: l(sun, other.sun),
+      onSun: l(onSun, other.onSun),
+      sunInk: l(sunInk, other.sunInk),
+      gold: l(gold, other.gold),
+      foil: l(foil, other.foil),
+      parch: l(parch, other.parch),
+      parchMute: l(parchMute, other.parchMute),
+    );
+  }
+}
+
+/// Literata for anything read like a book, Be Vietnam Pro for the interface.
+class AppTypography {
+  static const serif = 'Literata';
+  static const sans = 'Be Vietnam Pro';
+
+  static TextTheme textTheme(AppPalette p) {
+    TextStyle s(double size, FontWeight w, {double height = 1.25, double ls = 0}) =>
+        TextStyle(
+          fontFamily: serif,
           fontSize: size,
           fontWeight: w,
+          height: height,
           letterSpacing: ls,
-          color: baseColor,
+          color: p.ink1,
         );
-    TextStyle inter(double size, FontWeight w, {double ls = 0}) => TextStyle(
-          fontFamily: fontBody,
+    TextStyle u(double size, FontWeight w,
+            {double height = 1.45, double ls = 0, Color? color}) =>
+        TextStyle(
+          fontFamily: sans,
           fontSize: size,
           fontWeight: w,
+          height: height,
           letterSpacing: ls,
-          color: baseColor,
+          color: color ?? p.ink1,
         );
     return TextTheme(
-      displayLarge: syne(57, FontWeight.w700, ls: -0.5),
-      displayMedium: syne(45, FontWeight.w700),
-      displaySmall: syne(36, FontWeight.w600),
-      headlineLarge: syne(32, FontWeight.w700),
-      headlineMedium: syne(28, FontWeight.w700),
-      headlineSmall: syne(24, FontWeight.w700),
-      titleLarge: syne(22, FontWeight.w600),
-      titleMedium: inter(16, FontWeight.w500, ls: 0.15),
-      titleSmall: inter(14, FontWeight.w500, ls: 0.1),
-      bodyLarge: inter(16, FontWeight.w400, ls: 0.3),
-      bodyMedium: inter(14, FontWeight.w400, ls: 0.25),
-      bodySmall: inter(12, FontWeight.w400, ls: 0.3),
-      labelLarge: inter(14, FontWeight.w600, ls: 0.1),
+      displayLarge: s(52, FontWeight.w600, height: 1.05, ls: -0.5),
+      displayMedium: s(40, FontWeight.w600, height: 1.1, ls: -0.3),
+      displaySmall: s(32, FontWeight.w600, height: 1.12, ls: -0.2),
+      headlineLarge: s(30, FontWeight.w600, height: 1.15),
+      headlineMedium: s(28, FontWeight.w600, height: 1.15),
+      headlineSmall: s(24, FontWeight.w600, height: 1.2),
+      titleLarge: s(20, FontWeight.w600),
+      titleMedium: s(18, FontWeight.w600),
+      titleSmall: u(14, FontWeight.w600, height: 1.35),
+      bodyLarge: u(16, FontWeight.w400, height: 1.55),
+      bodyMedium: u(15, FontWeight.w400, height: 1.5),
+      bodySmall: u(13, FontWeight.w400, color: p.ink3),
+      labelLarge: u(14, FontWeight.w600, height: 1.2),
+      labelMedium: u(12, FontWeight.w600, height: 1.2, ls: 1.2, color: p.ink3),
+      labelSmall: u(12, FontWeight.w500, height: 1.2, color: p.ink3),
+    );
+  }
+
+  /// Figures that line up in columns (dates, counts).
+  static const figures = [FontFeature.tabularFigures(), FontFeature.liningFigures()];
+
+  /// Body of a written memory — the one long read in the app.
+  static TextStyle memory(BuildContext context) {
+    final phone = MediaQuery.sizeOf(context).width < AppBreakpoints.rail;
+    return TextStyle(
+        fontFamily: serif,
+        fontSize: phone ? 17 : 19,
+        height: phone ? 1.68 : 1.74,
+        fontWeight: FontWeight.w400,
+        color: AppPalette.of(context).ink1,
+      );
+  }
+
+  /// Trip description and other italic asides.
+  static TextStyle aside(BuildContext context, {Color? color}) => TextStyle(
+        fontFamily: serif,
+        fontStyle: FontStyle.italic,
+        fontSize: 16,
+        height: 1.55,
+        color: color ?? AppPalette.of(context).ink2,
+      );
+}
+
+class AppTheme {
+  static final ThemeData light = _build(Brightness.light, AppPalette.light);
+  static final ThemeData dark = _build(Brightness.dark, AppPalette.dark);
+
+  static ThemeData _build(Brightness brightness, AppPalette p) {
+    final isDark = brightness == Brightness.dark;
+    final scheme = ColorScheme(
+      brightness: brightness,
+      primary: p.sun,
+      onPrimary: p.onSun,
+      secondary: p.ink2,
+      onSecondary: p.paper0,
+      tertiary: p.gold,
+      onTertiary: p.ink1,
+      error: isDark ? const Color(0xFFF2A495) : const Color(0xFFA3321F),
+      onError: isDark ? const Color(0xFF1C1613) : Colors.white,
+      surface: p.paper0,
+      onSurface: p.ink1,
+      onSurfaceVariant: p.ink3,
+      surfaceContainerLowest: p.paper0,
+      surfaceContainerLow: p.paper1,
+      surfaceContainer: p.paper1,
+      surfaceContainerHigh: p.paper2,
+      surfaceContainerHighest: p.paper2,
+      outline: p.ink3,
+      outlineVariant: p.line,
+      inverseSurface: p.ink1,
+      onInverseSurface: p.paper0,
+      shadow: Colors.black,
+      scrim: Colors.black,
+    );
+    final text = AppTypography.textTheme(p);
+    final buttonShape =
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md));
+    const buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+    final buttonSize = WidgetStateProperty.all(const Size(48, 44));
+    OutlineInputBorder border(Color c, [double w = 1]) => OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: BorderSide(color: c, width: w),
+        );
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      colorScheme: scheme,
+      fontFamily: AppTypography.sans,
+      textTheme: text,
+      scaffoldBackgroundColor: p.paper0,
+      canvasColor: p.paper0,
+      dividerColor: p.line,
+      extensions: [p],
+      splashFactory: InkSparkle.splashFactory,
+      appBarTheme: AppBarTheme(
+        backgroundColor: p.paper0,
+        foregroundColor: p.ink1,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        titleTextStyle: text.titleLarge,
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith((s) =>
+              s.contains(WidgetState.disabled) ? p.line : p.sun),
+          foregroundColor: WidgetStateProperty.resolveWith((s) =>
+              s.contains(WidgetState.disabled) ? p.ink3 : p.onSun),
+          textStyle: WidgetStateProperty.all(text.labelLarge),
+          padding: WidgetStateProperty.all(buttonPadding),
+          minimumSize: buttonSize,
+          shape: WidgetStateProperty.all(buttonShape),
+          elevation: WidgetStateProperty.all(0),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: p.ink1,
+          backgroundColor: p.paper0,
+          side: BorderSide(color: p.line),
+          textStyle: text.labelLarge,
+          padding: buttonPadding,
+          minimumSize: const Size(48, 44),
+          shape: buttonShape,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: p.ink2,
+          textStyle: text.labelLarge,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          minimumSize: const Size(48, 44),
+          shape: buttonShape,
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(44, 44),
+          shape: buttonShape,
+        ),
+      ),
+      iconTheme: IconThemeData(color: p.ink2, size: 20),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: p.paper0,
+        hintStyle: text.bodyMedium?.copyWith(color: p.ink3),
+        border: border(p.line),
+        enabledBorder: border(p.line),
+        focusedBorder: border(p.sun, 1.5),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      ),
+      cardTheme: CardThemeData(
+        color: p.paper0,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(color: p.line),
+        ),
+      ),
+      dividerTheme: DividerThemeData(color: p.line, thickness: 1, space: 1),
+      listTileTheme: ListTileThemeData(
+        iconColor: p.ink2,
+        textColor: p.ink1,
+        titleTextStyle: text.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+        subtitleTextStyle: text.bodySmall,
+        shape: buttonShape,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: p.paper1,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: p.sun.withValues(alpha: isDark ? 0.22 : 0.14),
+        height: 64,
+        labelTextStyle: WidgetStateProperty.resolveWith((s) =>
+            text.labelSmall?.copyWith(
+              color: s.contains(WidgetState.selected) ? p.ink1 : p.ink3,
+              fontWeight: s.contains(WidgetState.selected)
+                  ? FontWeight.w600
+                  : FontWeight.w500,
+            )),
+        iconTheme: WidgetStateProperty.resolveWith((s) => IconThemeData(
+              size: 22,
+              color: s.contains(WidgetState.selected) ? p.ink1 : p.ink3,
+            )),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: p.ink1,
+        unselectedLabelColor: p.ink3,
+        labelStyle: text.labelLarge,
+        unselectedLabelStyle: text.labelLarge?.copyWith(fontWeight: FontWeight.w500),
+        indicatorColor: p.sun,
+        dividerColor: p.line,
+        indicatorSize: TabBarIndicatorSize.label,
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          textStyle: WidgetStateProperty.all(text.labelLarge),
+          side: WidgetStateProperty.all(BorderSide(color: p.line)),
+          shape: WidgetStateProperty.all(buttonShape),
+          backgroundColor: WidgetStateProperty.resolveWith((s) =>
+              s.contains(WidgetState.selected) ? p.paper0 : p.paper2),
+          foregroundColor: WidgetStateProperty.resolveWith((s) =>
+              s.contains(WidgetState.selected) ? p.ink1 : p.ink2),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: p.paper0,
+        selectedColor: p.ink1,
+        labelStyle: text.labelLarge?.copyWith(color: p.ink2),
+        secondaryLabelStyle: text.labelLarge?.copyWith(color: p.paper0),
+        side: BorderSide(color: p.line),
+        shape: const StadiumBorder(),
+        showCheckmark: false,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: p.paper0,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg)),
+        titleTextStyle: text.titleLarge,
+        contentTextStyle: text.bodyMedium,
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: p.paper0,
+        surfaceTintColor: Colors.transparent,
+        dragHandleColor: p.line,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        ),
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: p.paper0,
+        surfaceTintColor: Colors.transparent,
+        textStyle: text.bodyMedium,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(color: p.line),
+        ),
+      ),
+      tooltipTheme: TooltipThemeData(
+        decoration: BoxDecoration(
+          color: p.ink1,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+        ),
+        textStyle: text.labelSmall?.copyWith(color: p.paper0),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: p.ink1,
+        contentTextStyle: text.bodyMedium?.copyWith(color: p.paper0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg)),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: p.sun,
+        linearTrackColor: p.line,
+      ),
+      scrollbarTheme: ScrollbarThemeData(
+        thickness: WidgetStateProperty.all(6),
+        radius: const Radius.circular(AppRadius.sm),
+        thumbColor: WidgetStateProperty.all(p.ink3.withValues(alpha: 0.35)),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: p.sun,
+        foregroundColor: p.onSun,
+        elevation: 1,
+      ),
     );
   }
 }

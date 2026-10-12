@@ -38,6 +38,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         Text('Built with Flutter', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 8),
         Text('Your memories. Your stories. Preserved forever.', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontStyle: FontStyle.italic)),
+        const SizedBox(height: 8),
+        TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+          onPressed: () => showLicensePage(context: context, applicationName: 'Travel Memory Book', applicationVersion: '1.0.0'),
+          child: const Text('Open-source licences'),
+        ),
       ]))),
       const SizedBox(height: 48),
     ])));

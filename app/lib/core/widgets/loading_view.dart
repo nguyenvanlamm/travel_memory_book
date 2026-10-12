@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Branded loading state — pulsing book mark + thin accent spinner.
 /// Replaces bare CircularProgressIndicator across the app.
@@ -34,9 +33,7 @@ class _LoadingViewState extends State<LoadingView>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accent = theme.brightness == Brightness.dark
-        ? AppTheme.gold
-        : theme.colorScheme.primary;
+    final accent = theme.colorScheme.primary;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,

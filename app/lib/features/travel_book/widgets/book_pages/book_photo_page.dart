@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/utils/image_helper.dart';
 import '../../../../models/photo.dart';
 import 'paper_background.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class BookPhotoPage extends StatelessWidget {
   final Photo? photo;

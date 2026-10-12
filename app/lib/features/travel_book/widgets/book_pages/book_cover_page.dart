@@ -3,7 +3,7 @@ import '../../../../core/utils/image_helper.dart';
 import '../../../../models/trip.dart';
 import '../../../../models/travel_book.dart';
 import 'leather_cover.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Premium hard-cover look: dark leather with grain + sheen, a gold
 /// double frame, an optional "photo plate" (like a print pasted onto

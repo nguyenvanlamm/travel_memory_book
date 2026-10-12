@@ -32,10 +32,10 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.8
-  lucide_icons: ^0.257.0
   flutter_svg: ^2.1.0
   pdf: ^3.11.3
   printing: ^5.14.3
+  lucide_icons_flutter: ^3.1.25
 
 dev_dependencies:
   flutter_test:
@@ -57,11 +57,26 @@ flutter:
           weight: 600
         - asset: assets/fonts/inter-bold.ttf
           weight: 700
-    - family: Syne
+    - family: Literata
       fonts:
-        - asset: assets/fonts/syne-semibold.ttf
+        - asset: assets/fonts/literata_regular.ttf
+          weight: 400
+        - asset: assets/fonts/literata_medium.ttf
+          weight: 500
+        - asset: assets/fonts/literata_semibold.ttf
           weight: 600
-        - asset: assets/fonts/syne-bold.ttf
+        - asset: assets/fonts/literata_italic.ttf
+          weight: 400
+          style: italic
+    - family: Be Vietnam Pro
+      fonts:
+        - asset: assets/fonts/be_vietnam_pro_regular.ttf
+          weight: 400
+        - asset: assets/fonts/be_vietnam_pro_medium.ttf
+          weight: 500
+        - asset: assets/fonts/be_vietnam_pro_semibold.ttf
+          weight: 600
+        - asset: assets/fonts/be_vietnam_pro_bold.ttf
           weight: 700
     - family: Playfair Display
       fonts:
@@ -89,7 +104,8 @@ flutter:
     - assets/images/
     - assets/images/book/
     - assets/audio/
-    - assets/illustrations/
+    - assets/fonts/literata_ofl.txt
+    - assets/fonts/be_vietnam_pro_ofl.txt
 
 flutter_launcher_icons:
   android: "launcher_icon"

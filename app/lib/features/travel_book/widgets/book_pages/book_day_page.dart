@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../models/trip.dart';
 import 'paper_background.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class BookDayPage extends StatelessWidget {
   final Trip trip;

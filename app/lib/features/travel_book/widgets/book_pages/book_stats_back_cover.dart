@@ -3,7 +3,7 @@ import '../../../../models/photo.dart';
 import '../../../../models/trip.dart';
 import '../../../../models/travel_book.dart';
 import 'leather_cover.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Back cover — same leather + gold material as the front cover.
 class BookStatsBackCover extends StatelessWidget {

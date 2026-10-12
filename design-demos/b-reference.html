@@ -1,0 +1,772 @@
+<!doctype html>
+<!--
+  Travel Memory Book · B · Reference-driven direction (approved 2026-10-12)
+  Reference: Day One (journal app, Apple Design Award 2014; still listed on dayoneapp.com).
+  Borrowed structure (not branding): journal drawer -> timeline -> entry pane; one color per journal
+  (here: one cloth color per book); toolbar view switcher; stats when nothing is open; entry metadata footer;
+  Day One Book cover = color + photo + title.
+
+  Color reason: the canvas is a warm-paper series pulled from brand parchment #F4E4C1 with chroma cut to
+  <=0.015 so the photos carry the color (Day One keeps its canvas quiet), the one action color is brand
+  sunrise #E8A87C darkened to oklch(.53 .125 42) to clear 4.5:1 on button text, and every book's cloth color
+  is sampled from its own cover photo, so Hà Giang is the Nho Quế / Thẩm Mã jade.
+
+  Dark theme (open with #dark): paper becomes warm brown-black (oklch L .18/.21/.24, hue ~60), ink becomes
+  parchment, the action color moves back up toward brand sunrise (oklch .72 .115 47) with dark text on it,
+  cloth drops L by .03, cloth-deep panes and photos stay as they are. Tokens + ratios: b-tokens.md.
+
+  Fonts: Literata (book-reading serif, vietnamese subset) + Be Vietnam Pro (UI, vietnamese subset).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Travel Memory Book · B</title>
+<script>
+  (function(){var set=function(){document.documentElement.toggleAttribute('data-theme',false);
+    if(location.hash==='#dark')document.documentElement.setAttribute('data-theme','dark');};
+    set();window.addEventListener('hashchange',set);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   TOKENS · light (default). Same names and values as b-mobile.html.
+   ===================================================================== */
+:root{
+  /* paper: warm series, oklch L .985 / .966 / .936 */
+  --paper-0:#FCFAF6;   /* oklch(.985 .006 80) raised: entry page, cards, active pill */
+  --paper-1:#F8F3EC;   /* oklch(.966 .011 80) base: timeline, app background */
+  --paper-2:#EFE9DF;   /* oklch(.936 .015 78) recessed: drawer, tab bar, tracks */
+  --line:#DED6CC;      /* oklch(.88 .016 75) */
+  --line-soft:#E8E2D9; /* line at 60% over paper-1: row dividers */
+  --tint:rgba(44,30,24,.06);   /* selected wash on paper */
+  /* ink */
+  --ink-1:#2C1E18;     /* oklch(.25 .025 45) brand earth, deepened */
+  --ink-2:#51453D;     /* oklch(.40 .022 55) */
+  --ink-3:#6C6158;     /* oklch(.50 .02 60)  >=4.99:1 on paper-2 */
+  /* action: brand sunrise, darkened */
+  --sun:#A64F2B;       /* oklch(.53 .125 42) button fill */
+  --on-sun:#FFFFFF;    /* 5.56:1 on --sun */
+  --sun-ink:#9A4825;   /* oklch(.50 .12 42) as text on paper, 5.23-6.05:1 */
+  --dawn:#E8A87C;      /* brand sunrise: active route on cloth-deep (both themes) */
+  /* cloth: one per book, sampled from its own cover photo (oklch L .42-.64, C <=.14) */
+  --hg:#2F5649;        /* Hà Giang: Nho Quế jade oklch(.42 .05 170) */
+  --ha:#AC853F;        /* Hội An: lantern ochre oklch(.64 .10 80) */
+  --ky:#9D3629;        /* Kyoto: torii vermilion oklch(.48 .14 30) */
+  --dl:#576574;        /* Đà Lạt: misty lake slate oklch(.50 .03 250) */
+  --lp:#AF7033;        /* Luang Prabang: robe saffron oklch(.60 .11 62) */
+  --cd:#6E8D90;        /* Côn Đảo: sea-salt teal oklch(.62 .035 205) */
+  --earth:#63453A;     /* no cover yet: brand earth oklch(.42 .045 41) */
+  /* cloth-mark: small status marks (day ticks) on paper; light = cloth, dark = cloth at L .62 */
+  --hg-mark:#2F5649;
+  /* cloth-deep: oklch(.255, min(C*.6,.035), H) - pane backgrounds, theme-invariant */
+  --hg-deep:#132821;
+  --earth-deep:#2E1E19;
+  /* on cloth-deep: parch + mute (= parch mixed 30% with the cloth, in oklab) */
+  --parch:#F3EAD9;     /* 13:1 on hg-deep */
+  --hg-mute:#B6C2B3;   /* 8.4:1 on hg-deep */
+  --earth-mute:#C6B5A6;/* 8.0:1 on earth-deep */
+  --gold:#D1BB92;      /* brand foil #D4B98C, oklch(.80 .06 82): rules, outlines, caps on cloth-deep */
+  --foil:#DAC49D;      /* oklch(.83 .058 82): text stamped on a cover (cloth-mid), >=4.76:1 on hg/earth */
+  --on-cloth-line:rgba(243,234,217,.18);
+  --on-cloth-ghost:rgba(243,234,217,.38);
+  /* page block (book edges) */
+  --edge-1:#F6EFE2; --edge-2:#DCD2C2;
+  --edge-big-1:#F3EAD9; --edge-big-2:#CFC4B0;
+  /* the slip (paper note on a cloth pane) */
+  --slip:var(--paper-1); --slip-edge:transparent;
+  /* material shading (neutral, not hue) */
+  --weave-hi:rgba(255,255,255,.025); --weave-lo:rgba(0,0,0,.04);
+  --spine-shade:linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.16) 82%,rgba(255,255,255,.10) 86%,rgba(0,0,0,.18) 92%,transparent);
+  --chip-spine:rgba(0,0,0,.22);
+  /* shadows */
+  --sh-pill:0 1px 2px rgba(44,30,24,.12);
+  --sh-chip:0 1px 2px rgba(44,30,24,.25);
+  --sh-mini:drop-shadow(0 2px 3px rgba(44,30,24,.18));
+  --sh-book:0 30px 50px -18px rgba(0,0,0,.65), 0 2px 0 rgba(255,255,255,.06) inset;
+  --sh-pages:0 20px 30px -14px rgba(0,0,0,.6);
+  --sh-book-sm:0 14px 22px -10px rgba(0,0,0,.7);   /* small hardcover (mobile header) */
+  --sh-book-xs:0 6px 10px -4px rgba(0,0,0,.6);     /* book on the Continue card */
+  --sh-slip:0 18px 40px -20px rgba(0,0,0,.7);
+  /* photo scrims (mobile memory screen: status bar + buttons over a photo) */
+  --scrim-top:linear-gradient(180deg,rgba(14,10,8,.62) 0,rgba(14,10,8,.28) 70px,rgba(14,10,8,0) 130px);
+  --scrim-btn:rgba(20,14,10,.6);
+  --serif:"Literata", Georgia, serif;
+  --sans:"Be Vietnam Pro", system-ui, sans-serif;
+}
+/* =====================================================================
+   TOKENS · dark (html[data-theme="dark"], set by #dark)
+   Redesigned, not inverted: brown-black paper, parchment ink, lighter sun with dark text.
+   ===================================================================== */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --paper-0:#231E19;   /* oklch(.238 .012 62) raised */
+  --paper-1:#1B1713;   /* oklch(.207 .011 60) base */
+  --paper-2:#15110D;   /* oklch(.180 .010 58) recessed */
+  --line:#3C352F;      /* oklch(.335 .014 64) */
+  --line-soft:#2F2924;
+  --tint:rgba(237,229,216,.07);
+  --ink-1:#EDE5D8;     /* oklch(.925 .020 80) 13.2:1 on paper-0 */
+  --ink-2:#CBC1B3;     /* oklch(.815 .022 76)  9.3:1 on paper-0 */
+  --ink-3:#A99E91;     /* oklch(.705 .022 72)  6.3:1 on paper-0 */
+  --sun:#DF8D64;       /* oklch(.72 .115 47) */
+  --on-sun:#25150E;    /* 6.82:1 on --sun */
+  --sun-ink:#E8A87C;   /* brand sunrise, 8.1:1 on paper-0 */
+  --hg-mark:#599480;   /* oklch(.62 .07 170) 4.7:1 on paper-0 */
+  --hg:#294D41; --ha:#A17C3B; --ky:#903024; --dl:#4F5C6A; --lp:#A3682F; --cd:#678486; --earth:#593D33; /* L -.03, C x.95 */
+  --edge-1:#CEC6B9; --edge-2:#9D9488;
+  --edge-big-1:#D8CFBF; --edge-big-2:#A39882;
+  --slip:var(--paper-0); --slip-edge:var(--line);
+  --sh-pill:0 0 0 1px var(--line);
+  --sh-chip:0 1px 2px rgba(0,0,0,.6);
+  --sh-mini:drop-shadow(0 2px 3px rgba(0,0,0,.55));
+  --sh-book:0 30px 50px -18px rgba(0,0,0,.85), 0 2px 0 rgba(255,255,255,.06) inset;
+  --sh-pages:0 20px 30px -14px rgba(0,0,0,.8);
+  --sh-book-sm:0 14px 22px -10px rgba(0,0,0,.85);
+  --sh-book-xs:0 6px 10px -4px rgba(0,0,0,.75);
+  --sh-slip:0 18px 40px -20px rgba(0,0,0,.9);
+}
+/* each book scopes its own cloth */
+.cloth-hg{--cloth:var(--hg);--cloth-deep:var(--hg-deep);--cloth-mute:var(--hg-mute);--cloth-mark:var(--hg-mark)}
+.cloth-earth{--cloth:var(--earth);--cloth-deep:var(--earth-deep);--cloth-mute:var(--earth-mute)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper-1)}
+body{width:1440px;margin:0;font-family:var(--sans);color:var(--ink-1);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-synthesis:none}
+section.screen{width:1440px;height:900px;overflow:hidden;position:relative;background:var(--paper-1)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance}
+p{text-wrap:pretty}
+img{display:block}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.sm{width:16px;height:16px}
+.caps{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:600}
+.num{font-variant-numeric:tabular-nums lining-nums}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ---------- shared: buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:6px;font-size:14px;font-weight:600;white-space:nowrap}
+.btn-sun{background:var(--sun);color:var(--on-sun)}
+.btn-ghost-dark{border:1px solid var(--on-cloth-ghost);color:var(--parch)}
+.btn-ghost{border:1px solid var(--line);color:var(--ink-1);background:var(--paper-0)}
+.btn-text{color:var(--ink-2);height:36px;padding:0 10px}
+
+/* ---------- drawer (Day One journal drawer -> shelves) ---------- */
+.drawer{position:absolute;left:0;top:0;width:256px;height:900px;background:var(--paper-2);border-right:1px solid var(--line);padding:22px 20px}
+.brand{display:flex;align-items:center;gap:10px;height:40px}
+.brand img{width:36px;height:36px}
+.brand b{font-family:var(--serif);font-weight:600;font-size:16px;letter-spacing:-.005em}
+.drawer .new{margin-top:22px;width:100%;justify-content:center;height:42px}
+.nav{margin-top:22px;display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:12px;height:38px;padding:0 10px;border-radius:6px;color:var(--ink-2);text-decoration:none;font-size:15px;font-weight:500}
+.nav a.on{background:var(--paper-0);color:var(--ink-1);font-weight:600;box-shadow:0 0 0 1px var(--line)}
+.shelves{margin-top:28px}
+.shelves + .shelves{margin-top:22px}
+.shelves .caps{color:var(--ink-3);padding:0 10px 8px}
+.shelf{display:flex;align-items:center;gap:12px;height:40px;padding:0 10px;border-radius:6px;font-size:15px;color:var(--ink-1)}
+.shelf.two{height:48px}
+.shelf .lbl{display:flex;flex-direction:column;line-height:1.2}
+.shelf .lbl small{font-size:12px;color:var(--ink-3);margin-top:3px}
+.shelf.on{background:var(--tint)}
+.shelf .count{margin-left:auto;color:var(--ink-3);font-size:13px}
+.shelf.on .count{color:var(--ink-2)}
+.spines{display:flex;align-items:flex-end;gap:2px;width:30px;height:20px;flex:none}
+.spines i{display:block;width:5px;border-radius:1px}
+.spines i.ghost{width:9px;height:18px;border:1px dashed var(--ink-3);background:none}
+.drawer .private{position:absolute;left:20px;right:20px;bottom:22px;display:flex;gap:10px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;line-height:1.45;color:var(--ink-3)}
+.drawer .private .ic{margin-top:1px}
+
+/* ---------- library: timeline column ---------- */
+.timeline{position:absolute;left:256px;top:0;width:520px;height:900px;background:var(--paper-1);border-right:1px solid var(--line)}
+.search{margin:20px 24px 0;height:40px;border-radius:8px;background:var(--paper-0);border:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--ink-3);font-size:14px}
+.search kbd{margin-left:auto;font-family:var(--sans);font-size:12px;color:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.lib-head{padding:18px 24px 0}
+.lib-head h1{font-size:32px;line-height:1.1;letter-spacing:-.01em}
+.totals{margin-top:8px;font-size:14px;color:var(--ink-2)}
+.totals b{color:var(--ink-1);font-weight:600}
+.totals span{color:var(--line);padding:0 5px}
+.sort{margin:16px 24px 0;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-2)}
+.sort .ic{color:var(--ink-3);margin-right:4px}
+.sort a{padding:5px 10px;border-radius:999px;text-decoration:none;color:var(--ink-2);font-weight:500}
+.sort a.on{background:var(--ink-1);color:var(--paper-0)}
+.list{margin-top:12px}
+.yr{display:flex;align-items:baseline;justify-content:space-between;height:32px;padding:7px 24px 0;border-top:1px solid var(--line)}
+.yr b{font-family:var(--serif);font-size:16px;font-weight:600}
+.yr span{font-size:12px;color:var(--ink-3)}
+.row{position:relative;display:grid;grid-template-columns:62px 1fr 70px;align-items:center;gap:16px;height:88px;padding:0 24px}
+.row + .row{border-top:1px solid var(--line-soft)}
+.date{text-align:center;line-height:1}
+.date .m{display:block;font-size:12px;letter-spacing:.09em;font-weight:600;color:var(--ink-3)}
+.date .d{display:block;white-space:nowrap;font-family:var(--serif);font-size:21px;font-weight:500;margin-top:5px;font-variant-numeric:lining-nums}
+.row h3{font-size:18px;line-height:1.25;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .where{font-size:14px;color:var(--ink-2);margin-top:2px}
+.row .meta{font-size:13px;color:var(--ink-3);margin-top:3px}
+.row.sel{background:var(--cloth-deep);margin-right:-1px;padding-right:25px}
+.row.sel .date .m,.row.sel .meta{color:var(--cloth-mute)}
+.row.sel .where{color:var(--cloth-mute)}
+.row.sel .date .d,.row.sel h3{color:var(--parch)}
+.row.sel + .row{border-top-color:transparent}
+
+/* mini book: cloth spine + cover photo + page block (thickness = photos) */
+.mini{position:relative;width:62px;height:76px;justify-self:end;display:flex;filter:var(--sh-mini)}
+.mini .sp{width:8px;height:100%;border-radius:2px 0 0 2px}
+.mini img{width:46px;height:100%;object-fit:cover}
+.mini .pg{height:calc(100% - 4px);align-self:center;border-radius:0 2px 2px 0;
+  background:repeating-linear-gradient(90deg,var(--edge-1) 0 1px,var(--edge-2) 1px 2px)}
+.age-1 img{filter:saturate(.92) sepia(.04)}
+.age-2 img{filter:saturate(.84) sepia(.09)}
+.age-3 img{filter:saturate(.76) sepia(.14)}
+/* mini book with no photos yet (empty library) */
+.mini.blank .slot{width:46px;height:100%;background:var(--cloth);display:flex;align-items:center;justify-content:center;color:var(--gold)}
+.mini.blank .slot span{width:30px;height:30px;border:1px dashed var(--gold);display:flex;align-items:center;justify-content:center}
+
+/* ---------- library: selected book pane (journal color header -> whole pane) ---------- */
+.pane-book{position:absolute;left:776px;top:0;width:664px;height:900px;background:var(--cloth-deep);color:var(--parch);overflow:hidden}
+.pane-book::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 32% 34%, color-mix(in srgb, var(--cloth) 55%, transparent), transparent 70%);pointer-events:none}
+.pane-top{position:absolute;top:18px;right:24px;display:flex;gap:4px}
+.pane-top .btn-text{color:var(--cloth-mute)}
+
+.book{position:absolute;left:52px;top:84px;width:262px;height:344px}
+.book .cover{position:absolute;left:0;top:0;width:246px;height:344px;border-radius:3px 6px 6px 3px;
+  background:
+    repeating-linear-gradient(0deg, var(--weave-hi) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, var(--weave-lo) 0 1px, transparent 1px 3px),
+    var(--cloth);
+  box-shadow:var(--sh-book);z-index:2}
+.book .spine{position:absolute;left:0;top:0;width:24px;height:100%;border-radius:3px 0 0 3px;background:var(--spine-shade)}
+.book .spine::before,.book .spine::after{content:"";position:absolute;left:0;right:3px;height:4px;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);opacity:.55}
+.book .spine::before{top:18px}.book .spine::after{bottom:18px}
+.book .photo{position:absolute;left:44px;top:32px;width:176px;height:144px;object-fit:cover;outline:1px solid color-mix(in srgb, var(--gold) 70%, transparent);outline-offset:4px}
+.book .slot{position:absolute;left:44px;top:32px;width:176px;height:144px;border:1px dashed var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--foil)}
+.book .slot .ic{width:26px;height:26px;stroke-width:1.5}
+.book .foil{position:absolute;left:30px;right:6px;top:204px;text-align:center;color:var(--foil)}
+.book .foil b,.book .foil h2{display:block;font-family:var(--serif);font-weight:600;font-size:25px;line-height:1.15;letter-spacing:.01em;color:var(--foil)}
+.book .foil span{display:block;margin-top:10px;font-size:12px;letter-spacing:.2em;font-weight:500}
+.book .foil i{display:block;width:28px;height:1px;background:var(--gold);margin:14px auto 0;opacity:.8}
+.book .pages{position:absolute;left:238px;top:5px;width:14px;height:334px;border-radius:0 4px 4px 0;z-index:1;
+  background:repeating-linear-gradient(90deg,var(--edge-big-1) 0 1px,var(--edge-big-2) 1px 2px);box-shadow:var(--sh-pages)}
+.book .ribbon{position:absolute;left:196px;top:336px;width:14px;height:48px;background:var(--sun);z-index:1;
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%)}
+
+.info{position:absolute;left:350px;top:84px;width:274px}
+.info .caps{color:var(--gold)}
+.info .place{margin-top:12px;font-size:17px;font-weight:600;line-height:1.35;color:var(--parch)}
+.info .when{margin-top:2px;font-size:15px;color:var(--cloth-mute)}
+.info .desc{margin-top:16px;font-family:var(--serif);font-style:italic;font-size:17px;line-height:1.55;color:var(--parch)}
+.info .stats{margin-top:20px;display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;padding-top:14px;border-top:1px solid var(--on-cloth-line)}
+.info .stats div{font-size:13px;color:var(--cloth-mute);line-height:1.2}
+.info .stats b{display:block;font-family:var(--serif);font-size:24px;font-weight:500;color:var(--parch);font-variant-numeric:lining-nums}
+.info .open{margin-top:24px;height:44px;padding:0 20px;font-size:15px}
+
+/* continue slip: a paper note tucked under the book */
+.slip{position:absolute;left:52px;right:28px;top:528px;height:340px;background:var(--slip);color:var(--ink-1);border-radius:4px;padding:22px 24px;
+  box-shadow:var(--sh-slip), 0 0 0 1px var(--slip-edge)}
+.slip-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.slip-head .caps{color:var(--sun-ink)}
+.slip-head h3{font-size:20px;line-height:1.3;margin-top:6px;font-weight:600}
+.ticks{display:flex;gap:6px;margin-top:4px;flex:none}
+.ticks span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);font-weight:600}
+.ticks i{display:block;width:30px;height:8px;border-radius:2px;background:var(--cloth-mark)}
+.ticks .empty i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--sun)}
+.ticks .empty{color:var(--sun-ink)}
+.waiting{margin-top:16px}
+.wait{display:grid;grid-template-columns:92px 1fr auto;gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.wait + .wait{padding-bottom:0}
+.wait img{width:92px;height:72px;object-fit:cover;border-radius:3px}
+.wait .caps{color:var(--ink-3)}
+.wait b{display:block;font-family:var(--serif);font-weight:600;font-size:15.5px;white-space:nowrap;line-height:1.3;margin-top:4px}
+.wait p{font-size:13px;color:var(--ink-2);margin-top:2px}
+.wait a{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--paper-0);font-size:14px;font-weight:600;color:var(--sun-ink);text-decoration:none}
+
+/* ---------- empty library ---------- */
+.row.ghost .date .plus{display:flex;margin:0 auto;width:34px;height:34px;border-radius:50%;border:1px dashed var(--cloth-mute);align-items:center;justify-content:center;color:var(--parch)}
+.empty-note{padding:22px 24px 0;font-size:14px;color:var(--ink-3);display:flex;gap:10px;align-items:flex-start}
+.empty-note .ic{margin-top:2px}
+.pane-book.first .book{top:250px}
+.pane-book.first .info{top:250px}
+.info h2.hello{margin-top:12px;font-size:34px;line-height:1.12;letter-spacing:-.012em;color:var(--parch)}
+.info .lede{margin-top:14px;font-size:16px;line-height:1.55;color:var(--parch)}
+.info .first-cta{margin-top:26px;height:46px;padding:0 20px;font-size:15px}
+.info .private{margin-top:18px;display:flex;gap:10px;font-size:13px;line-height:1.45;color:var(--cloth-mute)}
+.info .private .ic{margin-top:1px}
+
+/* ---------- trip screen ---------- */
+.rail{position:absolute;left:0;top:0;width:72px;height:900px;background:var(--paper-2);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding-top:18px}
+.rail img{width:36px;height:36px}
+.rail .rb{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.rail .rb.on{background:var(--paper-0);color:var(--ink-1);box-shadow:0 0 0 1px var(--line)}
+.rail hr{width:32px;border:0;border-top:1px solid var(--line);margin:14px 0}
+.chip{position:relative;width:28px;height:36px;border-radius:2px 4px 4px 2px;margin:6px 0;box-shadow:var(--sh-chip)}
+.chip::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--chip-spine);border-radius:2px 0 0 2px}
+.chip.on{outline:2px solid var(--ink-1);outline-offset:3px}
+.rail .chips{display:flex;flex-direction:column;align-items:center;gap:4px}
+
+.mid{position:absolute;left:72px;top:0;width:640px;height:900px;background:var(--paper-1);border-right:1px solid var(--line)}
+.trip-head{position:relative;height:396px;background:var(--cloth-deep);color:var(--parch);padding:22px 32px 0;overflow:hidden}
+.trip-head::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 40%, color-mix(in srgb, var(--cloth) 60%, transparent), transparent 70%)}
+.trip-head > *{position:relative}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--cloth-mute)}
+.crumb em{font-style:normal;padding:0 2px}
+.trip-head h1{margin-top:22px;font-size:52px;line-height:1;letter-spacing:-.02em;font-weight:600}
+.trip-head .where{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:15px;color:var(--cloth-mute)}
+.trip-head .desc{margin-top:14px;width:340px;font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.55}
+.trip-stats{margin-top:20px;display:flex;gap:28px}
+.trip-stats div{font-size:13px;color:var(--cloth-mute);line-height:1.2}
+.trip-stats b{display:block;font-family:var(--serif);font-weight:500;font-size:24px;color:var(--parch);font-variant-numeric:lining-nums}
+.trip-actions{position:absolute;left:32px;bottom:26px;display:flex;gap:10px}
+.trip-actions .btn{height:42px}
+.loop{position:absolute;right:30px;top:26px;width:220px}
+.loop svg{width:220px;height:250px;overflow:visible}
+.loop figcaption{font-size:12px;color:var(--cloth-mute);margin:4px 0 0 22px}
+/* route schematic (RouteLoop) */
+.loop .seg{stroke:var(--gold);stroke-opacity:.6;stroke-width:2}
+.loop .seg.on{stroke:var(--dawn);stroke-opacity:1;stroke-width:3.5}
+.loop .stay{fill:var(--cloth-deep);stroke:var(--gold);stroke-width:1.5}
+.loop .pl{fill:var(--gold)}
+.loop .pl.on{fill:var(--dawn)}
+.loop .start{fill:var(--parch)}
+.loop text{font-family:var(--sans);font-size:12px;fill:var(--cloth-mute)}
+.loop text.on{fill:var(--dawn);font-weight:600}
+
+.tools{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 24px;border-bottom:1px solid var(--line)}
+.views{display:flex;gap:2px;background:var(--paper-2);border-radius:8px;padding:3px}
+.views a{display:flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;color:var(--ink-2);text-decoration:none}
+.views a.on{background:var(--paper-0);color:var(--ink-1);font-weight:600;box-shadow:var(--sh-pill)}
+.tools .right{display:flex;gap:2px}
+
+.ch{position:relative;display:grid;grid-template-columns:52px 1fr 150px;gap:18px;align-items:center;height:111px;padding:0 24px}
+.ch + .ch{border-top:1px solid var(--line)}
+.ch .date .d{font-size:28px}
+.ch .k{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--ink-3)}
+.ch h3{font-size:19px;line-height:1.25;margin-top:3px}
+.ch .pl{font-size:14px;color:var(--ink-2);margin-top:3px}
+.ch .st{font-size:13px;color:var(--ink-3);margin-top:5px;display:flex;align-items:center;gap:6px}
+.ch .st a{display:inline-flex;align-items:center;gap:5px;color:var(--sun-ink);font-weight:600;text-decoration:none}
+.ch .st .dot{color:var(--ink-3)}
+.ch img.th{width:150px;height:88px;object-fit:cover;border-radius:3px}
+.ch.sel{background:var(--paper-0);margin-right:-1px;padding-right:25px}
+.ch.sel .k{color:var(--sun-ink)}
+.ch.sel::before{content:"";position:absolute;left:36px;top:0;width:14px;height:26px;background:var(--sun);clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%)}
+.ch.sel + .ch,.ch + .ch.sel{border-top-color:var(--line)}
+.ch.sel .date{padding-top:14px}
+
+/* entry pane: a two-page spread */
+.entry{position:absolute;left:712px;top:0;width:728px;height:900px;background:var(--paper-0)}
+.e-top{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 40px;border-bottom:1px solid var(--line)}
+.rh{font-family:var(--serif);font-size:14px;color:var(--ink-2)}
+.rh b{font-weight:600;color:var(--ink-1)}
+.rh span{color:var(--ink-3);padding:0 8px}
+.e-nav{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-3)}
+.e-nav .sq{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.e-nav .sq:hover{background:var(--paper-2)}
+.spread{position:absolute;left:40px;top:92px;width:648px;display:grid;grid-template-columns:300px 1fr;gap:34px}
+.spread .ph img{width:300px;height:533px;object-fit:cover;border-radius:2px}
+.exif{margin-top:10px;display:flex;align-items:flex-start;gap:8px;font-size:12px;line-height:1.45;color:var(--ink-3)}
+.exif .ic{margin-top:1px}
+.page .caps{color:var(--sun-ink);display:flex;align-items:center;gap:8px}
+.page h2{font-size:30px;line-height:1.15;margin-top:12px;letter-spacing:-.01em}
+.page .body{margin-top:18px;font-family:var(--serif);font-size:19px;line-height:1.74;color:var(--ink-1)}
+.page .sig{margin-top:18px;font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+.more{position:absolute;left:40px;top:690px;width:648px}
+.more .head{display:flex;justify-content:space-between;align-items:baseline}
+.more .caps{color:var(--ink-3)}
+.more .head a{font-size:13px;font-weight:600;color:var(--sun-ink);text-decoration:none}
+.strip{margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.strip img,.strip .rest{width:100%;height:90px;object-fit:cover;border-radius:3px}
+.strip .rest{background:var(--paper-2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-2);font-size:13px}
+.strip .rest b{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--ink-1);line-height:1.1}
+.e-foot{position:absolute;left:0;right:0;bottom:0;height:56px;border-top:1px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 40px;font-size:13px;color:var(--ink-2)}
+.e-foot span{display:flex;align-items:center;gap:7px}
+.e-foot .sw{width:10px;height:13px;border-radius:1px 2px 2px 1px;background:var(--hg)}
+.e-foot .right{margin-left:auto;color:var(--ink-3)}
+</style>
+</head>
+<body>
+
+<!-- Lucide-style icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-library" viewBox="0 0 24 24"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-image-plus" viewBox="0 0 24 24"><path d="M16 5h6"/><path d="M19 2v6"/><path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><circle cx="9" cy="9" r="2"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></symbol>
+  <symbol id="i-file-down" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M10 12h11"/><path d="M10 18h11"/><path d="M10 6h11"/><path d="M4 10h2"/><path d="M4 6h1v4"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></symbol>
+  <symbol id="i-images" viewBox="0 0 24 24"><path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+</svg>
+
+<!-- =========================================================
+     SCREEN 1 · LIBRARY  (drawer -> timeline -> selected book)
+     ========================================================= -->
+<section class="screen" id="screen-library">
+
+  <aside class="drawer">
+    <div class="brand"><img src="assets/logo-mark.svg" alt=""><b>Travel Memory Book</b></div>
+    <button class="btn btn-sun new"><svg class="ic"><use href="#i-plus"/></svg>New Book</button>
+
+    <nav class="nav">
+      <a class="on" href="#"><svg class="ic"><use href="#i-library"/></svg>Library</a>
+      <a href="#"><svg class="ic"><use href="#i-chart"/></svg>Journey stats</a>
+      <a href="#"><svg class="ic"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+
+    <!-- per-year totals are summed from the six books in spec.md -->
+    <div class="shelves">
+      <div class="caps">Shelves</div>
+      <div class="shelf on">
+        <span class="spines"><i style="height:16px;background:var(--hg)"></i><i style="height:14px;background:var(--ha)"></i><i style="height:20px;background:var(--ky)"></i><i style="height:12px;background:var(--dl)"></i><i style="height:15px;background:var(--lp)"></i></span>
+        All books<span class="count num">6</span></div>
+      <div class="shelf two"><span class="spines"><i style="height:16px;background:var(--hg)"></i><i style="height:14px;background:var(--ha)"></i></span><span class="lbl num">2026<small>8 days · 298 photos</small></span><span class="count num">2</span></div>
+      <div class="shelf two"><span class="spines"><i style="height:20px;background:var(--ky)"></i></span><span class="lbl num">2025<small>7 days · 241 photos</small></span><span class="count num">1</span></div>
+      <div class="shelf two"><span class="spines"><i style="height:12px;background:var(--dl)"></i><i style="height:15px;background:var(--lp)"></i></span><span class="lbl num">2024<small>10 days · 155 photos</small></span><span class="count num">2</span></div>
+      <div class="shelf two"><span class="spines"><i style="height:12px;background:var(--cd)"></i></span><span class="lbl num">2023<small>4 days · 64 photos</small></span><span class="count num">1</span></div>
+    </div>
+
+    <div class="shelves">
+      <div class="caps">Countries</div>
+      <div class="shelf"><span class="spines"><i style="height:16px;background:var(--hg)"></i><i style="height:14px;background:var(--ha)"></i><i style="height:12px;background:var(--dl)"></i><i style="height:12px;background:var(--cd)"></i></span>Vietnam<span class="count num">4</span></div>
+      <div class="shelf"><span class="spines"><i style="height:20px;background:var(--ky)"></i></span>Japan<span class="count num">1</span></div>
+      <div class="shelf"><span class="spines"><i style="height:15px;background:var(--lp)"></i></span>Laos<span class="count num">1</span></div>
+    </div>
+
+    <div class="private"><svg class="ic sm"><use href="#i-lock"/></svg><span>Kept on this device. No account, no cloud. Only you read these books.</span></div>
+  </aside>
+
+  <main class="timeline">
+    <div class="search"><svg class="ic sm"><use href="#i-search"/></svg>Search memories, places…<kbd>⌘K</kbd></div>
+
+    <header class="lib-head">
+      <h1>Library</h1>
+      <p class="totals num"><b>6</b> books<span aria-hidden="true">/</span><b>29</b> days<span aria-hidden="true">/</span><b>3</b> countries<span aria-hidden="true">/</span><b>758</b> photos<span aria-hidden="true">/</span><b>37</b> memories</p>
+    </header>
+
+    <div class="sort"><svg class="ic sm"><use href="#i-sort"/></svg>
+      <a class="on" href="#">Newest first</a><a href="#">Oldest first</a><a href="#">By year</a><a href="#">By country</a>
+    </div>
+
+    <div class="list">
+      <div class="yr"><b class="num">2026</b><span>2 books</span></div>
+      <article class="row sel cloth-hg">
+        <div class="date"><span class="m">MAR</span><span class="d">14–17</span></div>
+        <div><h3>Hà Giang Loop</h3><p class="where">Hà Giang, Vietnam</p><p class="meta num">4 days · 186 photos · 9 memories</p></div>
+        <div class="mini"><span class="sp" style="background:var(--hg)"></span><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass"><span class="pg" style="width:7px"></span></div>
+      </article>
+      <article class="row">
+        <div class="date"><span class="m">JAN</span><span class="d">24–27</span></div>
+        <div><h3>Hội An by Lantern Light</h3><p class="where">Hội An, Vietnam</p><p class="meta num">4 days · 112 photos · 5 memories</p></div>
+        <div class="mini"><span class="sp" style="background:var(--ha)"></span><img src="assets/photos/hoian-cover-lantern-street.jpg" alt="Lantern street, Hội An"><span class="pg" style="width:5px"></span></div>
+      </article>
+
+      <div class="yr"><b class="num">2025</b><span>1 book</span></div>
+      <article class="row age-1">
+        <div class="date"><span class="m">NOV</span><span class="d">18–24</span></div>
+        <div><h3>Kyoto in Late Autumn</h3><p class="where">Kyoto, Japan</p><p class="meta num">7 days · 241 photos · 12 memories</p></div>
+        <div class="mini"><span class="sp" style="background:var(--ky)"></span><img src="assets/photos/kyoto-cover-fushimi-inari.jpg" alt="Fushimi Inari"><span class="pg" style="width:8px"></span></div>
+      </article>
+
+      <div class="yr"><b class="num">2024</b><span>2 books</span></div>
+      <article class="row age-2">
+        <div class="date"><span class="m">DEC</span><span class="d">20–23</span></div>
+        <div><h3>Đà Lạt, Cold Mornings</h3><p class="where">Đà Lạt, Vietnam</p><p class="meta num">4 days · 58 photos · 3 memories</p></div>
+        <div class="mini"><span class="sp" style="background:var(--dl)"></span><img src="assets/photos/dalat-cover-xuan-huong-lake.jpg" alt="Xuân Hương Lake"><span class="pg" style="width:3px"></span></div>
+      </article>
+      <article class="row age-2">
+        <div class="date"><span class="m">FEB</span><span class="d">8–13</span></div>
+        <div><h3>Slow Days in Luang Prabang</h3><p class="where">Luang Prabang, Laos</p><p class="meta num">6 days · 97 photos · 6 memories</p></div>
+        <div class="mini"><span class="sp" style="background:var(--lp)"></span><img src="assets/photos/luangprabang-cover-haw-pha-bang.jpg" alt="Haw Pha Bang"><span class="pg" style="width:4px"></span></div>
+      </article>
+
+      <div class="yr"><b class="num">2023</b><span>1 book</span></div>
+      <article class="row age-3">
+        <div class="date"><span class="m">JUL</span><span class="d">1–4</span></div>
+        <div><h3>Côn Đảo, First Swim of Summer</h3><p class="where">Côn Đảo, Vietnam</p><p class="meta num">4 days · 64 photos · 2 memories</p></div>
+        <div class="mini"><span class="sp" style="background:var(--cd)"></span><img src="assets/photos/condao-cover-beach.jpg" alt="Côn Đảo beach"><span class="pg" style="width:3px"></span></div>
+      </article>
+    </div>
+  </main>
+
+  <aside class="pane-book cloth-hg" aria-label="Selected book">
+    <div class="pane-top">
+      <button class="btn btn-text"><svg class="ic sm"><use href="#i-file-down"/></svg>Export PDF</button>
+      <button class="btn btn-text"><svg class="ic sm"><use href="#i-pencil"/></svg>Edit</button>
+    </div>
+
+    <!-- the title lives once, on the cover foil -->
+    <div class="book">
+      <div class="cover">
+        <span class="spine"></span>
+        <img class="photo" src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Cover: Thẩm Mã Pass">
+        <div class="foil"><h2>Hà Giang Loop</h2><span class="num">MARCH 2026</span><i></i></div>
+      </div>
+      <span class="pages"></span>
+      <span class="ribbon"></span>
+    </div>
+
+    <div class="info">
+      <div class="caps">Newest book</div>
+      <p class="place">Hà Giang, Vietnam</p>
+      <p class="when num">14–17 Mar 2026</p>
+      <p class="desc">Four days on the back of a motorbike around the karst plateau, from Quản Bạ to Mèo Vạc and back.</p>
+      <div class="stats num">
+        <div><b>4</b>days</div><div><b>186</b>photos</div><div><b>9</b>memories</div><div><b>7</b>places</div>
+      </div>
+      <button class="btn btn-sun open"><svg class="ic"><use href="#i-book-open"/></svg>Open the book</button>
+    </div>
+
+    <div class="slip">
+      <div class="slip-head">
+        <div>
+          <div class="caps">Continue · Hà Giang Loop</div>
+          <h3>2 of 4 days still have no memory written.</h3>
+        </div>
+        <div class="ticks" aria-label="Memories per day">
+          <span class="empty"><i></i>D1</span><span><i></i>D2</span><span><i></i>D3</span><span class="empty"><i></i>D4</span>
+        </div>
+      </div>
+      <div class="waiting">
+        <div class="wait">
+          <img src="assets/photos/hagiang-d1-yen-minh-terraces.jpg" alt="Terraces near Yên Minh">
+          <div><div class="caps">Day 1 · Sat 14 Mar</div><b>Hà Giang → Yên Minh</b><p class="num">38 photos · no memory yet</p></div>
+          <a href="#"><svg class="ic sm"><use href="#i-pen"/></svg>Write a memory</a>
+        </div>
+        <div class="wait">
+          <img src="assets/photos/hagiang-d4-terraced-fields.jpg" alt="Terraced fields near Du Già">
+          <div><div class="caps">Day 4 · Tue 17 Mar</div><b>Mèo Vạc → Du Già → Hà Giang</b><p class="num">35 photos · no memory yet</p></div>
+          <a href="#"><svg class="ic sm"><use href="#i-pen"/></svg>Write a memory</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<!-- =========================================================
+     SCREEN 2 · ONE BOOK  (rail -> chapters -> memory spread)
+     ========================================================= -->
+<section class="screen" id="screen-trip">
+
+  <nav class="rail" aria-label="Main">
+    <img src="assets/logo-mark.svg" alt="Travel Memory Book">
+    <div style="height:14px"></div>
+    <button class="rb" aria-label="Show sidebar"><svg class="ic"><use href="#i-panel"/></svg></button>
+    <hr>
+    <button class="rb on" aria-label="Library"><svg class="ic"><use href="#i-library"/></svg></button>
+    <button class="rb" aria-label="Journey stats"><svg class="ic"><use href="#i-chart"/></svg></button>
+    <button class="rb" aria-label="Settings"><svg class="ic"><use href="#i-settings"/></svg></button>
+    <hr>
+    <div class="chips">
+      <span class="chip on" style="background:var(--hg)" title="Hà Giang Loop"></span>
+      <span class="chip" style="background:var(--ha)" title="Hội An by Lantern Light"></span>
+      <span class="chip" style="background:var(--ky)" title="Kyoto in Late Autumn"></span>
+      <span class="chip" style="background:var(--dl)" title="Đà Lạt, Cold Mornings"></span>
+      <span class="chip" style="background:var(--lp)" title="Slow Days in Luang Prabang"></span>
+      <span class="chip" style="background:var(--cd)" title="Côn Đảo, First Swim of Summer"></span>
+    </div>
+  </nav>
+
+  <main class="mid">
+    <header class="trip-head cloth-hg">
+      <div class="crumb"><svg class="ic sm"><use href="#i-arrow-left"/></svg>Library<em>/</em><span class="num">2026</span></div>
+      <h1>Hà Giang Loop</h1>
+      <p class="where"><svg class="ic sm"><use href="#i-pin"/></svg>Hà Giang, Vietnam<span>·</span><span class="num">14–17 Mar 2026</span></p>
+      <p class="desc">Four days on the back of a motorbike around the karst plateau, from Quản Bạ to Mèo Vạc and back.</p>
+      <div class="trip-stats num">
+        <div><b>4</b>days</div><div><b>186</b>photos</div><div><b>9</b>memories</div><div><b>7</b>places</div>
+      </div>
+
+      <figure class="loop" aria-label="Route schematic: the loop through 7 places">
+        <svg viewBox="0 0 220 250" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Day 1: Hà Giang -> Quản Bạ -> Bắc Sum -> Yên Minh -->
+          <path class="seg" d="M50 222 C 34 204, 24 186, 30 170 S 50 146, 62 140 S 88 128, 98 128"/>
+          <!-- Day 2: Yên Minh -> Thẩm Mã -> Lũng Cú -> Đồng Văn -->
+          <path class="seg" d="M98 128 C 86 116, 80 100, 86 84 S 94 40, 106 26 S 128 38, 134 52"/>
+          <!-- Day 3 (open): Đồng Văn -> Mã Pí Lèng -> Nho Quế -> Mèo Vạc -->
+          <path class="seg on" d="M134 52 C 142 60, 150 64, 156 72 S 172 90, 172 100 S 164 126, 158 134"/>
+          <!-- Day 4: Mèo Vạc -> Du Già -> Hà Giang -->
+          <path class="seg" d="M158 134 C 150 156, 138 174, 122 186 S 78 216, 50 222"/>
+          <!-- overnight stops: Yên Minh, Đồng Văn, Mèo Vạc -->
+          <g class="stay"><circle cx="98" cy="128" r="4"/><circle cx="134" cy="52" r="4"/><circle cx="158" cy="134" r="4"/></g>
+          <!-- the 7 places -->
+          <g class="pl">
+            <circle cx="30" cy="170" r="3.5"/><circle cx="62" cy="140" r="3.5"/><circle cx="86" cy="84" r="3.5"/>
+            <circle cx="106" cy="26" r="3.5"/><circle cx="122" cy="186" r="3.5"/>
+          </g>
+          <g class="pl on"><circle cx="156" cy="72" r="4.5"/><circle cx="172" cy="100" r="4.5"/></g>
+          <rect class="start" x="44" y="216" width="12" height="12" rx="2"/>
+          <text x="116" y="22">Lũng Cú</text>
+          <text x="76" y="88" text-anchor="end">Thẩm Mã</text>
+          <text x="70" y="156">Bắc Sum</text>
+          <text x="38" y="186">Quản Bạ</text>
+          <text x="132" y="196">Du Già</text>
+          <text x="22" y="246">Hà Giang · start &amp; end</text>
+          <text class="on" x="166" y="72">Mã Pí Lèng</text>
+          <text class="on" x="182" y="104">Nho Quế</text>
+        </svg>
+        <figcaption>Schematic · not to scale</figcaption>
+      </figure>
+
+      <div class="trip-actions">
+        <button class="btn btn-sun"><svg class="ic"><use href="#i-book-open"/></svg>Open the book</button>
+        <button class="btn btn-ghost-dark"><svg class="ic sm"><use href="#i-image-plus"/></svg>Add photos</button>
+        <button class="btn btn-ghost-dark"><svg class="ic sm"><use href="#i-pen"/></svg>Write a memory</button>
+      </div>
+    </header>
+
+    <div class="tools">
+      <div class="views">
+        <a class="on" href="#"><svg class="ic sm"><use href="#i-list"/></svg>Chapters</a>
+        <a href="#"><svg class="ic sm"><use href="#i-images"/></svg>Photos</a>
+        <a href="#"><svg class="ic sm"><use href="#i-route"/></svg>Route</a>
+      </div>
+      <div class="right">
+        <button class="btn btn-text"><svg class="ic sm"><use href="#i-file-down"/></svg>Export PDF</button>
+        <button class="btn btn-text"><svg class="ic sm"><use href="#i-pencil"/></svg>Edit</button>
+      </div>
+    </div>
+
+    <article class="ch">
+      <div class="date"><span class="m">SAT</span><span class="d">14</span><span class="m" style="margin-top:4px">MAR</span></div>
+      <div><div class="k">Day 1</div><h3>Hà Giang → Yên Minh</h3><p class="pl">Quản Bạ Heaven's Gate · Bắc Sum Pass</p>
+        <p class="st num">38 photos <span class="dot">·</span> no memory yet <span class="dot">·</span> <a href="#"><svg class="ic sm"><use href="#i-pen"/></svg>Write one</a></p></div>
+      <img class="th" src="assets/photos/hagiang-d1-yen-minh-terraces.jpg" alt="Terraces near Yên Minh">
+    </article>
+    <article class="ch">
+      <div class="date"><span class="m">SUN</span><span class="d">15</span><span class="m" style="margin-top:4px">MAR</span></div>
+      <div><div class="k">Day 2</div><h3>Yên Minh → Đồng Văn</h3><p class="pl">Thẩm Mã Pass · Lũng Cú Flag Tower</p>
+        <p class="st num">52 photos <span class="dot">·</span> 4 memories</p></div>
+      <img class="th" src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass">
+    </article>
+    <article class="ch sel">
+      <div class="date"><span class="m">MON</span><span class="d">16</span><span class="m" style="margin-top:4px">MAR</span></div>
+      <div><div class="k">Day 3</div><h3>Đồng Văn → Mèo Vạc</h3><p class="pl">Mã Pí Lèng Pass · Nho Quế River</p>
+        <p class="st num">61 photos <span class="dot">·</span> 5 memories</p></div>
+      <img class="th" src="assets/photos/hagiang-d3-nho-que-river.jpg" alt="Nho Quế River">
+    </article>
+    <article class="ch">
+      <div class="date"><span class="m">TUE</span><span class="d">17</span><span class="m" style="margin-top:4px">MAR</span></div>
+      <div><div class="k">Day 4</div><h3>Mèo Vạc → Du Già → Hà Giang</h3><p class="pl">Du Già</p>
+        <p class="st num">35 photos <span class="dot">·</span> no memory yet <span class="dot">·</span> <a href="#"><svg class="ic sm"><use href="#i-pen"/></svg>Write one</a></p></div>
+      <img class="th" src="assets/photos/hagiang-d4-terraced-fields.jpg" alt="Terraced fields near Du Già">
+    </article>
+  </main>
+
+  <section class="entry" aria-label="Memory">
+    <div class="e-top">
+      <p class="rh"><b>Day 3</b><span>·</span><span style="padding:0;color:var(--ink-2)" class="num">Mon 16 Mar 2026</span><span>·</span>Đồng Văn → Mèo Vạc</p>
+      <div class="e-nav num">
+        <button class="sq" aria-label="Previous memory"><svg class="ic sm"><use href="#i-left"/></svg></button>
+        Memory 1 of 5
+        <button class="sq" aria-label="Next memory"><svg class="ic sm"><use href="#i-right"/></svg></button>
+        <button class="sq" aria-label="Edit memory" style="margin-left:6px"><svg class="ic sm"><use href="#i-pencil"/></svg></button>
+      </div>
+    </div>
+
+    <div class="spread">
+      <figure class="ph">
+        <img src="assets/photos/hagiang-d3-ma-pi-leng-portrait.jpg" alt="Nho Quế River seen from Mã Pí Lèng Pass">
+        <figcaption class="exif num"><svg class="ic sm"><use href="#i-camera"/></svg><span>16 Mar 2026 · 07:12 · f/5.6 · 1/500s · ISO 200</span></figcaption>
+      </figure>
+      <article class="page" lang="vi">
+        <div class="caps" lang="en">Memory</div>
+        <h2>Mã Pí Lèng, 7 giờ sáng</h2>
+        <p class="body">Dừng xe ở Mã Pí Lèng lúc sương còn vắt ngang vách núi. Sông Nho Quế bên dưới xanh như ai đổ mực, nhỏ đến mức tưởng chỉ là một sợi chỉ. Anh Páo — người chở mình suốt bốn ngày — bảo mùa này nước đẹp nhất. Mình đứng đó gần nửa tiếng, không chụp thêm tấm nào, chỉ muốn nhớ cảm giác gió lạnh tạt vào mặt.</p>
+      </article>
+    </div>
+
+    <div class="more">
+      <div class="head"><span class="caps">More from Day 3</span><a href="#">See all 61 photos</a></div>
+      <div class="strip">
+        <img src="assets/photos/hagiang-d3-ma-pi-leng-road.jpg" alt="Road over Mã Pí Lèng">
+        <img src="assets/photos/hagiang-d3-nho-que-green.jpg" alt="Nho Quế River, green banks">
+        <img src="assets/photos/hagiang-d3-nho-que-river.jpg" alt="Nho Quế canyon">
+        <div class="rest num"><b>+57</b>photos</div>
+      </div>
+    </div>
+
+    <footer class="e-foot">
+      <span><i class="sw"></i>Hà Giang Loop</span>
+      <span><svg class="ic sm"><use href="#i-pin"/></svg>Mã Pí Lèng Pass</span>
+      <span class="num"><svg class="ic sm"><use href="#i-clock"/></svg>07:12</span>
+      <span class="right num">Day 3 of 4</span>
+    </footer>
+  </section>
+</section>
+
+<!-- =========================================================
+     SCREEN 3 · EMPTY LIBRARY  (first launch: 0 books)
+     drawer -> list with one blank "New Book" selected -> the blank book
+     ========================================================= -->
+<section class="screen" id="screen-empty">
+
+  <aside class="drawer">
+    <div class="brand"><img src="assets/logo-mark.svg" alt=""><b>Travel Memory Book</b></div>
+    <button class="btn btn-sun new"><svg class="ic"><use href="#i-plus"/></svg>New Book</button>
+
+    <nav class="nav">
+      <a class="on" href="#"><svg class="ic"><use href="#i-library"/></svg>Library</a>
+      <a href="#"><svg class="ic"><use href="#i-chart"/></svg>Journey stats</a>
+      <a href="#"><svg class="ic"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+
+    <div class="shelves">
+      <div class="caps">Shelves</div>
+      <div class="shelf on"><span class="spines"><i class="ghost"></i></span>All books<span class="count num">0</span></div>
+    </div>
+  </aside>
+
+  <main class="timeline">
+    <div class="search"><svg class="ic sm"><use href="#i-search"/></svg>Search memories, places…<kbd>⌘K</kbd></div>
+
+    <header class="lib-head">
+      <h1>Library</h1>
+      <p class="totals">No books yet</p>
+    </header>
+
+    <div class="list" style="margin-top:22px">
+      <article class="row sel ghost cloth-earth">
+        <div class="date"><span class="plus"><svg class="ic sm"><use href="#i-plus"/></svg></span></div>
+        <div><h3>New Book</h3><p class="where">No photos yet</p></div>
+        <div class="mini blank"><span class="sp" style="background:var(--earth)"></span><span class="slot"><span><svg class="ic sm"><use href="#i-image-plus"/></svg></span></span><span class="pg" style="width:2px"></span></div>
+      </article>
+    </div>
+    <p class="empty-note"><svg class="ic sm"><use href="#i-library"/></svg><span>Books are shelved here by year, newest first.</span></p>
+  </main>
+
+  <aside class="pane-book first cloth-earth" aria-label="New book">
+    <div class="book">
+      <div class="cover">
+        <span class="spine"></span>
+        <div class="slot"><svg class="ic"><use href="#i-image-plus"/></svg><span class="caps">Cover photo</span></div>
+        <div class="foil"><b>New Book</b><i></i></div>
+      </div>
+      <span class="pages"></span>
+      <span class="ribbon"></span>
+    </div>
+
+    <div class="info">
+      <div class="caps">Your first book</div>
+      <h2 class="hello">Turn your trips into books</h2>
+      <p class="lede">Select your travel photos and flip through them like a real photo book.</p>
+      <button class="btn btn-sun first-cta"><svg class="ic"><use href="#i-plus"/></svg>Create your first book</button>
+      <p class="private"><svg class="ic sm"><use href="#i-lock"/></svg><span>Kept on this device. No account, no cloud. Only you read these books.</span></p>
+    </div>
+  </aside>
+</section>
+
+</body>
+</html>

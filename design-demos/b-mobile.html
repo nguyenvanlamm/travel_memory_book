@@ -1,0 +1,553 @@
+<!doctype html>
+<!--
+  Travel Memory Book · B (Day One reference) · mobile 390×844
+  The desktop three-pane frame (drawer -> list -> detail) folds into pushed screens:
+    m-library  drawer + list      (drawer nav becomes the bottom tab bar)
+    m-trip     detail + trip head (pushed from a book row; tab bar hidden)
+    m-memory   one memory         (pushed from a chapter; prev/next bar)
+    m-empty    first launch, 0 books
+  Tokens are copied verbatim from b-reference.html (same names, same values). #dark sets data-theme="dark".
+  Built to be rebuilt in Flutter Material 3: solid fills, linear/radial gradients, BoxShadow, one polygon clip
+  (ribbon), no backdrop-filter, no blend modes.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Memory Book · B mobile</title>
+<script>
+  (function(){var set=function(){document.documentElement.toggleAttribute('data-theme',false);
+    if(location.hash==='#dark')document.documentElement.setAttribute('data-theme','dark');};
+    set();window.addEventListener('hashchange',set);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&display=swap" rel="stylesheet">
+<style>
+/*@TOKENS-BEGIN: copied verbatim from b-reference.html@*/
+/* =====================================================================
+   TOKENS · light (default). Same names and values as b-mobile.html.
+   ===================================================================== */
+:root{
+  /* paper: warm series, oklch L .985 / .966 / .936 */
+  --paper-0:#FCFAF6;   /* oklch(.985 .006 80) raised: entry page, cards, active pill */
+  --paper-1:#F8F3EC;   /* oklch(.966 .011 80) base: timeline, app background */
+  --paper-2:#EFE9DF;   /* oklch(.936 .015 78) recessed: drawer, tab bar, tracks */
+  --line:#DED6CC;      /* oklch(.88 .016 75) */
+  --line-soft:#E8E2D9; /* line at 60% over paper-1: row dividers */
+  --tint:rgba(44,30,24,.06);   /* selected wash on paper */
+  /* ink */
+  --ink-1:#2C1E18;     /* oklch(.25 .025 45) brand earth, deepened */
+  --ink-2:#51453D;     /* oklch(.40 .022 55) */
+  --ink-3:#6C6158;     /* oklch(.50 .02 60)  >=4.99:1 on paper-2 */
+  /* action: brand sunrise, darkened */
+  --sun:#A64F2B;       /* oklch(.53 .125 42) button fill */
+  --on-sun:#FFFFFF;    /* 5.56:1 on --sun */
+  --sun-ink:#9A4825;   /* oklch(.50 .12 42) as text on paper, 5.23-6.05:1 */
+  --dawn:#E8A87C;      /* brand sunrise: active route on cloth-deep (both themes) */
+  /* cloth: one per book, sampled from its own cover photo (oklch L .42-.64, C <=.14) */
+  --hg:#2F5649;        /* Hà Giang: Nho Quế jade oklch(.42 .05 170) */
+  --ha:#AC853F;        /* Hội An: lantern ochre oklch(.64 .10 80) */
+  --ky:#9D3629;        /* Kyoto: torii vermilion oklch(.48 .14 30) */
+  --dl:#576574;        /* Đà Lạt: misty lake slate oklch(.50 .03 250) */
+  --lp:#AF7033;        /* Luang Prabang: robe saffron oklch(.60 .11 62) */
+  --cd:#6E8D90;        /* Côn Đảo: sea-salt teal oklch(.62 .035 205) */
+  --earth:#63453A;     /* no cover yet: brand earth oklch(.42 .045 41) */
+  /* cloth-mark: small status marks (day ticks) on paper; light = cloth, dark = cloth at L .62 */
+  --hg-mark:#2F5649;
+  /* cloth-deep: oklch(.255, min(C*.6,.035), H) - pane backgrounds, theme-invariant */
+  --hg-deep:#132821;
+  --earth-deep:#2E1E19;
+  /* on cloth-deep: parch + mute (= parch mixed 30% with the cloth, in oklab) */
+  --parch:#F3EAD9;     /* 13:1 on hg-deep */
+  --hg-mute:#B6C2B3;   /* 8.4:1 on hg-deep */
+  --earth-mute:#C6B5A6;/* 8.0:1 on earth-deep */
+  --gold:#D1BB92;      /* brand foil #D4B98C, oklch(.80 .06 82): rules, outlines, caps on cloth-deep */
+  --foil:#DAC49D;      /* oklch(.83 .058 82): text stamped on a cover (cloth-mid), >=4.76:1 on hg/earth */
+  --on-cloth-line:rgba(243,234,217,.18);
+  --on-cloth-ghost:rgba(243,234,217,.38);
+  /* page block (book edges) */
+  --edge-1:#F6EFE2; --edge-2:#DCD2C2;
+  --edge-big-1:#F3EAD9; --edge-big-2:#CFC4B0;
+  /* the slip (paper note on a cloth pane) */
+  --slip:var(--paper-1); --slip-edge:transparent;
+  /* material shading (neutral, not hue) */
+  --weave-hi:rgba(255,255,255,.025); --weave-lo:rgba(0,0,0,.04);
+  --spine-shade:linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.16) 82%,rgba(255,255,255,.10) 86%,rgba(0,0,0,.18) 92%,transparent);
+  --chip-spine:rgba(0,0,0,.22);
+  /* shadows */
+  --sh-pill:0 1px 2px rgba(44,30,24,.12);
+  --sh-chip:0 1px 2px rgba(44,30,24,.25);
+  --sh-mini:drop-shadow(0 2px 3px rgba(44,30,24,.18));
+  --sh-book:0 30px 50px -18px rgba(0,0,0,.65), 0 2px 0 rgba(255,255,255,.06) inset;
+  --sh-pages:0 20px 30px -14px rgba(0,0,0,.6);
+  --sh-book-sm:0 14px 22px -10px rgba(0,0,0,.7);   /* small hardcover (mobile header) */
+  --sh-book-xs:0 6px 10px -4px rgba(0,0,0,.6);     /* book on the Continue card */
+  --sh-slip:0 18px 40px -20px rgba(0,0,0,.7);
+  /* photo scrims (mobile memory screen: status bar + buttons over a photo) */
+  --scrim-top:linear-gradient(180deg,rgba(14,10,8,.62) 0,rgba(14,10,8,.28) 70px,rgba(14,10,8,0) 130px);
+  --scrim-btn:rgba(20,14,10,.6);
+  --serif:"Literata", Georgia, serif;
+  --sans:"Be Vietnam Pro", system-ui, sans-serif;
+}
+/* =====================================================================
+   TOKENS · dark (html[data-theme="dark"], set by #dark)
+   Redesigned, not inverted: brown-black paper, parchment ink, lighter sun with dark text.
+   ===================================================================== */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --paper-0:#231E19;   /* oklch(.238 .012 62) raised */
+  --paper-1:#1B1713;   /* oklch(.207 .011 60) base */
+  --paper-2:#15110D;   /* oklch(.180 .010 58) recessed */
+  --line:#3C352F;      /* oklch(.335 .014 64) */
+  --line-soft:#2F2924;
+  --tint:rgba(237,229,216,.07);
+  --ink-1:#EDE5D8;     /* oklch(.925 .020 80) 13.2:1 on paper-0 */
+  --ink-2:#CBC1B3;     /* oklch(.815 .022 76)  9.3:1 on paper-0 */
+  --ink-3:#A99E91;     /* oklch(.705 .022 72)  6.3:1 on paper-0 */
+  --sun:#DF8D64;       /* oklch(.72 .115 47) */
+  --on-sun:#25150E;    /* 6.82:1 on --sun */
+  --sun-ink:#E8A87C;   /* brand sunrise, 8.1:1 on paper-0 */
+  --hg-mark:#599480;   /* oklch(.62 .07 170) 4.7:1 on paper-0 */
+  --hg:#294D41; --ha:#A17C3B; --ky:#903024; --dl:#4F5C6A; --lp:#A3682F; --cd:#678486; --earth:#593D33; /* L -.03, C x.95 */
+  --edge-1:#CEC6B9; --edge-2:#9D9488;
+  --edge-big-1:#D8CFBF; --edge-big-2:#A39882;
+  --slip:var(--paper-0); --slip-edge:var(--line);
+  --sh-pill:0 0 0 1px var(--line);
+  --sh-chip:0 1px 2px rgba(0,0,0,.6);
+  --sh-mini:drop-shadow(0 2px 3px rgba(0,0,0,.55));
+  --sh-book:0 30px 50px -18px rgba(0,0,0,.85), 0 2px 0 rgba(255,255,255,.06) inset;
+  --sh-pages:0 20px 30px -14px rgba(0,0,0,.8);
+  --sh-book-sm:0 14px 22px -10px rgba(0,0,0,.85);
+  --sh-book-xs:0 6px 10px -4px rgba(0,0,0,.75);
+  --sh-slip:0 18px 40px -20px rgba(0,0,0,.9);
+}
+/* each book scopes its own cloth */
+.cloth-hg{--cloth:var(--hg);--cloth-deep:var(--hg-deep);--cloth-mute:var(--hg-mute);--cloth-mark:var(--hg-mark)}
+.cloth-earth{--cloth:var(--earth);--cloth-deep:var(--earth-deep);--cloth-mute:var(--earth-mute)}
+/*@TOKENS-END@*/
+
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper-2)}
+body{display:flex;gap:40px;align-items:flex-start;width:max-content;font-family:var(--sans);color:var(--ink-1);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-synthesis:none}
+h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance}
+p{text-wrap:pretty}
+img{display:block}
+a{text-decoration:none;color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.sm{width:16px;height:16px}
+.caps{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:600}
+.num{font-variant-numeric:tabular-nums lining-nums}
+
+/* ---------- frame ---------- */
+.phone{position:relative;width:390px;height:844px;overflow:hidden;background:var(--paper-1);flex:none}
+.sb{position:relative;z-index:3;height:47px;display:flex;align-items:center;justify-content:space-between;padding:4px 26px 0 38px;
+  font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--ink-1)}
+.sb .sys{display:flex;gap:6px;align-items:center}
+.sb svg{fill:currentColor}
+.on-cloth .sb,.on-photo .sb{color:var(--parch)}
+.home{position:absolute;left:0;right:0;bottom:0;height:34px;z-index:6;pointer-events:none}
+.home::after{content:"";position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink-1)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 16px;border-radius:6px;font-size:15px;font-weight:600;white-space:nowrap}
+.btn-sun{background:var(--sun);color:var(--on-sun)}
+.btn-cloth{border:1px solid var(--on-cloth-ghost);color:var(--parch)}
+.iconbtn{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);flex:none}
+
+/* ---------- tab bar (the drawer, folded) ---------- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:90px;padding-bottom:34px;background:var(--paper-2);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(3,1fr);z-index:4}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:56px;color:var(--ink-2);font-size:12px;font-weight:500;line-height:1.2}
+.tab .pill{display:flex;align-items:center;justify-content:center;width:56px;height:28px;border-radius:14px}
+.tab.on{color:var(--ink-1);font-weight:600}
+.tab.on .pill{background:var(--paper-0);box-shadow:0 0 0 1px var(--line)}
+
+/* ---------- library ---------- */
+.m-head{display:flex;align-items:center;justify-content:space-between;height:60px;padding:4px 16px 0 20px}
+.m-head h1{font-size:34px;line-height:1.1;letter-spacing:-.015em}
+.m-search{display:flex;gap:8px;align-items:center;padding:4px 16px 0}
+.field{flex:1;height:44px;border-radius:8px;background:var(--paper-0);border:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--ink-3);font-size:15px}
+.m-search .iconbtn{border:1px solid var(--line);background:var(--paper-0)}
+
+/* ContinueCard: the book's cloth, with the days still waiting */
+.cont{margin:14px 16px 0;padding:16px 16px 4px;border-radius:8px;background:var(--cloth-deep);color:var(--parch);position:relative;overflow:hidden}
+.cont::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 85% 0%, color-mix(in srgb, var(--cloth) 60%, transparent), transparent 70%);pointer-events:none}
+.cont > *{position:relative}
+.cont-head{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}
+.cont-head .caps{color:var(--gold)}
+.cont-head h2{font-size:18px;line-height:1.3;margin-top:5px;font-weight:600}
+.dticks{display:flex;gap:8px;margin-top:14px}
+.dticks span{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--cloth-mute)}
+.dticks i{display:block;width:34px;height:8px;border-radius:2px;background:var(--gold)}
+.dticks .empty i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--dawn)}
+.dticks .empty{color:var(--dawn)}
+.todo{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--on-cloth-line)}
+.dticks + .todo{margin-top:14px}
+.todo img{width:52px;height:52px;object-fit:cover;border-radius:3px}
+.todo .caps{color:var(--cloth-mute)}
+.todo b{display:block;font-family:var(--serif);font-weight:600;font-size:15.5px;line-height:1.3;margin-top:3px;text-wrap:balance}
+.todo .btn{height:44px;padding:0 14px;font-size:14px}
+
+/* BookMini on the Continue card: cover + pages + ribbon */
+.bookette{position:relative;width:44px;height:58px;margin-top:2px}
+.bookette .cv{position:absolute;inset:0 4px 0 0;background:var(--cloth);border-radius:2px 3px 3px 2px;box-shadow:var(--sh-book-xs);overflow:hidden}
+.bookette .cv::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--spine-shade)}
+.bookette img{position:absolute;left:10px;top:7px;width:26px;height:22px;object-fit:cover;outline:1px solid color-mix(in srgb, var(--gold) 70%, transparent);outline-offset:1px}
+.bookette .rl{position:absolute;left:10px;right:8px;top:38px;height:1px;background:var(--gold);opacity:.7}
+.bookette .pg{position:absolute;right:0;top:2px;bottom:2px;width:5px;border-radius:0 2px 2px 0;background:repeating-linear-gradient(90deg,var(--edge-big-1) 0 1px,var(--edge-big-2) 1px 2px)}
+.bookette .rb{position:absolute;left:26px;top:54px;width:8px;height:16px;background:var(--sun);clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%)}
+
+/* list by year */
+.m-list{margin-top:16px}
+.yr{display:flex;align-items:baseline;justify-content:space-between;height:36px;padding:9px 20px 0;border-top:1px solid var(--line);background:var(--paper-1)}
+.yr b{font-family:var(--serif);font-size:16px;font-weight:600}
+.yr span{font-size:12px;color:var(--ink-3)}
+.row{display:grid;grid-template-columns:54px 1fr 58px;gap:14px;align-items:center;min-height:88px;padding:10px 16px 10px 14px}
+.row + .row{border-top:1px solid var(--line-soft)}
+.date{text-align:center;line-height:1}
+.date .m{display:block;font-size:12px;letter-spacing:.09em;font-weight:600;color:var(--ink-3)}
+.date .d{display:block;white-space:nowrap;font-family:var(--serif);font-size:19px;font-weight:500;margin-top:5px;font-variant-numeric:lining-nums}
+.row h3{font-size:17px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.row .where{font-size:14px;color:var(--ink-2);margin-top:2px}
+.row .meta{font-size:13px;color:var(--ink-3);margin-top:2px;white-space:nowrap}
+.mini{position:relative;width:58px;height:70px;justify-self:end;display:flex;filter:var(--sh-mini)}
+.mini .sp{width:7px;height:100%;border-radius:2px 0 0 2px}
+.mini img{width:44px;height:100%;object-fit:cover}
+.mini .pg{height:calc(100% - 4px);align-self:center;border-radius:0 2px 2px 0;background:repeating-linear-gradient(90deg,var(--edge-1) 0 1px,var(--edge-2) 1px 2px)}
+.age-1 img{filter:saturate(.92) sepia(.04)}
+
+/* ---------- trip (pushed) ---------- */
+.t-head{position:relative;background:var(--cloth-deep);color:var(--parch);padding-bottom:16px;overflow:hidden}
+.t-head::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 78% 22%, color-mix(in srgb, var(--cloth) 60%, transparent), transparent 70%)}
+.t-head > *{position:relative}
+.t-nav{display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 8px 0 6px}
+.t-nav .back{display:flex;align-items:center;gap:2px;height:44px;padding:0 10px 0 4px;font-size:16px;font-weight:500;color:var(--parch)}
+.t-nav .iconbtn{color:var(--parch)}
+.t-id{display:grid;grid-template-columns:78px 1fr;gap:18px;align-items:center;padding:4px 20px 0}
+.t-id h1{font-size:30px;line-height:1.05;letter-spacing:-.015em}
+.t-id .where{margin-top:8px;display:flex;align-items:center;gap:6px;font-size:15px;color:var(--cloth-mute)}
+.t-id .when{margin-top:1px;padding-left:22px;font-size:15px;color:var(--cloth-mute)}
+/* Hardcover (small): cloth + photo window + pages + ribbon; no foil title at this size */
+.hc{position:relative;width:78px;height:100px}
+.hc .cv{position:absolute;left:0;top:0;width:72px;height:100px;border-radius:2px 4px 4px 2px;z-index:2;
+  background:repeating-linear-gradient(0deg,var(--weave-hi) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,var(--weave-lo) 0 1px,transparent 1px 3px),var(--cloth);
+  box-shadow:var(--sh-book-sm)}
+.hc .cv::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;border-radius:2px 0 0 2px;background:var(--spine-shade)}
+.hc img{position:absolute;left:16px;top:11px;width:46px;height:38px;object-fit:cover;outline:1px solid color-mix(in srgb, var(--gold) 70%, transparent);outline-offset:2px}
+.hc .rl{position:absolute;left:28px;width:22px;top:64px;height:1px;background:var(--gold);opacity:.8}
+.hc .pg{position:absolute;left:69px;top:2px;width:7px;height:96px;border-radius:0 3px 3px 0;z-index:1;background:repeating-linear-gradient(90deg,var(--edge-big-1) 0 1px,var(--edge-big-2) 1px 2px)}
+.hc .rb{position:absolute;left:52px;top:96px;width:9px;height:22px;background:var(--sun);z-index:1;clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%)}
+/* StatsRow */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:14px 20px 0;padding-top:12px;border-top:1px solid var(--on-cloth-line)}
+.stats div{font-size:13px;color:var(--cloth-mute);line-height:1.2}
+.stats b{display:block;font-family:var(--serif);font-size:22px;font-weight:500;color:var(--parch);font-variant-numeric:lining-nums}
+.t-open{display:flex;width:calc(100% - 40px);margin:14px 20px 0;height:48px}
+/* ActionButtons (secondary) */
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 20px 0}
+.acts button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:48px;border:1px solid var(--on-cloth-ghost);border-radius:6px;color:var(--parch);font-size:13px;font-weight:600;line-height:1.2}
+/* tabs */
+.t-tabs{padding:8px 16px;border-bottom:1px solid var(--line)}
+.views{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--paper-2);border-radius:8px;padding:2px}
+.views a{display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border-radius:6px;font-size:14px;font-weight:500;color:var(--ink-2)}
+.views a.on{background:var(--paper-0);color:var(--ink-1);font-weight:600;box-shadow:var(--sh-pill)}
+/* ChapterRow */
+.ch{position:relative;display:grid;grid-template-columns:44px 1fr 76px;gap:14px;align-items:start;padding:12px 16px 12px 14px}
+.ch + .ch{border-top:1px solid var(--line)}
+.ch > div{min-width:0}
+.ch .date{padding-top:2px}
+.ch .date .d{font-size:24px;margin-top:4px}
+.ch .date .m + .d + .m{margin-top:4px}
+.ch .k{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--ink-3)}
+.ch h3{font-size:17px;line-height:1.25;margin-top:2px}
+.ch .pl{font-size:14px;color:var(--ink-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch .st{font-size:13px;color:var(--ink-3);margin-top:3px}
+.ch .write{display:inline-flex;align-items:center;gap:6px;height:44px;margin-bottom:-12px;font-size:14px;font-weight:600;color:var(--sun-ink)}
+.ch img{width:76px;height:76px;object-fit:cover;border-radius:3px;margin-top:2px}
+.ch.mark .k{color:var(--sun-ink)}
+.ch.mark .date{padding-top:20px}
+.ch.mark::before{content:"";position:absolute;left:30px;top:0;width:12px;height:22px;background:var(--sun);clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%)}
+
+/* ---------- memory (pushed) ---------- */
+#m-memory{background:var(--paper-0)}
+.m-photo{position:relative;height:296px;overflow:hidden}
+.m-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+.m-photo::after{content:"";position:absolute;inset:0;background:var(--scrim-top);pointer-events:none}
+.m-photo .sb,.m-photo .m-nav{position:absolute;left:0;right:0;z-index:2}
+.m-photo .sb{top:0}
+.m-photo .m-nav{top:47px;display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 12px}
+.pillbtn{display:flex;align-items:center;gap:2px;height:44px;padding:0 14px 0 8px;border-radius:22px;background:var(--scrim-btn);color:var(--parch);font-size:15px;font-weight:600}
+.roundbtn{width:44px;height:44px;border-radius:22px;background:var(--scrim-btn);color:var(--parch);display:flex;align-items:center;justify-content:center}
+.exif{display:flex;align-items:center;gap:8px;padding:10px 20px 0;font-size:12px;color:var(--ink-3)}
+.m-page{padding:16px 20px 0}
+.m-page .caps{color:var(--sun-ink)}
+.m-page h2{font-size:26px;line-height:1.15;margin-top:8px;letter-spacing:-.01em}
+.m-page .body{margin-top:12px;font-family:var(--serif);font-size:17px;line-height:1.68;color:var(--ink-1)}
+.more{padding:18px 20px 0}
+.more .head{display:flex;justify-content:space-between;align-items:center}
+.more .caps{color:var(--ink-3)}
+.more .head a{display:flex;align-items:center;height:44px;margin:-14px 0;font-size:14px;font-weight:600;color:var(--sun-ink)}
+.strip{margin-top:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.strip img,.strip .rest{width:100%;height:60px;object-fit:cover;border-radius:3px}
+.strip .rest{background:var(--paper-2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-2);font-size:12px;line-height:1.2}
+.strip .rest b{font-family:var(--serif);font-size:19px;font-weight:500;color:var(--ink-1)}
+.mbar{position:absolute;left:0;right:0;bottom:0;height:86px;padding:0 8px 34px;background:var(--paper-1);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;z-index:4}
+.mbar .iconbtn{color:var(--ink-1)}
+.mbar .mid{text-align:center;font-size:13px;color:var(--ink-2);line-height:1.3}
+.mbar .mid b{display:block;font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink-1)}
+
+/* ---------- empty (first launch) ---------- */
+.e-band{position:relative;height:300px;margin-top:8px;background:var(--cloth-deep);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.e-band::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 40%, color-mix(in srgb, var(--cloth) 60%, transparent), transparent 70%)}
+/* EmptyBook: hardcover with an empty photo window */
+.hc.lg{width:168px;height:212px;margin-top:-14px}
+.hc.lg .cv{width:160px;height:212px;border-radius:3px 5px 5px 3px;box-shadow:var(--sh-book)}
+.hc.lg .cv::before{width:14px}
+.hc.lg .slot{position:absolute;left:30px;top:20px;width:110px;height:92px;border:1px dashed var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--foil)}
+.hc.lg .foil{position:absolute;left:14px;right:0;top:130px;text-align:center;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--foil)}
+.hc.lg .rl{left:72px;width:24px;top:166px}
+.hc.lg .pg{left:156px;top:3px;width:10px;height:206px}
+.hc.lg .rb{left:120px;top:208px;width:11px;height:32px}
+.e-copy{padding:22px 20px 0}
+.e-copy h2{font-size:28px;line-height:1.15;letter-spacing:-.012em}
+.e-copy p.lede{margin-top:10px;font-size:16px;line-height:1.55;color:var(--ink-2)}
+.e-copy .btn{display:flex;width:100%;height:48px;margin-top:20px}
+.e-copy .private{margin-top:16px;display:flex;gap:10px;font-size:13px;line-height:1.45;color:var(--ink-3)}
+.e-copy .private .ic{margin-top:1px}
+</style>
+</head>
+<body>
+
+<!-- Lucide-style icon sprite + simplified iOS status glyphs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-library" viewBox="0 0 24 24"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-image-plus" viewBox="0 0 24 24"><path d="M16 5h6"/><path d="M19 2v6"/><path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><circle cx="9" cy="9" r="2"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></symbol>
+  <symbol id="i-file-down" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M10 12h11"/><path d="M10 18h11"/><path d="M10 6h11"/><path d="M4 10h2"/><path d="M4 6h1v4"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></symbol>
+  <symbol id="i-images" viewBox="0 0 24 24"><path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="s-signal" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></symbol>
+  <symbol id="s-wifi" viewBox="0 0 16 12"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.4A10.4 10.4 0 0 0 8 .4 10.4 10.4 0 0 0 .7 3.3L2 4.7a8.6 8.6 0 0 1 6-2.4Zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.4A6.7 6.7 0 0 0 8 4a6.7 6.7 0 0 0-4.7 1.8l1.3 1.4c.9-.8 2.1-1.3 3.4-1.3ZM8 9.2c-.5 0-.9.2-1.3.5L8 11.6l1.3-1.9c-.4-.3-.8-.5-1.3-.5Z"/></symbol>
+  <symbol id="s-batt" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="20" height="9" rx="2"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" opacity=".45"/></symbol>
+</svg>
+
+<!-- =========================================================
+     M1 · LIBRARY  (drawer + timeline folded; Continue on top)
+     ========================================================= -->
+<section class="phone" id="m-library">
+  <div class="sb"><span class="num">9:41</span><span class="sys"><svg width="18" height="12"><use href="#s-signal"/></svg><svg width="16" height="12"><use href="#s-wifi"/></svg><svg width="27" height="13"><use href="#s-batt"/></svg></span></div>
+
+  <header class="m-head">
+    <h1>Library</h1>
+    <button class="btn btn-sun"><svg class="ic sm"><use href="#i-plus"/></svg>New Book</button>
+  </header>
+  <div class="m-search">
+    <div class="field"><svg class="ic sm"><use href="#i-search"/></svg>Search memories, places…</div>
+    <button class="iconbtn" aria-label="Sort: newest first"><svg class="ic"><use href="#i-sort"/></svg></button>
+  </div>
+
+  <section class="cont cloth-hg" aria-label="Continue Hà Giang Loop">
+    <div class="cont-head">
+      <div>
+        <div class="caps">Continue · Hà Giang Loop</div>
+        <h2>2 of 4 days still have no memory written.</h2>
+      </div>
+      <div class="bookette" aria-hidden="true"><span class="pg"></span><span class="cv"><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt=""><i class="rl"></i></span><span class="rb"></span></div>
+    </div>
+    <div class="dticks" aria-label="Memories per day: day 1 and day 4 empty">
+      <span class="empty"><i></i>D1</span><span><i></i>D2</span><span><i></i>D3</span><span class="empty"><i></i>D4</span>
+    </div>
+    <div class="todo">
+      <img src="assets/photos/hagiang-d1-yen-minh-terraces.jpg" alt="Terraces near Yên Minh">
+      <div><div class="caps">Day 1 · Sat 14 Mar</div><b>Hà&nbsp;Giang&nbsp;→ Yên&nbsp;Minh</b></div>
+      <a class="btn btn-cloth" href="#" aria-label="Write a memory for Day 1"><svg class="ic sm"><use href="#i-pen"/></svg>Write</a>
+    </div>
+    <div class="todo">
+      <img src="assets/photos/hagiang-d4-terraced-fields.jpg" alt="Terraced fields near Du Già">
+      <div><div class="caps">Day 4 · Tue 17 Mar</div><b>Mèo&nbsp;Vạc&nbsp;→ Du&nbsp;Già&nbsp;→ Hà&nbsp;Giang</b></div>
+      <a class="btn btn-cloth" href="#" aria-label="Write a memory for Day 4"><svg class="ic sm"><use href="#i-pen"/></svg>Write</a>
+    </div>
+  </section>
+
+  <div class="m-list">
+    <div class="yr"><b class="num">2026</b><span>2 books</span></div>
+    <article class="row">
+      <div class="date"><span class="m">MAR</span><span class="d">14–17</span></div>
+      <div><h3>Hà Giang Loop</h3><p class="where">Hà Giang, Vietnam</p><p class="meta num">4 days · 186 photos · 9 memories</p></div>
+      <div class="mini"><span class="sp" style="background:var(--hg)"></span><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass"><span class="pg" style="width:7px"></span></div>
+    </article>
+    <article class="row">
+      <div class="date"><span class="m">JAN</span><span class="d">24–27</span></div>
+      <div><h3>Hội An by Lantern Light</h3><p class="where">Hội An, Vietnam</p><p class="meta num">4 days · 112 photos · 5 memories</p></div>
+      <div class="mini"><span class="sp" style="background:var(--ha)"></span><img src="assets/photos/hoian-cover-lantern-street.jpg" alt="Lantern street, Hội An"><span class="pg" style="width:5px"></span></div>
+    </article>
+    <div class="yr"><b class="num">2025</b><span>1 book</span></div>
+    <article class="row age-1">
+      <div class="date"><span class="m">NOV</span><span class="d">18–24</span></div>
+      <div><h3>Kyoto in Late Autumn</h3><p class="where">Kyoto, Japan</p><p class="meta num">7 days · 241 photos · 12 memories</p></div>
+      <div class="mini"><span class="sp" style="background:var(--ky)"></span><img src="assets/photos/kyoto-cover-fushimi-inari.jpg" alt="Fushimi Inari"><span class="pg" style="width:8px"></span></div>
+    </article>
+  </div>
+
+  <nav class="tabbar" aria-label="Main">
+    <a class="tab on" href="#"><span class="pill"><svg class="ic"><use href="#i-library"/></svg></span>Library</a>
+    <a class="tab" href="#"><span class="pill"><svg class="ic"><use href="#i-chart"/></svg></span>Journey stats</a>
+    <a class="tab" href="#"><span class="pill"><svg class="ic"><use href="#i-settings"/></svg></span>Settings</a>
+  </nav>
+  <div class="home"></div>
+</section>
+
+<!-- =========================================================
+     M2 · ONE BOOK  (detail + trip header merged; pushed, no tab bar)
+     ========================================================= -->
+<section class="phone" id="m-trip">
+  <header class="t-head cloth-hg on-cloth">
+    <div class="sb"><span class="num">9:41</span><span class="sys"><svg width="18" height="12"><use href="#s-signal"/></svg><svg width="16" height="12"><use href="#s-wifi"/></svg><svg width="27" height="13"><use href="#s-batt"/></svg></span></div>
+    <div class="t-nav">
+      <a class="back" href="#"><svg class="ic"><use href="#i-left"/></svg>Library</a>
+      <button class="iconbtn" aria-label="Edit book"><svg class="ic"><use href="#i-pencil"/></svg></button>
+    </div>
+    <div class="t-id">
+      <div class="hc" aria-hidden="true"><span class="cv"><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt=""><i class="rl"></i></span><span class="pg"></span><span class="rb"></span></div>
+      <div>
+        <h1>Hà Giang Loop</h1>
+        <p class="where"><svg class="ic sm"><use href="#i-pin"/></svg>Hà Giang, Vietnam</p>
+        <p class="when num">14–17 Mar 2026</p>
+      </div>
+    </div>
+    <div class="stats num">
+      <div><b>4</b>days</div><div><b>186</b>photos</div><div><b>9</b>memories</div><div><b>7</b>places</div>
+    </div>
+    <button class="btn btn-sun t-open"><svg class="ic"><use href="#i-book-open"/></svg>Open the book</button>
+    <div class="acts">
+      <button><svg class="ic"><use href="#i-image-plus"/></svg>Add photos</button>
+      <button><svg class="ic"><use href="#i-pen"/></svg>Write a memory</button>
+      <button><svg class="ic"><use href="#i-file-down"/></svg>Export PDF</button>
+    </div>
+  </header>
+
+  <div class="t-tabs">
+    <div class="views">
+      <a class="on" href="#"><svg class="ic sm"><use href="#i-list"/></svg>Chapters</a>
+      <a href="#"><svg class="ic sm"><use href="#i-images"/></svg>Photos</a>
+      <a href="#"><svg class="ic sm"><use href="#i-route"/></svg>Route</a>
+    </div>
+  </div>
+
+  <article class="ch">
+    <div class="date"><span class="m">SAT</span><span class="d">14</span><span class="m">MAR</span></div>
+    <div><div class="k">Day 1</div><h3>Hà&nbsp;Giang&nbsp;→ Yên&nbsp;Minh</h3><p class="pl">Quản Bạ Heaven's Gate · Bắc Sum Pass</p>
+      <p class="st num">38 photos · no memory yet</p>
+      <a class="write" href="#"><svg class="ic sm"><use href="#i-pen"/></svg>Write one</a></div>
+    <img src="assets/photos/hagiang-d1-yen-minh-terraces.jpg" alt="Terraces near Yên Minh">
+  </article>
+  <article class="ch">
+    <div class="date"><span class="m">SUN</span><span class="d">15</span><span class="m">MAR</span></div>
+    <div><div class="k">Day 2</div><h3>Yên&nbsp;Minh&nbsp;→ Đồng&nbsp;Văn</h3><p class="pl">Thẩm Mã Pass · Lũng Cú Flag Tower</p>
+      <p class="st num">52 photos · 4 memories</p></div>
+    <img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass">
+  </article>
+  <article class="ch mark">
+    <div class="date"><span class="m">MON</span><span class="d">16</span><span class="m">MAR</span></div>
+    <div><div class="k">Day 3</div><h3>Đồng&nbsp;Văn&nbsp;→ Mèo&nbsp;Vạc</h3><p class="pl">Mã Pí Lèng Pass · Nho Quế River</p>
+      <p class="st num">61 photos · 5 memories</p></div>
+    <img src="assets/photos/hagiang-d3-nho-que-river.jpg" alt="Nho Quế River">
+  </article>
+  <article class="ch">
+    <div class="date"><span class="m">TUE</span><span class="d">17</span><span class="m">MAR</span></div>
+    <div><div class="k">Day 4</div><h3>Mèo&nbsp;Vạc&nbsp;→ Du&nbsp;Già&nbsp;→ Hà&nbsp;Giang</h3><p class="pl">Du Già</p>
+      <p class="st num">35 photos · no memory yet</p>
+      <a class="write" href="#"><svg class="ic sm"><use href="#i-pen"/></svg>Write one</a></div>
+    <img src="assets/photos/hagiang-d4-terraced-fields.jpg" alt="Terraced fields near Du Già">
+  </article>
+  <div class="home"></div>
+</section>
+
+<!-- =========================================================
+     M3 · MEMORY  (Day 3, memory 1 of 5; pushed)
+     ========================================================= -->
+<section class="phone" id="m-memory">
+  <figure class="m-photo on-photo">
+    <img src="assets/photos/hagiang-d3-ma-pi-leng-portrait.jpg" alt="Nho Quế River seen from Mã Pí Lèng Pass">
+    <div class="sb"><span class="num">9:41</span><span class="sys"><svg width="18" height="12"><use href="#s-signal"/></svg><svg width="16" height="12"><use href="#s-wifi"/></svg><svg width="27" height="13"><use href="#s-batt"/></svg></span></div>
+    <div class="m-nav">
+      <a class="pillbtn" href="#"><svg class="ic"><use href="#i-left"/></svg>Day 3</a>
+      <button class="roundbtn" aria-label="Edit memory"><svg class="ic"><use href="#i-pencil"/></svg></button>
+    </div>
+  </figure>
+  <p class="exif num"><svg class="ic sm"><use href="#i-camera"/></svg>16 Mar 2026 · 07:12 · f/5.6 · 1/500s · ISO 200</p>
+
+  <article class="m-page" lang="vi">
+    <div class="caps num" lang="en">Day 3 · Mon 16 Mar 2026</div>
+    <h2>Mã Pí Lèng, 7 giờ sáng</h2>
+    <p class="body">Dừng xe ở Mã Pí Lèng lúc sương còn vắt ngang vách núi. Sông Nho Quế bên dưới xanh như ai đổ mực, nhỏ đến mức tưởng chỉ là một sợi chỉ. Anh Páo — người chở mình suốt bốn ngày — bảo mùa này nước đẹp nhất. Mình đứng đó gần nửa tiếng, không chụp thêm tấm nào, chỉ muốn nhớ cảm giác gió lạnh tạt vào mặt.</p>
+  </article>
+
+  <div class="more">
+    <div class="head"><span class="caps">More from Day 3</span><a href="#">See all 61</a></div>
+    <div class="strip">
+      <img src="assets/photos/hagiang-d3-ma-pi-leng-road.jpg" alt="Road over Mã Pí Lèng">
+      <img src="assets/photos/hagiang-d3-nho-que-green.jpg" alt="Nho Quế River, green banks">
+      <img src="assets/photos/hagiang-d3-nho-que-river.jpg" alt="Nho Quế canyon">
+      <div class="rest num"><b>+57</b>photos</div>
+    </div>
+  </div>
+
+  <nav class="mbar" aria-label="Memories of Day 3">
+    <button class="iconbtn" aria-label="Previous memory"><svg class="ic"><use href="#i-left"/></svg></button>
+    <div class="mid num"><b>Memory 1 of 5</b>Hà Giang Loop · Day 3 of 4</div>
+    <button class="iconbtn" aria-label="Next memory"><svg class="ic"><use href="#i-right"/></svg></button>
+  </nav>
+  <div class="home"></div>
+</section>
+
+<!-- =========================================================
+     M4 · EMPTY LIBRARY  (first launch, 0 books)
+     ========================================================= -->
+<section class="phone" id="m-empty">
+  <div class="sb"><span class="num">9:41</span><span class="sys"><svg width="18" height="12"><use href="#s-signal"/></svg><svg width="16" height="12"><use href="#s-wifi"/></svg><svg width="27" height="13"><use href="#s-batt"/></svg></span></div>
+  <header class="m-head"><h1>Library</h1></header>
+
+  <div class="e-band cloth-earth">
+    <div class="hc lg" aria-hidden="true">
+      <span class="cv">
+        <span class="slot"><svg class="ic"><use href="#i-image-plus"/></svg><span class="caps">Cover photo</span></span>
+        <span class="foil">New Book</span><i class="rl"></i>
+      </span>
+      <span class="pg"></span><span class="rb"></span>
+    </div>
+  </div>
+
+  <div class="e-copy">
+    <h2>Turn your trips into books</h2>
+    <p class="lede">Select your travel photos and flip through them like a real photo book.</p>
+    <button class="btn btn-sun"><svg class="ic"><use href="#i-plus"/></svg>Create your first book</button>
+    <p class="private"><svg class="ic sm"><use href="#i-lock"/></svg><span>Kept on this device. No account, no cloud. Only you read these books.</span></p>
+  </div>
+
+  <nav class="tabbar" aria-label="Main">
+    <a class="tab on" href="#"><span class="pill"><svg class="ic"><use href="#i-library"/></svg></span>Library</a>
+    <a class="tab" href="#"><span class="pill"><svg class="ic"><use href="#i-chart"/></svg></span>Journey stats</a>
+    <a class="tab" href="#"><span class="pill"><svg class="ic"><use href="#i-settings"/></svg></span>Settings</a>
+  </nav>
+  <div class="home"></div>
+</section>
+
+</body>
+</html>

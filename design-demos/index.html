@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ba hướng UI/UX</title>
+<style>
+  :root { --bg:#f7f3ec; --ink:#2c1e19; --mute:#6b5d55; --line:#ddd4c8; --card:#fffdf9; --acc:#9a4825; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1d1714; --ink:#f1e9de; --mute:#b9ab9f; --line:#3d332d; --card:#262019; --acc:#e8a87c; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 Georgia, "Times New Roman", serif; }
+  main { max-width:1500px; margin:0 auto; padding:40px 16px 64px; }
+  h1 { font-size:34px; margin:0 0 6px; font-weight:600; }
+  .lede { color:var(--mute); margin:0 0 36px; font-family:system-ui, sans-serif; font-size:15px; }
+  section { border-top:1px solid var(--line); padding:28px 0 36px; }
+  .head { display:flex; flex-wrap:wrap; gap:8px 20px; align-items:baseline; margin-bottom:14px; }
+  .tag { font:600 13px/1 ui-monospace, monospace; letter-spacing:.06em; color:var(--acc); }
+  h2 { font-size:24px; margin:0; font-weight:600; }
+  .meta { font-family:system-ui, sans-serif; font-size:14px; color:var(--mute); }
+  .shots { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .shots a { display:block; background:var(--card); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  .shots img { width:100%; height:auto; display:block; }
+  .cap { font:13px/1.4 system-ui, sans-serif; color:var(--mute); padding:8px 10px; }
+  p.why { font-family:system-ui, sans-serif; font-size:15px; max-width:110ch; margin:14px 0 0; }
+  @media (max-width:900px) { .shots { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Travel Memory Book: ba hướng UI/UX</h1>
+  <p class="lede">Mỗi hướng có 2 màn 1440×900: Thư viện và Hà Giang Loop. Bấm vào ảnh để mở file HTML gốc. Dữ liệu là bản demo; ảnh lấy từ Wikimedia Commons (xem assets/CREDITS.md).</p>
+
+  <section>
+    <div class="head"><span class="tag">A · VÒNG QUAY</span><h2>#15 Utility-First Colorful Docs</h2><span class="meta">Be Vietnam Pro + IBM Plex Mono + Newsreader</span></div>
+    <div class="shots">
+      <a href="a-roulette.html"><img src="shots/a-roulette-screen-library.jpg" alt="Bản A, màn Thư viện"><div class="cap">Thư viện: sidebar theo năm, lưới sách, cột "On this page" + biểu đồ kệ sách</div></a>
+      <a href="a-roulette.html#screen-trip"><img src="shots/a-roulette-screen-trip.jpg" alt="Bản A, màn chuyến đi"><div class="cap">Chuyến đi: bảng chương kiểu tài liệu, ký ức mở ngay trong dòng, sơ đồ vòng lặp</div></a>
+    </div>
+    <p class="why">Thư viện được trình bày như một bộ tài liệu về đời mình: mỗi cuốn một màu lấy từ ảnh bìa của chính nó, khối mã đổi thành da bìa với chữ nhũ. Hướng này hợp nhất cho phần "làm việc sau chuyến đi" vì đọc lướt nhanh và thao tác gọn.</p>
+  </section>
+
+  <section>
+    <div class="head"><span class="tag">B · THAM CHIẾU</span><h2>Day One (Apple Design Award 2014)</h2><span class="meta">Literata + Be Vietnam Pro</span></div>
+    <div class="shots">
+      <a href="b-reference.html"><img src="shots/b-reference-screen-library.jpg" alt="Bản B, màn Thư viện"><div class="cap">Thư viện: drawer, dòng thời gian, khung sách đang chọn phủ màu vải bìa</div></a>
+      <a href="b-reference.html#screen-trip"><img src="shots/b-reference-screen-trip.jpg" alt="Bản B, màn chuyến đi"><div class="cap">Chuyến đi: header phủ màu sách + sơ đồ vòng lặp, các chương bên trái, ký ức dàn hai trang bên phải</div></a>
+    </div>
+    <p class="why">Mượn từ một app nhật ký riêng tư có in sách và đã đoạt giải: bố cục ba ô, mỗi cuốn một màu vải. Hướng này cân bằng nhất giữa dùng hằng ngày và cảm xúc.</p>
+  </section>
+
+  <section>
+    <div class="head"><span class="tag">C · NHÀ THIẾT KẾ</span><h2>Irma Boom</h2><span class="meta">Literata + Be Vietnam Pro</span></div>
+    <div class="shots">
+      <a href="c-designer.html"><img src="shots/c-designer-screen-library.jpg" alt="Bản C, màn Thư viện"><div class="cap">Thư viện: chồng sách vẽ theo tỉ lệ (dày = số ảnh, dài = số ngày, mép in ảnh bìa); điều hướng như thumb index ở mép phải</div></a>
+      <a href="c-designer.html#screen-trip"><img src="shots/c-designer-screen-trip.jpg" alt="Bản C, màn chuyến đi"><div class="cap">Chuyến đi: một trang sách mở; mục lục bên trái, chương 3 bên phải; các tab ngày ở mép là sơ đồ màu của từng ngày</div></a>
+    </div>
+    <p class="why">Coi cuốn sách là vật thể: mọi kích thước trên màn hình đều là dữ liệu của chuyến đi. Đây là hướng mang tính tác giả và hoài niệm nhất, nhưng cũng xa quy ước UI nhất.</p>
+  </section>
+</main>
+</body>
+</html>

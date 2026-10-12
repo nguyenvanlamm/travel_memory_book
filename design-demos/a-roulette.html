@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Travel Memory Book · Shelf Docs</title>
+<!--
+  A · Roulette #15 — "Utility-First Colorful Docs", translated to Travel Memory Book.
+  Frame: 3-column docs (left: shelves by year · center: the page · right: "On this page").
+
+  COLOR (sample → converge → justify):
+  Each book's category color is sampled from a region of its own cover, then converged in oklch to
+  L≈0.56–0.76 / C≈0.06–0.17 (printed-ink chroma) with hues ≥25° apart:
+    Hà Giang  karst slope  oklch(.56 .10 140)   ← Thẩm Mã slopes, H110–138
+    Hội An    lantern wall oklch(.76 .13 85)    ← yellow wall under lanterns, H88
+    Kyoto     torii        oklch(.57 .165 33)   ← Fushimi Inari gates, H33
+    Đà Lạt    cold sky     oklch(.60 .095 258)  ← morning sky over Xuân Hương, H260
+    L. Prabang saffron     oklch(.67 .13 57)    ← robes + brick floor (H31–44), nudged +13° away from torii
+    Côn Đảo   sea glass    oklch(.65 .06 188)   ← overcast sea, chroma kept low, as in the photo
+  Neutrals are Tailwind's "slate" re-warmed into linen (H≈60–85, C≤0.025) from the brand parchment #F4E4C1
+  and earth brown #3E2723; code blocks are the reader's leather cover with gilt / dawn / dusk / parchment syntax.
+  One-line reason: the docs' rainbow category system is kept, but every hue is lifted out of the trip's own cover photo,
+  so the color *is* the memory of the place, and the chrome stays the warm leather-and-paper of the existing book reader.
+
+  TYPE (all have the Google Fonts "vietnamese" subset, verified): Be Vietnam Pro (UI + headings; built for stacked
+  Vietnamese diacritics), IBM Plex Mono (labels, dates, EXIF), Newsreader (only for words the user wrote).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* linen "slate" — neutral lightness ladder */
+  --paper:   oklch(0.984 0.006 85);
+  --paper-2: oklch(0.963 0.010 82);
+  --paper-3: oklch(0.942 0.012 80);
+  --line:    oklch(0.895 0.014 78);
+  --line-2:  oklch(0.932 0.010 80);
+  --mute:    oklch(0.52 0.020 65);   /* 5.3:1 on paper */
+  --ink-2:   oklch(0.40 0.022 55);   /* 8.8:1 */
+  --ink:     oklch(0.26 0.025 45);   /* 15:1 */
+  /* leather + gilt (book reader) */
+  --leather:   oklch(0.265 0.030 38);
+  --leather-2: oklch(0.315 0.032 40);
+  --leather-ln:oklch(0.40 0.032 42);
+  --leather-mu:oklch(0.74 0.030 60);  /* 6.2:1 on leather */
+  --gilt:#D4B98C; --gold:#D4AF37; --dawn:#E8A87C; --dusk:#C38D9E; --parch:#F4E4C1;
+  /* per-book category colors (base / ink on paper ≥5.9:1 / tint) */
+  --hg:oklch(0.56 0.10 140);  --hg-ink:oklch(0.45 0.09 142); --hg-tint:oklch(0.958 0.022 140);
+  --ha:oklch(0.76 0.13 85);   --ha-ink:oklch(0.49 0.09 72);  --ha-tint:oklch(0.958 0.030 88);
+  --ky:oklch(0.57 0.165 33);  --ky-ink:oklch(0.50 0.15 33);  --ky-tint:oklch(0.958 0.020 33);
+  --dl:oklch(0.60 0.095 258); --dl-ink:oklch(0.47 0.10 258); --dl-tint:oklch(0.958 0.018 258);
+  --lp:oklch(0.67 0.13 57);   --lp-ink:oklch(0.50 0.11 52);  --lp-tint:oklch(0.958 0.024 60);
+  --cd:oklch(0.65 0.06 188);  --cd-ink:oklch(0.46 0.06 192); --cd-tint:oklch(0.958 0.016 188);
+
+  --sans:"Be Vietnam Pro", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, monospace;
+  --serif:"Newsreader", Georgia, serif;
+  font-synthesis:none;
+}
+.t-hg{--c:var(--hg);--c-ink:var(--hg-ink);--c-tint:var(--hg-tint)}
+.t-ha{--c:var(--ha);--c-ink:var(--ha-ink);--c-tint:var(--ha-tint)}
+.t-ky{--c:var(--ky);--c-ink:var(--ky-ink);--c-tint:var(--ky-tint)}
+.t-dl{--c:var(--dl);--c-ink:var(--dl-ink);--c-tint:var(--dl-tint)}
+.t-lp{--c:var(--lp);--c-ink:var(--lp-ink);--c-tint:var(--lp-tint)}
+.t-cd{--c:var(--cd);--c-ink:var(--cd-ink);--c-tint:var(--cd-tint)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper)}
+body{width:1440px;margin:0;background:var(--paper);color:var(--ink-2);font:400 15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;line-break:strict}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+img{display:block}
+h1,h2,h3{text-wrap:balance;color:var(--ink)}
+p{text-wrap:pretty}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mono{font-family:var(--mono)}
+
+/* ───────── frame ───────── */
+.screen{width:1440px;height:900px;overflow:hidden;position:relative;display:grid;
+  grid-template-columns:272px 1fr 256px;grid-template-rows:56px 1fr;background:var(--paper)}
+.topbar{grid-column:1/-1;display:grid;grid-template-columns:272px 1fr 256px;align-items:center;
+  border-bottom:1px solid var(--line);background:color-mix(in oklch,var(--paper) 92%,transparent);position:relative;z-index:3}
+.brand{display:flex;align-items:center;gap:10px;padding-left:22px;color:var(--ink);font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand img{width:30px;height:30px}
+.brand small{font:500 12px/1 var(--mono);color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:4px 7px;margin-left:2px;letter-spacing:0}
+.search{margin-left:48px;width:372px;height:36px;display:flex;align-items:center;gap:10px;padding:0 8px 0 12px;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:9px;color:var(--mute);font-size:14px}
+.search kbd{margin-left:auto;font:500 12px/1 var(--mono);color:var(--ink-2);background:var(--paper);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:4px 6px}
+.top-r{display:flex;justify-content:flex-end;padding-right:24px}
+.btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:8px;border:1px solid var(--line);
+  background:var(--paper);color:var(--ink);font:500 14px/1 var(--sans);white-space:nowrap}
+.btn.leather{background:var(--leather);border-color:var(--leather);color:var(--parch);font-weight:600}
+.btn.leather .ico{color:var(--gilt)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+
+/* ───────── left sidebar: shelves by year ───────── */
+.side{position:relative;border-right:1px solid var(--line);background:var(--paper-2);padding:20px 14px 0 14px}
+.nav a{display:flex;align-items:center;gap:11px;height:36px;padding:0 6px;border-radius:8px;font-size:14px;font-weight:500;color:var(--ink-2)}
+.nav .tile{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);color:var(--ink-2)}
+.nav .tile .ico{width:15px;height:15px}
+.nav a.on{color:var(--ink);font-weight:600}
+.nav a.on .tile{background:var(--leather);border-color:var(--leather);color:var(--gilt)}
+.shelves{margin-top:22px}
+.yr{display:flex;align-items:baseline;justify-content:space-between;padding:0 6px;margin:16px 0 4px;font:600 12px/1 var(--mono);color:var(--ink);letter-spacing:.06em}
+.yr span{font-weight:400;color:var(--mute);letter-spacing:0}
+.shelf-list a{display:grid;grid-template-columns:7px 1fr;column-gap:11px;align-items:center;padding:6px 8px 6px 6px;border-radius:8px}
+.spine{grid-row:1/3;align-self:stretch;width:7px;min-height:32px;border-radius:1.5px;
+  background:linear-gradient(180deg,transparent 4px,oklch(0.95 0.05 85 / .55) 4px 5px,transparent 5px calc(100% - 5px),oklch(0.95 0.05 85 / .55) calc(100% - 5px) calc(100% - 4px),transparent 0),
+             linear-gradient(90deg,oklch(0 0 0 / .14),transparent 45%,oklch(1 0 0 / .16) 60%,oklch(0 0 0 / .12)),var(--c)}
+.shelf-list .t{font-size:14px;font-weight:500;color:var(--ink);line-height:1.3}
+.shelf-list .m{font:400 12px/1.35 var(--mono);color:var(--mute)}
+.shelf-list a.on{background:var(--c-tint);box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--c) 28%,transparent)}
+.shelf-list a.on .t{color:var(--c-ink);font-weight:600}
+.shelf-list a.on .m{color:color-mix(in oklch,var(--c-ink) 78%,var(--ink))}
+.private{position:absolute;left:18px;right:16px;bottom:18px;display:flex;gap:9px;align-items:flex-start;padding-top:14px;border-top:1px solid var(--line);font-size:13px;line-height:1.45;color:var(--mute)}
+.private .ico{width:15px;height:15px;margin-top:2px;color:var(--ink-2)}
+
+/* ───────── center ───────── */
+.main{position:relative;padding:26px 48px 0;overflow:hidden}
+.main>*{position:relative}
+.eyebrow{display:flex;align-items:center;gap:8px;font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.eyebrow .sun{width:9px;height:9px;border-radius:50%;background:var(--dawn);box-shadow:0 0 0 3px oklch(0.85 0.07 55 / .35)}
+.eyebrow .sep{color:var(--line);letter-spacing:0}
+.eyebrow b{font-weight:600}
+h1{font:700 38px/1.15 var(--sans);letter-spacing:-.028em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips code{font:500 13px/1 var(--mono);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:6px 8px;white-space:nowrap}
+.chips code i{font-style:normal;color:var(--mute);font-weight:400}
+
+/* library header */
+.dawnwash{position:absolute;inset:0 0 auto 0;height:300px;pointer-events:none;
+  background:radial-gradient(52% 100% at 16% -28%,oklch(0.86 0.075 55 / .55),transparent 72%),
+             radial-gradient(40% 80% at 62% -40%,oklch(0.93 0.05 86 / .8),transparent 70%)}
+.h1row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:12px}
+.lead{margin-top:6px;font-size:16px;color:var(--ink-2)}
+
+/* continue-writing block (leather, syntax-colored) */
+.continue{margin-top:22px;display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:center;padding:14px 18px 14px 14px;
+  background:var(--leather);border-radius:12px;color:var(--parch);box-shadow:0 1px 0 oklch(1 0 0 / .06) inset,0 10px 24px -16px oklch(0.25 0.03 40 / .8)}
+.c-cover{position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden}
+.c-cover img{width:100%;height:100%;object-fit:cover}
+.c-label{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gilt)}
+.c-title{margin-top:7px;font-size:16px;line-height:1.35;color:var(--parch)}
+.c-title b{font-weight:600}
+.c-title span{color:var(--leather-mu)}
+.c-days{display:flex;gap:7px;margin-top:10px}
+.c-days li{display:flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);padding:5px 9px 5px 7px;border-radius:999px;border:1px solid var(--leather-ln);color:var(--parch)}
+.c-days li .ico{width:13px;height:13px;color:var(--gilt)}
+.c-days li em{font-style:normal;color:var(--dawn)}
+.c-days li.empty{border-style:dashed;border-color:var(--dusk);color:var(--dusk)}
+.c-days li.empty .ico{color:var(--dusk)}
+.btn.dawn{background:var(--dawn);border-color:var(--dawn);color:var(--leather);font-weight:600;height:38px;padding:0 15px}
+
+/* books grid, grouped by year */
+.shelfgrid{margin-top:26px;display:flex;flex-wrap:wrap;column-gap:24px;row-gap:20px}
+.grp{flex:none}
+.grp.g2{width:536px}.grp.g1{width:256px}
+.yrule{display:flex;align-items:center;gap:10px;font:600 13px/1 var(--mono);color:var(--ink);letter-spacing:.04em;margin-bottom:12px}
+.yrule::after{content:"";flex:1;height:1px;background:var(--line);order:1}
+.yrule span{order:2;font-weight:400;color:var(--mute);font-size:12px;letter-spacing:0}
+.cards{display:flex;gap:24px}
+.card{width:256px;flex:none}
+.cover{position:relative;height:126px;margin-right:var(--t);border-radius:3px 4px 4px 3px;
+  box-shadow:0 1px 1px oklch(0.3 0.03 45 / .12),0 10px 18px -12px oklch(0.3 0.03 45 / .55)}
+.cover img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.cover::before{content:"";position:absolute;left:0;top:0;bottom:0;width:13px;border-radius:3px 0 0 3px;z-index:2;
+  background:linear-gradient(90deg,oklch(0 0 0 / .16),transparent 35%,oklch(1 0 0 / .16) 55%,oklch(0 0 0 / .26) 90%,oklch(0 0 0 / .35)),var(--c)}
+.cover::after{content:"";position:absolute;top:3px;bottom:3px;right:calc(-1 * var(--t));width:var(--t);border-radius:0 2px 2px 0;
+  background:repeating-linear-gradient(90deg,var(--paper) 0 1px,oklch(0.86 0.015 75) 1px 2px);box-shadow:inset 0 0 0 .5px oklch(0.82 0.015 75)}
+.ribbon{position:absolute;bottom:-17px;right:22px;width:11px;height:40px;z-index:0;background:var(--dawn);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - 6px),0 100%);box-shadow:0 0 0 1px oklch(0 0 0 / .1)}
+.card .place{margin-top:12px;display:flex;align-items:center;gap:6px;font:500 12px/1.2 var(--mono);color:var(--c-ink)}
+.card .place::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--c)}
+.card h3{margin-top:5px;font:600 16px/1.3 var(--sans);letter-spacing:-.01em}
+.card .meta{margin-top:3px;font:400 12px/1.5 var(--mono);color:var(--mute)}
+.card .meta b{font-weight:500;color:var(--ink-2)}
+/* older books fade, a little */
+.age1 img{filter:saturate(.93) sepia(.05)}
+.age2 img{filter:saturate(.85) sepia(.10)}
+.age3 img{filter:saturate(.76) sepia(.16) contrast(.96)}
+
+/* ───────── right rail ───────── */
+.rail{padding:28px 18px 0 24px;position:relative}
+.rail h4{display:flex;align-items:center;gap:8px;font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:12px}
+.rail h4 .ico{width:14px;height:14px;color:var(--mute)}
+.rail .block+.block{margin-top:30px}
+.toc{border-left:1px solid var(--line)}
+.toc li{margin-left:-1px;border-left:2px solid transparent;padding:4px 0 4px 13px;font-size:14px;line-height:1.35;color:oklch(0.46 0.02 60)}
+.toc li.sub{padding-left:26px}
+.toc li .k{font:500 12px/1 var(--mono);color:var(--ink-2);margin-right:6px}
+.toc li.day{padding-left:16px;padding-top:5px;padding-bottom:5px}
+.toc li.day .k{display:flex;align-items:center;gap:6px;margin:0 0 3px}
+.toc li.day .r{display:block;font-size:13px}
+.toc li .n{font:400 12px/1 var(--mono);color:var(--mute);margin-left:4px}
+.toc li.on{border-left-color:var(--ink);color:var(--ink);font-weight:600}
+.toc li.on.c{border-left-color:var(--c);color:var(--c-ink)}
+.toc li.on.c .k{color:var(--c-ink)}
+.toc li .k i{width:9px;height:9px;border-radius:50%;background:oklch(0.62 0.03 140)}
+.toc li.dash .k i{background:none;border:1.5px dashed oklch(0.66 0.02 65)}
+.toc li.on.c .k i{background:var(--c)}
+.sort li{display:flex;align-items:center;gap:10px;height:30px;font-size:14px;color:var(--ink-2)}
+.sort li::before{content:"";width:13px;height:13px;border-radius:50%;border:1.5px solid oklch(0.70 0.02 65);flex:none}
+.sort li.on{color:var(--ink);font-weight:600}
+.sort li.on::before{border-color:var(--ink);background:radial-gradient(circle,var(--ink) 0 3px,transparent 3.5px)}
+.shelfviz{height:122px;display:flex;align-items:flex-end;gap:2px;border-bottom:3px solid var(--leather);padding:0 2px}
+.shelfviz i{display:block;border-radius:2px 2px 0 0;
+  background:linear-gradient(180deg,transparent 6px,oklch(0.95 0.05 85 / .6) 6px 7px,transparent 7px 10px,oklch(0.95 0.05 85 / .6) 10px 11px,transparent 11px),
+             linear-gradient(90deg,oklch(0 0 0 / .14),transparent 30%,oklch(1 0 0 / .14) 55%,oklch(0 0 0 / .12)),var(--c)}
+.shelfviz i.age1{filter:saturate(.93)}.shelfviz i.age2{filter:saturate(.84)}.shelfviz i.age3{filter:saturate(.74)}
+.shelfnums{display:flex;gap:2px;padding:0 2px;margin-top:6px}
+.shelfnums span{font:500 12px/1 var(--mono);color:var(--ink-2);text-align:center;flex:none}
+.rail .cap{margin-top:12px;font-size:13px;line-height:1.5;color:var(--mute)}
+.rail .cap b{font-weight:600;color:var(--ink-2)}
+
+/* ───────── trip screen ───────── */
+.mist{position:absolute;top:57px;left:273px;right:0;height:330px;pointer-events:none;
+  background:linear-gradient(180deg,oklch(0.90 0.035 238 / .75),oklch(0.95 0.02 220 / .35) 55%,transparent),
+             radial-gradient(60% 70% at 85% 0%,oklch(0.92 0.03 150 / .5),transparent 70%)}
+.crumbs .sep{margin:0 2px}
+.crumbs b{color:var(--hg-ink)}
+.trip-head{display:grid;grid-template-columns:minmax(0,1fr) 146px;column-gap:26px;margin-top:14px}
+.trip-head h1{font-size:40px}
+.trip-head .chips{margin-top:12px}
+.trip-head .date{font:500 13px/1 var(--mono);color:var(--ink-2);margin-right:6px}
+.desc{margin-top:14px;max-width:600px;font:400 19px/1.45 var(--serif);font-style:italic;color:var(--ink)}
+.actions{display:flex;gap:6px;margin-top:18px}
+.actions .btn{padding:0 11px;gap:6px}
+.actions .btn.ghost{padding:0 6px}
+.book3d{position:relative;width:136px;height:196px;margin-top:6px;border-radius:3px 5px 5px 3px;
+  box-shadow:0 2px 2px oklch(0.3 0.03 45 / .15),0 18px 30px -16px oklch(0.25 0.03 45 / .7)}
+.book3d img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:42% 50%;border-radius:inherit}
+.book3d::before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;z-index:2;border-radius:3px 0 0 3px;
+  background:linear-gradient(90deg,oklch(0 0 0 / .18),transparent 35%,oklch(1 0 0 / .18) 55%,oklch(0 0 0 / .3) 88%,oklch(0 0 0 / .4)),var(--hg)}
+.book3d::after{content:"";position:absolute;top:4px;bottom:4px;right:-8px;width:8px;border-radius:0 3px 3px 0;
+  background:repeating-linear-gradient(90deg,var(--paper) 0 1px,oklch(0.86 0.015 75) 1px 2px);box-shadow:inset 0 0 0 .5px oklch(0.82 0.015 75)}
+.book3d .ribbon{right:26px;bottom:-22px;width:12px}
+.book3d .foil{position:absolute;left:16px;right:0;bottom:0;padding:26px 12px 11px 12px;z-index:2;border-radius:0 0 5px 0;
+  background:linear-gradient(180deg,transparent,oklch(0.22 0.03 38 / .82) 42%,oklch(0.22 0.03 38 / .94));color:var(--gilt)}
+.foil b{display:block;font:600 15px/1.15 var(--serif);letter-spacing:.01em}
+.foil span{display:block;margin-top:4px;font:500 12px/1 var(--mono);letter-spacing:.08em;color:var(--parch)}
+
+.chapters{margin-top:26px}
+.ch-grid{display:grid;grid-template-columns:92px minmax(0,1fr) 192px 146px;column-gap:14px;align-items:center;padding:0 14px}
+.ch-head{height:30px;border-bottom:1px solid var(--line);font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.ch-row{min-height:58px;padding-top:9px;padding-bottom:9px;border-bottom:1px solid var(--line-2)}
+.dnum{display:block;font:600 13px/1.2 var(--mono);color:var(--hg-ink)}
+.ddate{display:block;margin-top:3px;font:400 12px/1.2 var(--mono);color:var(--mute)}
+.route{font:600 15px/1.3 var(--sans);color:var(--ink)}
+.places{margin-top:3px;display:flex;align-items:center;gap:6px;font-size:13px;line-height:1.3;color:var(--mute)}
+.places .ico{width:13px;height:13px}
+.thumbs{display:flex;align-items:center}
+.thumbs img{width:44px;height:32px;object-fit:cover;border-radius:4px;box-shadow:0 0 0 2px var(--paper)}
+.thumbs img+img{margin-left:-14px}
+.thumbs span{white-space:nowrap;margin-left:10px;font:500 12px/1.2 var(--mono);color:var(--ink-2)}
+.thumbs span i{font-style:normal;color:var(--mute);font-weight:400}
+.mem{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2)}
+.mem .dot{width:8px;height:8px;border-radius:50%;background:var(--hg)}
+.mem.empty{display:inline-flex;gap:7px;height:30px;padding:0 11px;border:1.5px dashed oklch(0.76 0.02 65);border-radius:999px;color:var(--mute);font-size:13px}
+.mem.empty .ico{width:14px;height:14px}
+.ch-row.open{background:var(--hg-tint);border:1px solid color-mix(in oklch,var(--hg) 26%,transparent);border-radius:10px;margin:6px 0;align-items:start;padding-top:12px;padding-bottom:14px}
+.ch-row.open .ico.chev{width:15px;height:15px;color:var(--hg-ink);margin-left:auto}
+.ch-row.open .thumbs img{box-shadow:0 0 0 2px var(--hg-tint)}
+.ch-body{grid-column:2/-1;display:grid;grid-template-columns:1fr 148px;column-gap:22px;margin-top:12px}
+.memory .m-label{margin:0;font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--hg-ink)}
+.memory h3{margin-top:8px;font:600 21px/1.2 var(--serif);letter-spacing:-.005em}
+.memory p{margin-top:6px;font:400 16px/1.5 var(--serif);color:var(--ink)}
+.exif{margin-top:12px;display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;background:var(--leather);font:500 12.5px/1.2 var(--mono);color:var(--parch);white-space:nowrap}
+.exif .ico{width:14px;height:14px;color:var(--gilt)}
+.exif .k{color:var(--leather-mu)}
+.exif .s{color:var(--leather-ln)}
+.exif .t{color:var(--dawn)}
+.exif .g{color:var(--gilt)}
+.exif .d{color:var(--dusk)}
+.portrait{position:relative;border-radius:6px;overflow:hidden;height:100%}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%}
+.portrait figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 9px 8px;font:500 12px/1.25 var(--mono);color:var(--parch);
+  background:linear-gradient(180deg,transparent,oklch(0.2 0.02 160 / .85))}
+
+/* loop schematic */
+.loop{width:208px;height:196px;display:block}
+.loop .seg{fill:none;stroke-width:2.5;stroke-linecap:round}
+.loop .seg.done{stroke:oklch(0.62 0.03 140)}
+.loop .seg.todo{stroke:oklch(0.72 0.02 65);stroke-dasharray:1 6;stroke-width:3}
+.loop .seg.on{stroke:var(--hg);stroke-width:4}
+.loop .town{fill:var(--paper);stroke:var(--ink-2);stroke-width:1.75}
+.loop .pl{fill:var(--ink-2)}
+.loop .pl.on{fill:var(--hg-ink)}
+.loop text{font:500 12px var(--sans);fill:var(--ink-2)}
+.loop text.on{fill:var(--hg-ink);font-weight:600}
+.loop text.c{font:500 12px var(--mono);fill:var(--mute)}
+.legend{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--mute)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:18px;height:0;border-top:2.5px solid oklch(0.62 0.03 140)}
+.legend i.d{border-top:3px dotted oklch(0.72 0.02 65)}
+</style>
+</head>
+<body>
+
+<!-- Lucide-style icon sprite (stroke 1.75, round caps) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-library" viewBox="0 0 24 24"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-image-plus" viewBox="0 0 24 24"><path d="M16 5h6"/><path d="M19 2v6"/><path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><circle cx="9" cy="9" r="2"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></symbol>
+  <symbol id="i-file-down" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-circle-dashed" viewBox="0 0 24 24"><path d="M10.1 2.182a10 10 0 0 1 3.8 0"/><path d="M13.9 21.818a10 10 0 0 1-3.8 0"/><path d="M17.609 3.721a10 10 0 0 1 2.69 2.7"/><path d="M2.182 13.9a10 10 0 0 1 0-3.8"/><path d="M20.279 17.609a10 10 0 0 1-2.7 2.69"/><path d="M21.818 10.1a10 10 0 0 1 0 3.8"/><path d="M3.721 6.391a10 10 0 0 1 2.7-2.69"/><path d="M6.391 20.279a10 10 0 0 1-2.69-2.7"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-chev-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  <symbol id="i-books" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></symbol>
+</svg>
+
+<!-- ═════════════════════════ SCREEN 1 · LIBRARY ═════════════════════════ -->
+<section id="screen-library" class="screen">
+  <header class="topbar">
+    <a class="brand" href="#"><img src="assets/logo-mark.svg" alt="">Travel Memory Book</a>
+    <div class="search"><svg class="ico"><use href="#i-search"/></svg>Search memories, places…<kbd>Ctrl K</kbd></div>
+    <div class="top-r"><a class="btn leather" href="#"><svg class="ico"><use href="#i-plus"/></svg>New Book</a></div>
+  </header>
+
+  <aside class="side">
+    <nav class="nav">
+      <a class="on" href="#"><span class="tile"><svg class="ico"><use href="#i-library"/></svg></span>Library</a>
+      <a href="#"><span class="tile"><svg class="ico"><use href="#i-chart"/></svg></span>Journeys stats</a>
+      <a href="#"><span class="tile"><svg class="ico"><use href="#i-settings"/></svg></span>Settings</a>
+    </nav>
+    <div class="shelves">
+      <div class="yr">2026<span>2 books</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-hg" href="#"><i class="spine"></i><span class="t">Hà Giang Loop</span><span class="m">14–17 Mar · 186 photos</span></a></li>
+        <li><a class="t-ha" href="#"><i class="spine"></i><span class="t">Hội An by Lantern Light</span><span class="m">24–27 Jan · 112 photos</span></a></li>
+      </ul>
+      <div class="yr">2025<span>1 book</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-ky" href="#"><i class="spine"></i><span class="t">Kyoto in Late Autumn</span><span class="m">18–24 Nov · 241 photos</span></a></li>
+      </ul>
+      <div class="yr">2024<span>2 books</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-dl" href="#"><i class="spine"></i><span class="t">Đà Lạt, Cold Mornings</span><span class="m">20–23 Dec · 58 photos</span></a></li>
+        <li><a class="t-lp" href="#"><i class="spine"></i><span class="t">Slow Days in Luang Prabang</span><span class="m">8–13 Feb · 97 photos</span></a></li>
+      </ul>
+      <div class="yr">2023<span>1 book</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-cd" href="#"><i class="spine"></i><span class="t">Côn Đảo, First Swim of Summer</span><span class="m">1–4 Jul · 64 photos</span></a></li>
+      </ul>
+    </div>
+    <p class="private"><svg class="ico"><use href="#i-lock"/></svg><span>Everything stays on this device. No account, no cloud.</span></p>
+  </aside>
+
+  <main class="main lib">
+    <div class="dawnwash"></div>
+    <p class="eyebrow"><i class="sun"></i>Library</p>
+    <div class="h1row">
+      <h1>Your books</h1>
+      <div class="chips">
+        <code>6 <i>books</i></code><code>29 <i>days</i></code><code>3 <i>countries</i></code><code>758 <i>photos</i></code><code>37 <i>memories</i></code>
+      </div>
+    </div>
+    <p class="lead">Pick an old trip and read back a part of your life.</p>
+
+    <section class="continue" id="continue">
+      <div class="c-cover"><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass"></div>
+      <div>
+        <p class="c-label">Continue writing</p>
+        <p class="c-title"><b>Hà Giang Loop</b> <span>—</span> 2 of 4 days still have no memory written.</p>
+        <ul class="c-days">
+          <li class="empty"><svg class="ico"><use href="#i-circle-dashed"/></svg>Day 1</li>
+          <li><svg class="ico"><use href="#i-check"/></svg>Day 2 <em>4</em></li>
+          <li><svg class="ico"><use href="#i-check"/></svg>Day 3 <em>5</em></li>
+          <li class="empty"><svg class="ico"><use href="#i-circle-dashed"/></svg>Day 4</li>
+        </ul>
+      </div>
+      <a class="btn dawn" href="#"><svg class="ico"><use href="#i-pen"/></svg>Write a memory</a>
+    </section>
+
+    <section class="shelfgrid">
+      <div class="grp g2">
+        <div class="yrule">2026<span>2 books</span></div>
+        <div class="cards">
+          <a class="card t-hg" href="#" style="--t:7px">
+            <div class="cover"><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass, Hà Giang"><i class="ribbon"></i></div>
+            <p class="place">Hà Giang, Vietnam</p>
+            <h3>Hà Giang Loop</h3>
+            <p class="meta">14–17 Mar 2026 · 4 days<br><b>186</b> photos · <b>9</b> memories</p>
+          </a>
+          <a class="card t-ha" href="#" style="--t:5px">
+            <div class="cover"><img src="assets/photos/hoian-cover-lantern-street.jpg" alt="Lantern street, Hội An"></div>
+            <p class="place">Hội An, Vietnam</p>
+            <h3>Hội An by Lantern Light</h3>
+            <p class="meta">24–27 Jan 2026 · 4 days<br><b>112</b> photos · <b>5</b> memories</p>
+          </a>
+        </div>
+      </div>
+      <div class="grp g1">
+        <div class="yrule">2025<span>1 book</span></div>
+        <a class="card t-ky age1" href="#" style="--t:8px">
+          <div class="cover"><img src="assets/photos/kyoto-cover-fushimi-inari.jpg" alt="Fushimi Inari, Kyoto" style="object-position:50% 40%"></div>
+          <p class="place">Kyoto, Japan</p>
+          <h3>Kyoto in Late Autumn</h3>
+          <p class="meta">18–24 Nov 2025 · 7 days<br><b>241</b> photos · <b>12</b> memories</p>
+        </a>
+      </div>
+      <div class="grp g2">
+        <div class="yrule">2024<span>2 books</span></div>
+        <div class="cards">
+          <a class="card t-dl age2" href="#" style="--t:3.5px">
+            <div class="cover"><img src="assets/photos/dalat-cover-xuan-huong-lake.jpg" alt="Xuân Hương Lake, Đà Lạt" style="object-position:50% 55%"></div>
+            <p class="place">Đà Lạt, Vietnam</p>
+            <h3>Đà Lạt, Cold Mornings</h3>
+            <p class="meta">20–23 Dec 2024 · 4 days<br><b>58</b> photos · <b>3</b> memories</p>
+          </a>
+          <a class="card t-lp age2" href="#" style="--t:4.5px">
+            <div class="cover"><img src="assets/photos/luangprabang-cover-haw-pha-bang.jpg" alt="Haw Pha Bang, Luang Prabang" style="object-position:50% 45%"></div>
+            <p class="place">Luang Prabang, Laos</p>
+            <h3>Slow Days in Luang Prabang</h3>
+            <p class="meta">8–13 Feb 2024 · 6 days<br><b>97</b> photos · <b>6</b> memories</p>
+          </a>
+        </div>
+      </div>
+      <div class="grp g1">
+        <div class="yrule">2023<span>1 book</span></div>
+        <a class="card t-cd age3" href="#" style="--t:3.5px">
+          <div class="cover"><img src="assets/photos/condao-cover-beach.jpg" alt="Beach, Côn Đảo" style="object-position:50% 60%"></div>
+          <p class="place">Côn Đảo, Vietnam</p>
+          <h3>Côn Đảo, First Swim of Summer</h3>
+          <p class="meta">1–4 Jul 2023 · 4 days<br><b>64</b> photos · <b>2</b> memories</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <aside class="rail">
+    <div class="block">
+      <h4><svg class="ico"><use href="#i-list"/></svg>On this page</h4>
+      <ul class="toc">
+        <li class="on">Continue writing</li>
+        <li>Books</li>
+        <li class="sub">2026<span class="n">· 2</span></li>
+        <li class="sub">2025<span class="n">· 1</span></li>
+        <li class="sub">2024<span class="n">· 2</span></li>
+        <li class="sub">2023<span class="n">· 1</span></li>
+      </ul>
+    </div>
+    <div class="block">
+      <h4><svg class="ico"><use href="#i-sort"/></svg>Sort books</h4>
+      <ul class="sort">
+        <li class="on">Newest first</li>
+        <li>Oldest first</li>
+        <li>By year</li>
+        <li>By country</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h4><svg class="ico"><use href="#i-books"/></svg>The shelf</h4>
+      <!-- widths = photos × 0.26px, heights = 40 + days × 9px; newest → oldest -->
+      <div class="shelfviz">
+        <i class="t-hg" style="width:48px;height:76px"></i>
+        <i class="t-ha" style="width:29px;height:76px"></i>
+        <i class="t-ky age1" style="width:63px;height:103px"></i>
+        <i class="t-dl age2" style="width:15px;height:76px"></i>
+        <i class="t-lp age2" style="width:25px;height:94px"></i>
+        <i class="t-cd age3" style="width:17px;height:76px"></i>
+      </div>
+      <div class="shelfnums">
+        <span style="width:48px">186</span><span style="width:29px">112</span><span style="width:63px">241</span><span style="width:15px">58</span><span style="width:25px">97</span><span style="width:17px">64</span>
+      </div>
+      <p class="cap">Spine width is <b>photos</b>, height is <b>days</b>. Each color is sampled from that book's cover.</p>
+    </div>
+  </aside>
+</section>
+
+<!-- ═════════════════════════ SCREEN 2 · TRIP ═════════════════════════ -->
+<section id="screen-trip" class="screen">
+  <header class="topbar">
+    <a class="brand" href="#"><img src="assets/logo-mark.svg" alt="">Travel Memory Book</a>
+    <div class="search"><svg class="ico"><use href="#i-search"/></svg>Search memories, places…<kbd>Ctrl K</kbd></div>
+    <div class="top-r"><a class="btn leather" href="#"><svg class="ico"><use href="#i-plus"/></svg>New Book</a></div>
+  </header>
+
+  <aside class="side">
+    <nav class="nav">
+      <a class="on" href="#"><span class="tile"><svg class="ico"><use href="#i-library"/></svg></span>Library</a>
+      <a href="#"><span class="tile"><svg class="ico"><use href="#i-chart"/></svg></span>Journeys stats</a>
+      <a href="#"><span class="tile"><svg class="ico"><use href="#i-settings"/></svg></span>Settings</a>
+    </nav>
+    <div class="shelves">
+      <div class="yr">2026<span>2 books</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-hg on" href="#"><i class="spine"></i><span class="t">Hà Giang Loop</span><span class="m">14–17 Mar · 186 photos</span></a></li>
+        <li><a class="t-ha" href="#"><i class="spine"></i><span class="t">Hội An by Lantern Light</span><span class="m">24–27 Jan · 112 photos</span></a></li>
+      </ul>
+      <div class="yr">2025<span>1 book</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-ky" href="#"><i class="spine"></i><span class="t">Kyoto in Late Autumn</span><span class="m">18–24 Nov · 241 photos</span></a></li>
+      </ul>
+      <div class="yr">2024<span>2 books</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-dl" href="#"><i class="spine"></i><span class="t">Đà Lạt, Cold Mornings</span><span class="m">20–23 Dec · 58 photos</span></a></li>
+        <li><a class="t-lp" href="#"><i class="spine"></i><span class="t">Slow Days in Luang Prabang</span><span class="m">8–13 Feb · 97 photos</span></a></li>
+      </ul>
+      <div class="yr">2023<span>1 book</span></div>
+      <ul class="shelf-list">
+        <li><a class="t-cd" href="#"><i class="spine"></i><span class="t">Côn Đảo, First Swim of Summer</span><span class="m">1–4 Jul · 64 photos</span></a></li>
+      </ul>
+    </div>
+    <p class="private"><svg class="ico"><use href="#i-lock"/></svg><span>Everything stays on this device. No account, no cloud.</span></p>
+  </aside>
+
+  <div class="mist"></div>
+  <main class="main trip">
+    <p class="eyebrow crumbs">Library<span class="sep">/</span>2026<span class="sep">/</span><b>Hà Giang, Vietnam</b></p>
+
+    <div class="trip-head" id="overview">
+      <div>
+        <h1>Hà Giang Loop</h1>
+        <div class="chips">
+          <span class="date">14–17 Mar 2026</span>
+          <code>4 <i>days</i></code><code>186 <i>photos</i></code><code>9 <i>memories</i></code><code>7 <i>places</i></code>
+        </div>
+        <p class="desc">Four days on the back of a motorbike around the karst plateau, from Quản Bạ to Mèo Vạc and back.</p>
+        <div class="actions">
+          <a class="btn leather" href="#"><svg class="ico"><use href="#i-book-open"/></svg>Open the book</a>
+          <a class="btn" href="#"><svg class="ico"><use href="#i-image-plus"/></svg>Add photos</a>
+          <a class="btn" href="#"><svg class="ico"><use href="#i-pen"/></svg>Write a memory</a>
+          <a class="btn" href="#"><svg class="ico"><use href="#i-file-down"/></svg>Export PDF</a>
+          <a class="btn ghost" href="#"><svg class="ico"><use href="#i-pencil"/></svg>Edit</a>
+        </div>
+      </div>
+      <div class="book3d">
+        <img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Cover: Thẩm Mã Pass">
+        <i class="ribbon"></i>
+        <div class="foil"><b>Hà Giang Loop</b><span>MAR 2026</span></div>
+      </div>
+    </div>
+
+    <section class="chapters" id="chapters">
+      <div class="ch-grid ch-head"><span>Chapter</span><span>Route &amp; places</span><span>Photos</span><span>Memories</span></div>
+
+      <div class="ch-grid ch-row" id="day-1">
+        <div><span class="dnum">Day 1</span><span class="ddate">Sat 14 Mar</span></div>
+        <div><p class="route">Hà Giang → Yên Minh</p><p class="places"><svg class="ico"><use href="#i-pin"/></svg>Quản Bạ Heaven's Gate · Bắc Sum Pass</p></div>
+        <div class="thumbs"><img src="assets/photos/hagiang-d1-yen-minh-terraces.jpg" alt="Terraces near Yên Minh"><span>38 <i>photos</i></span></div>
+        <div><span class="mem empty"><svg class="ico"><use href="#i-pen"/></svg>No memory yet</span></div>
+      </div>
+
+      <div class="ch-grid ch-row" id="day-2">
+        <div><span class="dnum">Day 2</span><span class="ddate">Sun 15 Mar</span></div>
+        <div><p class="route">Yên Minh → Đồng Văn</p><p class="places"><svg class="ico"><use href="#i-pin"/></svg>Thẩm Mã Pass · Lũng Cú Flag Tower</p></div>
+        <div class="thumbs"><img src="assets/photos/hagiang-d2-lung-cu-flag.jpg" alt="Lũng Cú flag" style="object-position:40% 50%"><img src="assets/photos/hagiang-cover-tham-ma-pass.jpg" alt="Thẩm Mã Pass"><span>52 <i>photos</i></span></div>
+        <div><span class="mem"><i class="dot"></i>4 memories</span></div>
+      </div>
+
+      <div class="ch-grid ch-row open" id="day-3">
+        <div><span class="dnum">Day 3</span><span class="ddate">Mon 16 Mar</span></div>
+        <div><p class="route">Đồng Văn → Mèo Vạc</p><p class="places"><svg class="ico"><use href="#i-pin"/></svg>Mã Pí Lèng Pass · Nho Quế River</p></div>
+        <div class="thumbs"><img src="assets/photos/hagiang-d3-nho-que-river.jpg" alt="Nho Quế River"><img src="assets/photos/hagiang-d3-ma-pi-leng-road.jpg" alt="Mã Pí Lèng road"><img src="assets/photos/hagiang-d3-nho-que-green.jpg" alt="Nho Quế, green water"><span>61 <i>photos</i></span></div>
+        <div style="display:flex;align-items:center"><span class="mem"><i class="dot"></i>5 memories</span><svg class="ico chev"><use href="#i-chev-up"/></svg></div>
+
+        <div class="ch-body">
+          <article class="memory">
+            <p class="m-label">Memory · Day 3</p>
+            <h3>Mã Pí Lèng, 7 giờ sáng</h3>
+            <p lang="vi">Dừng xe ở Mã Pí Lèng lúc sương còn vắt ngang vách núi. Sông Nho Quế bên dưới xanh như ai đổ mực, nhỏ đến mức tưởng chỉ là một sợi chỉ. Anh Páo — người chở mình suốt bốn ngày — bảo mùa này nước đẹp nhất. Mình đứng đó gần nửa tiếng, không chụp thêm tấm nào, chỉ muốn nhớ cảm giác gió lạnh tạt vào mặt.</p>
+            <div class="exif"><svg class="ico"><use href="#i-camera"/></svg><span class="k">exif</span><span>16 Mar 2026</span><span class="s">·</span><span class="t">07:12</span><span class="s">·</span><span class="g">f/5.6</span><span class="s">·</span><span class="g">1/500s</span><span class="s">·</span><span class="d">ISO 200</span></div>
+          </article>
+          <figure class="portrait"><img src="assets/photos/hagiang-d3-ma-pi-leng-portrait.jpg" alt="Mã Pí Lèng above the Nho Quế River"><figcaption>Mã Pí Lèng<br>07:12</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="ch-grid ch-row" id="day-4">
+        <div><span class="dnum">Day 4</span><span class="ddate">Tue 17 Mar</span></div>
+        <div><p class="route">Mèo Vạc → Du Già → Hà Giang</p><p class="places"><svg class="ico"><use href="#i-pin"/></svg>Du Già</p></div>
+        <div class="thumbs"><img src="assets/photos/hagiang-d4-terraced-fields.jpg" alt="Terraced fields"><span>35 <i>photos</i></span></div>
+        <div><span class="mem empty"><svg class="ico"><use href="#i-pen"/></svg>No memory yet</span></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="rail t-hg">
+    <div class="block">
+      <h4><svg class="ico"><use href="#i-list"/></svg>On this page</h4>
+      <ul class="toc">
+        <li>Overview</li>
+        <li>Chapters</li>
+        <li class="day dash"><span class="k">Day 1<i></i></span><span class="r">Hà Giang → Yên Minh</span></li>
+        <li class="day"><span class="k">Day 2<i></i></span><span class="r">Yên Minh → Đồng Văn</span></li>
+        <li class="day on c"><span class="k">Day 3<i></i></span><span class="r">Đồng Văn → Mèo Vạc</span></li>
+        <li class="day dash"><span class="k">Day 4<i></i></span><span class="r">Mèo Vạc → Du Già → Hà Giang</span></li>
+      </ul>
+    </div>
+    <div class="block">
+      <h4><svg class="ico"><use href="#i-route"/></svg>The loop</h4>
+      <!-- schematic only: 4 overnight towns + 7 places, not to scale -->
+      <svg class="loop" viewBox="0 0 208 196" role="img" aria-label="Loop: Hà Giang, Yên Minh, Đồng Văn, Mèo Vạc, Du Già, back to Hà Giang">
+        <path class="seg todo" d="M22 160 C 13 130, 14 104, 34 82"/>
+        <path class="seg done" d="M34 82 C 48 58, 64 36, 86 30"/>
+        <path class="seg on"   d="M86 30 C 110 26, 130 52, 132 84"/>
+        <path class="seg todo" d="M132 84 C 134 114, 126 140, 106 150 C 80 164, 48 172, 22 160"/>
+        <!-- 7 places -->
+        <circle class="pl" cx="16.6" cy="127.5" r="3"/><circle class="pl" cx="21.5" cy="101.4" r="3"/>
+        <circle class="pl" cx="51" cy="56.3" r="3"/><circle class="pl" cx="68.8" cy="38.5" r="3"/>
+        <circle class="pl on" cx="110.9" cy="37.1" r="3.5"/><circle class="pl on" cx="126.4" cy="59.1" r="3.5"/>
+        <circle class="pl" cx="106" cy="150" r="3.5"/>
+        <!-- overnight towns; Hà Giang is start + end -->
+        <circle class="town" cx="22" cy="160" r="6"/><circle cx="22" cy="160" r="2.4" fill="var(--ink-2)"/>
+        <circle class="town" cx="34" cy="82" r="5"/>
+        <circle class="town" cx="86" cy="30" r="5"/>
+        <circle class="town" cx="132" cy="84" r="5"/>
+        <text x="2" y="186">Hà Giang</text>
+        <text x="44" y="95">Yên Minh</text>
+        <text x="86" y="15" text-anchor="middle">Đồng Văn</text>
+        <text x="142" y="89">Mèo Vạc</text>
+        <text x="106" y="172" text-anchor="middle">Du Già</text>
+        <text class="on" x="138" y="46">Day 3</text>
+        <text class="c" x="76" y="130" text-anchor="middle">7 places</text>
+      </svg>
+      <div class="legend"><span><i></i>memory written</span><span><i class="d"></i>not yet</span></div>
+    </div>
+  </aside>
+</section>
+
+</body>
+</html>

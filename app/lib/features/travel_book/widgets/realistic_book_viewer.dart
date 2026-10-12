@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import '../../../core/widgets/loading_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:book_page_flip/book_page_flip.dart';
 import 'package:image/image.dart' as img;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -17,12 +16,13 @@ import '../../../models/photo.dart';
 import '../../../models/travel_book.dart';
 import '../../../models/trip.dart';
 import '../services/page_flip_audio_service.dart';
+import 'book_pages/book_collage_page.dart';
 import 'book_pages/book_cover_page.dart';
 import 'book_pages/book_day_page.dart';
 import 'book_pages/book_memory_page.dart';
-import 'book_pages/book_photo_page.dart';
 import 'book_pages/book_stats_back_cover.dart';
-import 'book_pages/leather_cover.dart';
+import 'book_pages/paper_background.dart';
+import 'flip_book.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class RealisticBookViewer extends ConsumerStatefulWidget {
@@ -47,30 +47,28 @@ class RealisticBookViewer extends ConsumerStatefulWidget {
 }
 
 class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
-  final BookFlipController _controller = BookFlipController();
+  final FlipBookController _controller = FlipBookController();
   late List<Widget> _pageWidgets;
-  Size? _pageSize;
-  int _captureEpoch = 0;
-  int _currentSpread = 0;
-  int _lastTotalSpreads = 0;
+
+  /// (label, page index) of each day opener, for the chapter bar.
+  late List<(String, int)> _chapters;
+  int _spread = 0;
+  bool _twoPage = true;
   bool _exporting = false;
   int _exportDone = 0;
   List<GlobalKey> _exportKeys = const [];
   bool _audioInitialized = false;
   bool _imagesReady = false;
-  bool _showCornerHint = true;
 
   @override
   void initState() {
     super.initState();
-    _pageWidgets = _buildPageWidgets();
-    _controller.addListener(_onBookChanged);
+    _buildPages();
     _ensureAudioInit();
     _precacheImages();
   }
 
-  // BookFlip rasterise page widget ngay frame đầu — Image.memory decode bất đồng
-  // bộ nên ảnh chưa kịp vẽ sẽ bị capture trắng. Precache trước để cache hit ngay.
+  // Decode every photo before the book opens so pages never flash empty.
   Future<void> _precacheImages() async {
     final paths = <String>{
       if (widget.trip.coverPhotoPath != null) widget.trip.coverPhotoPath!,
@@ -181,23 +179,7 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
     if (!identical(old.book, widget.book) ||
         !identical(old.trip, widget.trip) ||
         !identical(old.photos, widget.photos)) {
-      _pageWidgets = _buildPageWidgets();
-      _captureEpoch++;
-      _currentSpread = 0;
-    }
-  }
-
-  // BookFlip re-capture toàn bộ trang (và remount → reset về spread 0) mỗi khi
-  // pageBuilder đổi identity. Method tear-off KHÔNG identical giữa các build —
-  // phải giữ closure trong field final để cùng 1 object qua mọi rebuild.
-  // ignore: prefer_function_declarations_over_variables
-  late final Widget Function(BuildContext, int) _pageBuilder =
-      (context, index) => _pageWidgets[index];
-
-  void _onBookChanged() {
-    final total = _controller.totalSpreads;
-    if (total != _lastTotalSpreads && mounted) {
-      setState(() => _lastTotalSpreads = total);
+      _buildPages();
     }
   }
 
@@ -214,303 +196,250 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
     super.dispose();
   }
 
-  List<Widget> _buildPageWidgets() {
+  /// Lay the assembled book out as photo-book pages: consecutive photos of a
+  /// day share a page (three, then two or one for the remainder), so a
+  /// 186-photo trip reads as about 70 pages instead of 190.
+  void _buildPages() {
     final pages = widget.book.pages;
     final widgets = <Widget>[];
+    final chapters = <(String, int)>[];
+    int number() => widgets.length; // page 0 is the cover, unnumbered
+    bool left() => widgets.length.isOdd;
 
-    for (int i = 0; i < pages.length; i++) {
-      final page = pages[i];
-      final isLeft = i.isEven;
-      final pageNumber = i + 1;
+    void flushPhotos(List<BookPage> run) {
+      var i = 0;
+      while (i < run.length) {
+        final rest = run.length - i;
+        final take = rest == 4 ? 2 : math.min(3, rest);
+        final chunk = run.sublist(i, i + take);
+        widgets.add(BookCollagePage(
+          photos: [for (final p in chunk) p.photoId == null ? null : _findPhoto(p.photoId!)],
+          captions: [for (final p in chunk) p.body],
+          pageNumber: number(),
+          isLeft: left(),
+        ));
+        i += take;
+      }
+    }
+
+    final run = <BookPage>[];
+    for (final page in pages) {
+      if (page.type == 'photo') {
+        run.add(page);
+        continue;
+      }
+      flushPhotos(run);
+      run.clear();
       switch (page.type) {
         case 'cover':
           widgets.add(BookCoverPage(trip: widget.trip, book: widget.book));
-          break;
         case 'day':
+          chapters.add(('Day ${page.dayNumber ?? chapters.length + 1}', widgets.length));
           widgets.add(BookDayPage(
             trip: widget.trip,
             dayNumber: page.dayNumber ?? 1,
             dateStr: page.subtitle ?? '',
-            pageNumber: pageNumber,
-            isLeft: isLeft,
+            pageNumber: number(),
+            isLeft: left(),
           ));
-          break;
-        case 'photo':
-          final photo =
-              page.photoId != null ? _findPhoto(page.photoId!) : null;
-          widgets.add(BookPhotoPage(
-            photo: photo,
-            caption: page.body,
-            pageNumber: pageNumber,
-            isLeft: isLeft,
-          ));
-          break;
         case 'memory':
         case 'trip_memory':
           widgets.add(BookMemoryPage(
             title: page.title,
             content: page.body ?? '',
-            pageNumber: pageNumber,
-            isLeft: isLeft,
+            pageNumber: number(),
+            isLeft: left(),
           ));
-          break;
-        default:
-          widgets.add(const SizedBox.shrink());
       }
     }
-
-    // Bìa sau: thêm trang thống kê
+    flushPhotos(run);
+    if (widgets.isEmpty) {
+      widgets.add(BookCoverPage(trip: widget.trip, book: widget.book));
+    }
+    // The back cover closes the book on the left, so it needs an odd index.
+    if (widgets.length.isEven) widgets.add(const PaperBackground());
     widgets.add(BookStatsBackCover(
       trip: widget.trip,
       book: widget.book,
       photos: widget.photos,
-      pageNumber: widgets.length + 1,
-      isLeft: widgets.length.isEven,
+      pageNumber: number(),
+      isLeft: left(),
     ));
 
-    // BookFlip yêu cầu tối thiểu 2 trang
-    while (widgets.length < 2) {
-      widgets.add(const SizedBox.shrink());
-    }
-    // totalSpreads = pageCount ~/ 2 → số trang lẻ sẽ cắt mất trang cuối.
-    // Pad bằng mặt ngoài bìa sau (da trơn) thay vì trang giấy trắng —
-    // trông như cuốn sách khép lại.
-    if (widgets.length.isOdd) {
-      widgets.add(const LeatherCover(child: SizedBox.expand()));
-    }
-
-    return widgets;
+    _pageWidgets = widgets;
+    _chapters = chapters;
+    _spread = 0;
   }
 
   Photo? _findPhoto(int photoId) {
-    try {
-      return widget.photos.firstWhere((p) => p.id == photoId);
-    } catch (_) {
-      return null;
+    for (final p in widget.photos) {
+      if (p.id == photoId) return p;
     }
+    return null;
   }
 
-  // BookFlip packs every page into one atlas texture capped at
-  // maxTextureDimension (4096 by default). A long book splits that into many
-  // small cells, so each page was rasterised far below its on-screen size and
-  // text came out blurred. Allow up to 6144: on web an 8192 (and even a 7168)
-  // atlas failed silently and left the book blank, with no error for the
-  // package's halve-and-retry to catch.
-  int _atlasLimit(Size pageSize, double dpr) {
-    final cols = math.sqrt(_pageWidgets.length).ceil();
-    final needed = cols * pageSize.height * dpr;
-    return needed <= 4096 ? 4096 : 6144;
+  int _spreadOf(int page) => _twoPage ? (page + 1) ~/ 2 : page;
+
+  /// Pages on screen now, as (first, last) indexes.
+  (int, int) _visible() {
+    if (!_twoPage) return (_spread, _spread);
+    final l = _spread == 0 ? 0 : 2 * _spread - 1;
+    final r = math.min(_spread == 0 ? 0 : 2 * _spread, _pageWidgets.length - 1);
+    return (l, r);
   }
 
-  Size _calculatePageSize(Size screenSize) {
-    // Book viewer luôn landscape - dùng gần như toàn bộ màn hình
-    // Subtract một chút padding cho top bar + bottom bar (~80px + 50px = 130px)
-    final usableHeight = screenSize.height - 140;
-    final usableWidth = screenSize.width - 32;
-
-    // Page aspect ratio: 3:4 (giống sách bìa cứng) - width/height
-    const aspectRatio = 0.75;
-
-    // Spread width = 2 * page width, nên page width = usableWidth / 2
-    double pageWidth = usableWidth / 2;
-    double pageHeight = pageWidth / aspectRatio;
-
-    if (pageHeight > usableHeight) {
-      pageHeight = usableHeight;
-      pageWidth = pageHeight * aspectRatio;
+  String _currentTitle() {
+    final (_, last) = _visible();
+    String? label;
+    for (final (name, index) in _chapters) {
+      if (index <= last) label = name;
     }
-
-    return Size(pageWidth, pageHeight);
+    return label == null ? widget.trip.title : '${widget.trip.title} · $label';
   }
 
-  String _getCurrentTitle(int spread, List<BookPage> pages) {
-    if (pages.isEmpty) return widget.trip.title;
-    // Khi hiển thị 2 trang, lấy tiêu đề trang bên trái
-    final leftPageIndex = spread * 2;
-    if (leftPageIndex < pages.length) {
-      final page = pages[leftPageIndex];
-      if (page.type == 'cover') return widget.trip.title;
-      if (page.title != null) return page.title!;
+  /// The largest page that fits, at the 3:4 of a hardcover photo book.
+  Size _pageSizeFor(Size screen, bool twoPage) {
+    final usableH = screen.height - 150;
+    final usableW = screen.width - 48;
+    var w = twoPage ? usableW / 2 : usableW;
+    var h = w / 0.75;
+    if (h > usableH) {
+      h = usableH;
+      w = h * 0.75;
     }
-    return widget.trip.title;
+    return Size(w.floorToDouble(), h.floorToDouble());
+  }
+
+  void _onTurned() {
+    if (_audioInitialized) ref.read(pageFlipAudioServiceProvider).playFlip();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_pageWidgets.length < 2) {
-      return const Center(child: Text('Book has no pages'));
-    }
     if (!_imagesReady) {
       return const Center(child: LoadingView());
     }
+    final dark = Theme.of(context).brightness == Brightness.dark;
 
     return CallbackShortcuts(
       bindings: {
-        const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
-            _controller.nextSpread(),
-        const SingleActivator(LogicalKeyboardKey.space): () =>
-            _controller.nextSpread(),
-        const SingleActivator(LogicalKeyboardKey.pageDown): () =>
-            _controller.nextSpread(),
-        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
-            _controller.previousSpread(),
-        const SingleActivator(LogicalKeyboardKey.pageUp): () =>
-            _controller.previousSpread(),
+        const SingleActivator(LogicalKeyboardKey.arrowRight): _controller.next,
+        const SingleActivator(LogicalKeyboardKey.space): _controller.next,
+        const SingleActivator(LogicalKeyboardKey.pageDown): _controller.next,
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): _controller.previous,
+        const SingleActivator(LogicalKeyboardKey.pageUp): _controller.previous,
+        const SingleActivator(LogicalKeyboardKey.home): () => _controller.jumpTo(0),
+        const SingleActivator(LogicalKeyboardKey.end): () =>
+            _controller.jumpTo(_controller.totalSpreads - 1),
         const SingleActivator(LogicalKeyboardKey.escape): () =>
             context.go('/trips/${widget.trip.id}'),
       },
       child: Focus(
         autofocus: true,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final screenSize =
-                Size(constraints.maxWidth, constraints.maxHeight);
-            // Cache pageSize: mỗi thay đổi pageSize cũng trigger re-capture →
-            // reset về trang đầu. BookFlip tự scale qua fit: contain khi resize.
-            final pageSize =
-                _pageSize ??= _calculatePageSize(screenSize);
-
-            final dark =
-                Theme.of(context).brightness == Brightness.dark;
-            return Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: dark
-                      ? const [Color(0xFF16110D), Color(0xFF0A0A0A)]
-                      : const [Color(0xFFEFE7D8), Color(0xFFFAF7F2)],
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: dark
+                  ? const [Color(0xFF16110D), Color(0xFF0A0A0A)]
+                  : const [Color(0xFFEFE7D8), Color(0xFFFAF7F2)],
+            ),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      radius: 1.3,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: dark ? 0.35 : 0.12),
+                      ],
+                      stops: const [0.6, 1.0],
+                    ),
+                  ),
                 ),
               ),
-              // Vân giấy mờ + vignette nhẹ cho cảm giác "mặt bàn đọc sách"
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  IgnorePointer(
-                    child: Opacity(
-                      opacity: dark ? 0.03 : 0.05,
-                      child: Image.asset(
-                        'assets/images/book/paper-texture.png',
-                        repeat: ImageRepeat.repeat,
-                        fit: BoxFit.none,
-                        errorBuilder: (_, __, ___) =>
-                            const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
-                  IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: RadialGradient(
-                          radius: 1.3,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(dark ? 0.35 : 0.12),
-                          ],
-                          stops: const [0.6, 1.0],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Column(
+              Column(
                 children: [
                   _TopBar(
-                    title: _getCurrentTitle(
-                        _currentSpread, widget.book.pages),
-                    currentSpread: _currentSpread,
-                    totalSpreads: _lastTotalSpreads,
-                    onBack: () =>
-                        context.go('/trips/${widget.trip.id}'),
+                    title: _currentTitle(),
+                    onBack: () => context.go('/trips/${widget.trip.id}'),
                     onExport: _exportPdf,
                     exporting: _exporting,
                   ),
                   Expanded(
-                    child: Center(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                    BookFlip.builder(
-                      key: ValueKey(_captureEpoch),
-                      pageCount: _pageWidgets.length,
-                      pageBuilder: _pageBuilder,
-                      pageSize: pageSize,
-                      maxTextureDimension: _atlasLimit(
-                          pageSize, MediaQuery.devicePixelRatioOf(context)),
-                      controller: _controller,
-                      material: BookFlipMaterial.paper,
-                      curl: BookFlipCurl.gentle,
-                      effects: const BookFlipEffects(
-                        gloss: false,
-                        grain: false,
-                      ),
-                      onSpreadChanged: (spread) {
-                        setState(() => _currentSpread = spread);
-                        if (spread > 0 && _showCornerHint) {
-                          setState(() => _showCornerHint = false);
-                        }
-                      },
-                      onFlipEnd: (spread) {
-                        if (_audioInitialized) {
-                          ref.read(pageFlipAudioServiceProvider).playFlip();
-                        }
-                      },
-                    ),
-                    if (_showCornerHint && _currentSpread == 0)
-                      Positioned(
-                        bottom: 16,
-                        right: 16,
-                        child: _CornerHint(
-                          onDismiss: () =>
-                              setState(() => _showCornerHint = false),
+                    child: LayoutBuilder(builder: (context, c) {
+                      final screen = Size(c.maxWidth, c.maxHeight + 150);
+                      final twoPage = c.maxWidth >= 760 && c.maxWidth > c.maxHeight;
+                      if (twoPage != _twoPage) {
+                        // Mode follows the window; FlipBook keeps the page.
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) {
+                            setState(() {
+                              _twoPage = twoPage;
+                              _spread = _controller.spread;
+                            });
+                          }
+                        });
+                      }
+                      final size = _pageSizeFor(screen, twoPage);
+                      return Center(
+                        child: FlipBook(
+                          pages: _pageWidgets,
+                          pageSize: size,
+                          singlePage: !twoPage,
+                          controller: _controller,
+                          onTurned: _onTurned,
+                          onSpreadChanged: (s) => setState(() => _spread = s),
                         ),
-                      ),
-                        ],
-                      ),
-                    ),
+                      );
+                    }),
                   ),
                   _BottomBar(
-                    currentPage: _currentSpread * 2 + 1,
-                    totalPages: _controller.totalPages,
-                    onPrev: () => _controller.previousSpread(),
-                    onNext: () => _controller.nextSpread(),
+                    visible: _visible(),
+                    totalPages: _pageWidgets.length,
+                    chapters: _chapters,
+                    currentChapterPage: _visible().$1,
+                    onPrev: _controller.previous,
+                    onNext: _controller.next,
+                    onChapter: (page) => _controller.jumpTo(_spreadOf(page)),
                   ),
-                ],
-                  ),
-                  // Các trang render ẩn dưới cover mờ để rasterise ra PNG
-                  // khi export PDF — occlusion không ngăn paint nên capture
-                  // vẫn hoạt động (cùng kỹ thuật book_page_flip dùng).
-                  if (_exporting)
-                    Positioned.fill(
-                      child: Stack(
-                        children: [
-                          for (var i = 0; i < _pageWidgets.length; i++)
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              width: _exportSize.width,
-                              height: _exportSize.height,
-                              child: RepaintBoundary(
-                                key: _exportKeys[i],
-                                child: _pageWidgets[i],
-                              ),
-                            ),
-                          Positioned.fill(
-                            child: ColoredBox(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surface,
-                              child: LoadingView(
-                                  message:
-                                      'Exporting PDF… $_exportDone/${_pageWidgets.length}'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                 ],
               ),
-            );
-          },
+              // Pages rendered off-screen under an opaque cover so the PDF
+              // export can capture each one.
+              if (_exporting)
+                Positioned.fill(
+                  child: Stack(
+                    children: [
+                      for (var i = 0; i < _pageWidgets.length; i++)
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          width: _exportSize.width,
+                          height: _exportSize.height,
+                          child: RepaintBoundary(
+                            key: _exportKeys[i],
+                            child: _pageWidgets[i],
+                          ),
+                        ),
+                      Positioned.fill(
+                        child: ColoredBox(
+                          color: Theme.of(context).colorScheme.surface,
+                          child: LoadingView(
+                              message:
+                                  'Exporting PDF… $_exportDone/${_pageWidgets.length}'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -519,71 +448,41 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
 
 class _TopBar extends StatelessWidget {
   final String title;
-  final int currentSpread;
-  final int totalSpreads;
-  final VoidCallback? onBack;
-  final VoidCallback? onExport;
+  final VoidCallback onBack;
+  final VoidCallback onExport;
   final bool exporting;
 
   const _TopBar({
     required this.title,
-    required this.currentSpread,
-    required this.totalSpreads,
-    this.onBack,
-    this.onExport,
+    required this.onBack,
+    required this.onExport,
     this.exporting = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
           TextButton.icon(
-            onPressed: onBack ??
-                () {
-                  if (context.canPop()) {
-                    context.pop();
-                  }
-                },
+            onPressed: onBack,
             icon: const Icon(LucideIcons.arrowLeft, size: 18),
-            label: const Text('Back'),
-            style: TextButton.styleFrom(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
+            label: const Text('Close'),
           ),
           Expanded(
             child: Text(
               title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: theme.textTheme.titleMedium,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          IconButton(
+          TextButton.icon(
             onPressed: exporting ? null : onExport,
-            icon: const Icon(LucideIcons.download, size: 20),
-            tooltip: 'Download PDF',
-          ),
-          SizedBox(
-            width: 60,
-            child: totalSpreads > 0
-                ? Text(
-                    '${currentSpread + 1}/$totalSpreads',
-                    textAlign: TextAlign.right,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface
-                              .withOpacity(0.6),
-                        ),
-                  )
-                : null,
+            icon: const Icon(LucideIcons.fileDown, size: 18),
+            label: const Text('PDF'),
           ),
         ],
       ),
@@ -592,128 +491,93 @@ class _TopBar extends StatelessWidget {
 }
 
 class _BottomBar extends StatelessWidget {
-  final int currentPage;
+  final (int, int) visible;
   final int totalPages;
+  final List<(String, int)> chapters;
+  final int currentChapterPage;
   final VoidCallback onPrev;
   final VoidCallback onNext;
+  final ValueChanged<int> onChapter;
 
   const _BottomBar({
-    required this.currentPage,
+    required this.visible,
     required this.totalPages,
+    required this.chapters,
+    required this.currentChapterPage,
     required this.onPrev,
     required this.onNext,
+    required this.onChapter,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (totalPages <= 0) return const SizedBox.shrink();
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final (first, last) = visible;
+    final label = first == 0 && last == 0
+        ? 'Cover'
+        : first == last
+            ? 'Page $first of ${totalPages - 1}'
+            : 'Pages $first–$last of ${totalPages - 1}';
+    int? current;
+    for (var i = 0; i < chapters.length; i++) {
+      if (chapters[i].$2 <= last) current = i;
+    }
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16, top: 4),
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: theme.colorScheme.outlineVariant),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4)),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(LucideIcons.chevronLeft),
-                onPressed: onPrev,
-                tooltip: 'Previous (←)',
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  'Page ${currentPage + 1} of $totalPages',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(fontWeight: FontWeight.w500),
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 14),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: scheme.surface,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: scheme.outlineVariant),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(LucideIcons.chevronLeft),
+                  onPressed: onPrev,
+                  tooltip: 'Previous (←)',
                 ),
-              ),
-              IconButton(
-                icon: const Icon(LucideIcons.chevronRight),
-                onPressed: onNext,
-                tooltip: 'Next (→)',
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CornerHint extends StatefulWidget {
-  final VoidCallback onDismiss;
-  const _CornerHint({required this.onDismiss});
-
-  @override
-  State<_CornerHint> createState() => _CornerHintState();
-}
-
-class _CornerHintState extends State<_CornerHint>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    )..repeat(reverse: true);
-    Future.delayed(const Duration(seconds: 5), () {
-      if (mounted) widget.onDismiss();
-    });
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _ctrl,
-      builder: (context, _) {
-        return Opacity(
-          opacity: 0.5 + (_ctrl.value * 0.5),
-          child: Material(
-            color: Colors.black.withOpacity(0.7),
-            borderRadius: BorderRadius.circular(20),
-            child: InkWell(
-              onTap: widget.onDismiss,
-              borderRadius: BorderRadius.circular(20),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(LucideIcons.mousePointerClick, color: Colors.white, size: 16),
-                    SizedBox(width: 6),
-                    Text(
-                      'Drag page corner to flip',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ],
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 120),
+                  child: Text(label,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600)),
                 ),
-              ),
+                IconButton(
+                  icon: const Icon(LucideIcons.chevronRight),
+                  onPressed: onNext,
+                  tooltip: 'Next (→)',
+                ),
+              ],
             ),
           ),
-        );
-      },
+          if (chapters.isNotEmpty)
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (var i = 0; i < chapters.length; i++)
+                  ChoiceChip(
+                    label: Text(chapters[i].$1),
+                    selected: i == current,
+                    labelStyle: theme.textTheme.labelLarge?.copyWith(
+                      color: i == current ? scheme.surface : scheme.onSurface,
+                    ),
+                    onSelected: (_) => onChapter(chapters[i].$2),
+                  ),
+              ],
+            ),
+        ],
+      ),
     );
   }
 }

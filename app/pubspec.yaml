@@ -27,7 +27,6 @@ dependencies:
   uuid: ^4.4.0
 
   # Page flip + Audio
-  book_page_flip: ^0.1.0
   audioplayers: ^6.1.0
 
   # UI

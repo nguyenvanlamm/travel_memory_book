@@ -198,12 +198,14 @@ class _FlipBookState extends State<FlipBook> with SingleTickerProviderStateMixin
       );
 
   /// A page turning about [hingeLeft] (true: its left edge) by [angle].
+  /// With this perspective +z recedes, so the signs are chosen to lift the
+  /// free edge toward the reader, as a real page does.
   Widget _leaf(Widget? page, {required bool hingeLeft, required double angle}) {
     final shade = math.sin(angle.abs()).clamp(0.0, 1.0) * 0.28;
     return Transform(
       alignment: hingeLeft ? Alignment.centerLeft : Alignment.centerRight,
       transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.0011)
+        ..setEntry(3, 2, 0.00045)
         ..rotateY(angle),
       child: Stack(
         children: [
@@ -237,7 +239,7 @@ class _FlipBookState extends State<FlipBook> with SingleTickerProviderStateMixin
     if (widget.singlePage) {
       final base = _dir > 0 ? _right(s + 1) : _right(s);
       final turning = _dir > 0 ? _right(s) : (_dir < 0 ? _right(s - 1) : null);
-      final angle = _dir > 0 ? -math.pi / 2 * t : -math.pi / 2 * (1 - t);
+      final angle = _dir > 0 ? math.pi / 2 * t : math.pi / 2 * (1 - t);
       return Stack(
         children: [
           _slot(base),
@@ -272,12 +274,12 @@ class _FlipBookState extends State<FlipBook> with SingleTickerProviderStateMixin
     ];
     if (_dir > 0) {
       children.add(t < 0.5
-          ? Positioned(left: w, top: 0, child: _leaf(front, hingeLeft: true, angle: -math.pi * t))
-          : Positioned(left: 0, top: 0, child: _leaf(back, hingeLeft: false, angle: math.pi * (1 - t))));
+          ? Positioned(left: w, top: 0, child: _leaf(front, hingeLeft: true, angle: math.pi * t))
+          : Positioned(left: 0, top: 0, child: _leaf(back, hingeLeft: false, angle: -math.pi * (1 - t))));
     } else if (_dir < 0) {
       children.add(t < 0.5
-          ? Positioned(left: 0, top: 0, child: _leaf(front, hingeLeft: false, angle: math.pi * t))
-          : Positioned(left: w, top: 0, child: _leaf(back, hingeLeft: true, angle: -math.pi * (1 - t))));
+          ? Positioned(left: 0, top: 0, child: _leaf(front, hingeLeft: false, angle: -math.pi * t))
+          : Positioned(left: w, top: 0, child: _leaf(back, hingeLeft: true, angle: math.pi * (1 - t))));
     }
     // The gutter: a soft fold shadow down the spine when both pages lie open.
     if (baseLeft != null && baseRight != null) {

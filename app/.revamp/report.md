@@ -22,7 +22,7 @@ Release APK size delta: not measured (`--analyze-size` not run).
 - `flutter analyze`: no errors or warnings. 65 infos, all pre-existing deprecations.
 - `flutter test`: 2/2 pass. The old single test was rewritten for the new shell; it could not compile on this SDK before.
 - `flutter build web --release`: built.
-- `flutter build apk --debug`: see the handoff message.
+- `flutter build apk --debug`: **fails, and the cause predates this work.** `android/` still applies the Flutter Gradle plugin with the imperative `apply` script, which Flutter 3.47 no longer accepts. That then shows up as "compileSdkVersion is not specified". `android/` was not touched here, so `main` fails the same way. Fixing it is a separate migration: https://flutter.dev/to/flutter-gradle-plugin-apply
 - Screenshots of a seeded build were checked at 1440×900, 1024×768 and 390×844, in light and dark, with text scale 1.0, 1.3 and 2.0. No overflow.
 - The seed entrypoint was temporary (`lib/main_demo.dart`) and is not committed. It loaded the `design-demos/spec.md` library.
 

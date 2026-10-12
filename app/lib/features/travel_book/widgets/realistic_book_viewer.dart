@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -289,6 +290,18 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
     }
   }
 
+  // BookFlip packs every page into one atlas texture capped at
+  // maxTextureDimension (4096 by default). A long book splits that into many
+  // small cells, so each page was rasterised far below its on-screen size and
+  // text came out blurred. Allow up to 6144: on web an 8192 (and even a 7168)
+  // atlas failed silently and left the book blank, with no error for the
+  // package's halve-and-retry to catch.
+  int _atlasLimit(Size pageSize, double dpr) {
+    final cols = math.sqrt(_pageWidgets.length).ceil();
+    final needed = cols * pageSize.height * dpr;
+    return needed <= 4096 ? 4096 : 6144;
+  }
+
   Size _calculatePageSize(Size screenSize) {
     // Book viewer luôn landscape - dùng gần như toàn bộ màn hình
     // Subtract một chút padding cho top bar + bottom bar (~80px + 50px = 130px)
@@ -421,6 +434,8 @@ class _RealisticBookViewerState extends ConsumerState<RealisticBookViewer> {
                       pageCount: _pageWidgets.length,
                       pageBuilder: _pageBuilder,
                       pageSize: pageSize,
+                      maxTextureDimension: _atlasLimit(
+                          pageSize, MediaQuery.devicePixelRatioOf(context)),
                       controller: _controller,
                       material: BookFlipMaterial.paper,
                       curl: BookFlipCurl.gentle,

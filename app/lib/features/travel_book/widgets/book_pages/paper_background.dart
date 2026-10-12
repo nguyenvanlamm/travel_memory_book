@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 /// the app light/dark theme (a printed page looks the same either way).
 class BookInk {
   static const Color ink = Color(0xFF4A3428);
-  static const Color inkSoft = Color(0xB34A3428);
-  static const Color inkFaint = Color(0x804A3428);
+  static const Color inkSoft = Color(0xFF5E4637);
+  static const Color inkFaint = Color(0xFF6B5444);
   static const Color rule = Color(0xFF8D6E63);
   static const Color paper = Color(0xFFF8F0DC);
 }
@@ -117,7 +117,7 @@ class BookPageNumber extends StatelessWidget {
       child: Text(
         '$page',
         style: TextStyle(fontFamily: 'Inter', 
-          fontSize: 11,
+          fontSize: 12.5,
           letterSpacing: 0.5,
           color: BookInk.inkFaint,
         ),

@@ -39,7 +39,7 @@ class BookStatsBackCover extends StatelessWidget {
             Text(
               'T H E   E N D',
               style: TextStyle(fontFamily: 'Inter', 
-                fontSize: 10,
+                fontSize: 12,
                 letterSpacing: 4,
                 fontWeight: FontWeight.w500,
                 color: gold.withOpacity(0.85),
@@ -80,8 +80,8 @@ class BookStatsBackCover extends StatelessWidget {
             Text(
               '${trip.formattedDates} · ${trip.country}',
               style: TextStyle(fontFamily: 'Inter', 
-                fontSize: 11.5,
-                color: ivory.withOpacity(0.7),
+                fontSize: 13,
+                color: ivory.withOpacity(0.88),
                 letterSpacing: 0.4,
               ),
               textAlign: TextAlign.center,
@@ -108,9 +108,9 @@ class BookStatsBackCover extends StatelessWidget {
             Text(
               'M A D E   W I T H   L O V E   ·   T R A V E L   M E M O R Y   B O O K',
               style: TextStyle(fontFamily: 'Inter', 
-                fontSize: 8,
+                fontSize: 11,
                 letterSpacing: 2,
-                color: gold.withOpacity(0.55),
+                color: gold.withOpacity(0.85),
               ),
             ),
           ],
@@ -145,7 +145,7 @@ class _Stat extends StatelessWidget {
         Text(
           label.toUpperCase(),
           style: TextStyle(fontFamily: 'Inter', 
-            fontSize: 9,
+            fontSize: 11,
             letterSpacing: 1.5,
             color: LeatherCover.gold.withOpacity(0.8),
           ),

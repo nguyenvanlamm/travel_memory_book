@@ -84,17 +84,17 @@ class BookPhotoPage extends StatelessWidget {
                         Text(
                           photo!.locationName ?? 'GPS location',
                           style: TextStyle(fontFamily: 'Inter', 
-                              fontSize: 11, color: BookInk.inkFaint),
+                              fontSize: 13, color: BookInk.inkFaint),
                         ),
                         Text('   ·   ',
                             style: TextStyle(fontFamily: 'Inter', 
-                                fontSize: 11, color: BookInk.inkFaint)),
+                                fontSize: 13, color: BookInk.inkFaint)),
                       ],
                       Text(
                         DateFormat('d MMM yyyy · HH:mm')
                             .format(photo!.takenAt),
                         style: TextStyle(fontFamily: 'Inter', 
-                            fontSize: 11, color: BookInk.inkFaint),
+                            fontSize: 13, color: BookInk.inkFaint),
                       ),
                     ],
                   ),

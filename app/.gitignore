@@ -33,6 +33,9 @@ migrate_working_dir/
 # build/web được commit để Netlify deploy tĩnh mà không cần Flutter SDK
 !/build/web/
 !/build/web/**
+# Ảnh demo do tool/run_mock.sh chép tạm — không commit, không deploy.
+/web/mock-photos/
+/build/web/mock-photos/
 
 # Symbolication related
 app.*.symbols

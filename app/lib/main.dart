@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app.dart';
+import 'core/database/mock_data.dart';
 import 'core/providers/theme_mode_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _registerFontLicenses();
   final themeMode = await loadSavedThemeMode();
+  if (mockDataEnabled) await seedMockData();
   runApp(
     ProviderScope(
       overrides: [themeModeProvider.overrideWith((ref) => themeMode)],
